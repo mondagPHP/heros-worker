@@ -1,0 +1,49 @@
+{
+    "name": "mondagroup/heros-worker",
+    "description": "monda php framework  workerman",
+    "require": {
+        "php": ">=7.2",
+        "ext-posix": "*",
+        "ext-pcntl": "*",
+        "ext-gd": "*",
+        "ext-redis": "*",
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "ext-mbstring": "*",
+        "ext-curl": "*",
+        "ext-zlib": "*",
+        "vlucas/phpdotenv": "^3.4",
+        "nikic/fast-route": "^1.3",
+        "doctrine/annotations": "^1.12",
+        "illuminate/redis": "^5.5",
+        "illuminate/database": "^5.8.0",
+        "illuminate/events": "^5.8.0",
+        "illuminate/pagination": "5.8.*",
+        "monolog/monolog": "^2.0",
+        "workerman/workerman": "dev-master",
+        "workerman/http-client": "^0.1.7",
+        "nikic/php-parser": "^4.10.4"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.14",
+        "phpunit/phpunit": "^8.5",
+        "mockery/mockery": "^1.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "framework\\": "src/"
+        },
+        "files": [
+            "src/helper.php"
+        ]
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://mirrors.aliyun.com/composer"
+        }
+    },
+    "scripts": {
+        "cs-fix": "composer dump -o && php-cs-fixer fix $1"
+    }
+}

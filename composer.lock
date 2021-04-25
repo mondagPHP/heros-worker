@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d28b26192a98198acf6a14f1c0f0523d",
+    "content-hash": "366dc6aaa0758deaa9940b60735a0fd4",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1917,16 +1917,16 @@
         },
         {
             "name": "workerman/workerman",
-            "version": "dev-master",
+            "version": "v4.0.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/walkor/Workerman.git",
-                "reference": "3a6bfa5cd6b4dee429d378eee8b5b19f37d3ed6e"
+                "reference": "af6025976fba817eeb4d5fbf8d0c1059a5819da3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/walkor/Workerman/zipball/3a6bfa5cd6b4dee429d378eee8b5b19f37d3ed6e",
-                "reference": "3a6bfa5cd6b4dee429d378eee8b5b19f37d3ed6e",
+                "url": "https://api.github.com/repos/walkor/Workerman/zipball/af6025976fba817eeb4d5fbf8d0c1059a5819da3",
+                "reference": "af6025976fba817eeb4d5fbf8d0c1059a5819da3",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1965,7 +1965,7 @@
                 "asynchronous",
                 "event-loop"
             ],
-            "time": "2021-04-16T06:02:48+00:00"
+            "time": "2021-03-05T06:44:28+00:00"
         }
     ],
     "packages-dev": [
@@ -5450,9 +5450,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "workerman/workerman": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

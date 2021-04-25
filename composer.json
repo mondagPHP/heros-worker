@@ -20,7 +20,7 @@
         "illuminate/events": "^5.8.0",
         "illuminate/pagination": "5.8.*",
         "monolog/monolog": "^2.0",
-        "workerman/workerman": "dev-master",
+        "workerman/workerman": "^4.0",
         "workerman/http-client": "^0.1.7",
         "nikic/php-parser": "^4.10.4"
     },

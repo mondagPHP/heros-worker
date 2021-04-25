@@ -311,7 +311,7 @@ class Request
 
     public function getParameter(string $name, $default = null)
     {
-        return isset($this->params[$name]) ? $this->queryString[$name] : $default;
+        return isset($this->params[$name]) ? $this->params[$name] : $default;
     }
 
     /**

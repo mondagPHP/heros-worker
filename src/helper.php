@@ -186,3 +186,20 @@ if (! function_exists('response')) {
         return $response;
     }
 }
+
+/*
+ * @param $location
+ * @param int $status
+ * @param array $headers
+ * @return Response
+ */
+if (! function_exists('redirect')) {
+    function redirect($location, $status = 302, $headers = [])
+    {
+        $response = Response::init(new WorkerResponse())->header('Location', $location)->status($status);
+        foreach ($headers ?? [] as $name => $value) {
+            $response->header($name, $value);
+        }
+        return $response;
+    }
+}

@@ -10,6 +10,6 @@ namespace framework\exception;
 /**
  * Class RequestMethodException.
  */
-class RequestMethodException extends \RuntimeException
+class RequestMethodException extends \Exception
 {
 }

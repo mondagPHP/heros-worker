@@ -10,6 +10,6 @@ namespace framework\exception;
 /**
  * Class SessionException.
  */
-class SessionException extends \RuntimeException
+class SessionException extends \Exception
 {
 }

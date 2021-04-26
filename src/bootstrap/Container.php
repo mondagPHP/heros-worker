@@ -89,6 +89,10 @@ class Container implements Bootstrap
         };
     }
 
+    /**
+     * 获取实例.
+     * @return mixed
+     */
     public static function instance()
     {
         return static::$instance;

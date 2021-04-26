@@ -7,6 +7,6 @@
  */
 namespace framework\exception;
 
-class ValidateException extends \RuntimeException
+class ValidateException extends \Exception
 {
 }

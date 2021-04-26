@@ -10,6 +10,6 @@ namespace framework\exception;
 /**
  * Class RouteNotFoundException.
  */
-class RouteNotFoundException extends \RuntimeException
+class RouteNotFoundException extends \Exception
 {
 }

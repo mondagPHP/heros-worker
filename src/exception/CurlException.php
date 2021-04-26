@@ -7,6 +7,6 @@
  */
 namespace framework\exception;
 
-class CurlException extends \RuntimeException
+class CurlException extends \Exception
 {
 }

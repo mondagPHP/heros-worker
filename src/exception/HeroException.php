@@ -7,6 +7,6 @@
  */
 namespace framework\exception;
 
-class HeroException extends \RuntimeException
+class HeroException extends \Exception
 {
 }

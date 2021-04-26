@@ -10,6 +10,6 @@ namespace framework\exception;
 /**
  * Class NotFoundException.
  */
-class NotFoundException extends \RuntimeException
+class NotFoundException extends \Exception
 {
 }

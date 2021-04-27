@@ -11,7 +11,7 @@ use Doctrine\Common\Annotations\Annotation\Target;
 
 /**
  * @Annotation
- * @Target({"METHOD", "CLASS"})
+ * @Target({"METHOD"})
  * Class Controller
  */
 class RequestMapping

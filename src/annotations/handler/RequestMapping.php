@@ -7,6 +7,7 @@
  */
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use framework\annotations\Controller;
 use framework\annotations\RequestMapping;
 use framework\boot\MiddleWareCollector;
 use framework\boot\RouterCollector;
@@ -24,9 +25,9 @@ return [
         if (strpos($path, '/') !== 0 ) {
             $path = '/' . $path;
         }
-        $classAnnotation = (new AnnotationReader())->getClassAnnotation($method->getDeclaringClass(), RequestMapping::class);
-        if ($classAnnotation instanceof RequestMapping) {
-            $path = '/' . trim($classAnnotation->value, '/') . $path;
+        $classAnnotation = (new AnnotationReader())->getClassAnnotation($method->getDeclaringClass(), Controller::class);
+        if (($classAnnotation instanceof Controller) && !empty(trim(trim($classAnnotation->routePrefix), '/'))) {
+            $path = '/' . trim($classAnnotation->routePrefix, '/') . $path;
         }
         $requestMethod = count($self->method) > 0 ? $self->method : ['GET'];
         /**

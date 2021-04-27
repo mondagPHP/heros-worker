@@ -27,10 +27,6 @@ class App
 {
     private static $annotationHandlers = [];
 
-    private static $skips = [
-        RequestMapping::class
-    ];
-
     /**
      * @throws ReflectionException
      * @throws Exception
@@ -88,9 +84,6 @@ class App
                 foreach ($classAnnotations ?? [] as $classAnnotation) {
                     //没有注解处理器不做任何处理
                     if (! isset(self::$annotationHandlers[get_class($classAnnotation)])) {
-                        continue;
-                    }
-                    if (in_array(get_class($classAnnotation), self::$skips)) {
                         continue;
                     }
                     $handler = self::$annotationHandlers[get_class($classAnnotation)];

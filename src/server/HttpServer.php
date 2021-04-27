@@ -134,7 +134,7 @@ class HttpServer
             switch ($routeInfo[0]) {
                 case Dispatcher::NOT_FOUND:
                     //静态资源文件
-                    if ($path = $this->findFile($httpRequest->getUri())) {
+                    if ($path = $this->findFile($httpRequest->getPath())) {
                         //禁止访问.开头的隐藏文件
                         if (false !== strpos($path, '/.')) {
                             self::send($connection, $httpResponse->body('<h1>403 forbidden</h1>')->status(403)->end(), $request);

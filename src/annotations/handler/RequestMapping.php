@@ -19,6 +19,9 @@ return [
         if ('' === $path) {
             return $instance;
         }
+        if (strpos($path, '/') !== 0 ) {
+            $path = '/' . $path;
+        }
         $requestMethod = count($self->method) > 0 ? $self->method : ['GET'];
         /**
          * @var RouterCollector $routerCollector

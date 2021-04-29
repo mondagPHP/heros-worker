@@ -98,8 +98,6 @@ class App
     /**
      * 处理属性.
      * @param $instance
-     * @param \ReflectionClass $reflectionClass
-     * @param \Doctrine\Common\Annotations\AnnotationReader $reader
      */
     private static function handlerPropertyAnnotations(&$instance, ReflectionClass $reflectionClass, AnnotationReader $reader)
     {

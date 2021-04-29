@@ -44,17 +44,11 @@ class UploadFile extends \SplFileInfo
         parent::__construct($fileName);
     }
 
-    /**
-     * @return string
-     */
     public function getUploadName(): string
     {
         return $this->uploadName;
     }
 
-    /**
-     * @return string
-     */
     public function getUploadMineType(): string
     {
         return $this->uploadMimeType;
@@ -68,17 +62,11 @@ class UploadFile extends \SplFileInfo
         return pathinfo($this->uploadName, PATHINFO_EXTENSION);
     }
 
-    /**
-     * @return int
-     */
     public function getUploadErrorCode(): int
     {
         return $this->uploadErrorCode;
     }
 
-    /**
-     * @return bool
-     */
     public function isValid(): bool
     {
         return UPLOAD_ERR_OK === $this->uploadErrorCode;
@@ -86,7 +74,6 @@ class UploadFile extends \SplFileInfo
 
     /**
      * @param $destination
-     * @return \SplFileInfo
      * @throws \framework\exception\FileException
      */
     public function move($destination): \SplFileInfo

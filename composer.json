@@ -23,7 +23,7 @@
         "workerman/workerman": "^4.0",
         "workerman/http-client": "^0.1.7",
         "nikic/php-parser": "^4.10.4",
-        "workerman/stomp": "^1.0"
+        "workerman/redis-queue": "^1.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.14",

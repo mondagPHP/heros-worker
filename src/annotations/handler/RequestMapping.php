@@ -5,7 +5,6 @@
  * @contact  mondagroup_php@163.com
  *
  */
-
 use Doctrine\Common\Annotations\AnnotationReader;
 use framework\annotations\Controller;
 use framework\annotations\RequestMapping;
@@ -22,11 +21,11 @@ return [
         if ('' === $path) {
             return $instance;
         }
-        if (strpos($path, '/') !== 0 ) {
+        if (0 !== strpos($path, '/')) {
             $path = '/' . $path;
         }
         $classAnnotation = (new AnnotationReader())->getClassAnnotation($method->getDeclaringClass(), Controller::class);
-        if (($classAnnotation instanceof Controller) && !empty(trim(trim($classAnnotation->routePrefix), '/'))) {
+        if (($classAnnotation instanceof Controller) && ! empty(trim(trim($classAnnotation->routePrefix), '/'))) {
             $path = '/' . trim($classAnnotation->routePrefix, '/') . $path;
         }
         $requestMethod = count($self->method) > 0 ? $self->method : ['GET'];

@@ -22,8 +22,8 @@ class Request
     private $header;
     //获取cookie
     private $cookie;
-    //获取特定上传文件
-    private $file;
+    //获取特定上传文件 array
+    private $files;
     //获取host
     private $host;
     //获取请求方法
@@ -49,7 +49,7 @@ class Request
      * @param $rawBody
      * @param $header
      * @param $cookie
-     * @param $file
+     * @param $files
      * @param $host
      * @param $method
      * @param $uri
@@ -60,13 +60,13 @@ class Request
      * @param $ip
      * @param $port
      */
-    public function __construct($params, $rawBody, $header, $cookie, $file, $host, $method, $uri, $path, $queryString, $protocolVersion, $sessionId, $ip, $port)
+    public function __construct($params, $rawBody, $header, $cookie, $files, $host, $method, $uri, $path, $queryString, $protocolVersion, $sessionId, $ip, $port)
     {
         $this->params = $params;
         $this->rawBody = $rawBody;
         $this->header = $header;
         $this->cookie = $cookie;
-        $this->file = $file;
+        $this->files = $files;
         $this->host = $host;
         $this->method = $method;
         $this->uri = $uri;
@@ -168,17 +168,17 @@ class Request
     /**
      * @return mixed
      */
-    public function getFile()
+    public function getFiles()
     {
-        return $this->file;
+        return $this->files;
     }
 
     /**
-     * @param mixed $file
+     * @param mixed $files
      */
-    public function setFile($file): void
+    public function setFiles($files): void
     {
-        $this->file = $file;
+        $this->files = $files;
     }
 
     /**
@@ -352,5 +352,45 @@ class Request
     public function getPort()
     {
         return $this->port;
+    }
+
+    /**
+     * @return null|\framework\http\UploadFile
+     */
+    public function file(string $name)
+    {
+        $files = $this->getFiles();
+        if (null === $files || ! isset($files[$name])) {
+            return null;
+        }
+        $file = $files[$name];
+        return new UploadFile($file['tmp_name'], $file['name'], $file['type'], $file['error']);
+    }
+
+    /**
+     * @return array
+     */
+    public function only(array $keys = [])
+    {
+        $all = $this->getParams();
+        $result = [];
+        foreach ($keys as $key) {
+            if (isset($all[$key])) {
+                $result[$key] = $all[$key];
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @return null|mixed
+     */
+    public function except(array $keys)
+    {
+        $all = $this->getParams();
+        foreach ($keys as $key) {
+            unset($all[$key]);
+        }
+        return $all;
     }
 }

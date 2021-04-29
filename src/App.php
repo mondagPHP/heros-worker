@@ -15,7 +15,6 @@ namespace framework;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Exception;
-use framework\annotations\RequestMapping;
 use framework\aop\ClassLoader;
 use ReflectionClass;
 use ReflectionException;
@@ -99,6 +98,8 @@ class App
     /**
      * 处理属性.
      * @param $instance
+     * @param \ReflectionClass $reflectionClass
+     * @param \Doctrine\Common\Annotations\AnnotationReader $reader
      */
     private static function handlerPropertyAnnotations(&$instance, ReflectionClass $reflectionClass, AnnotationReader $reader)
     {

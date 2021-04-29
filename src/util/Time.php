@@ -1,41 +1,43 @@
 <?php
-
-
+/**
+ * This file is part of monda-worker.
+ *
+ * @contact  mondagroup_php@163.com
+ *
+ */
 namespace framework\util;
 
 /**
- * Class Time
- * @package framework\util
+ * Class Time.
  */
 class Time
 {
-
     /**
      * @param $time
      * @return false|string
-     * 格式化时间
+     *                      格式化时间
      */
     public static function pretty($time)
     {
         $return = '';
-        if (!is_numeric($time)) {
+        if (! is_numeric($time)) {
             $time = strtotime($time);
         }
         $htime = date('H:i', $time);
-        $dif   = abs(time() - $time);
+        $dif = abs(time() - $time);
         if ($dif < 10) {
             $return = '刚刚';
-        } else if ($dif < 3600) {
+        } elseif ($dif < 3600) {
             $return = floor($dif / 60) . '分钟前';
-        } else if ($dif < 10800) {
+        } elseif ($dif < 10800) {
             $return = floor($dif / 3600) . '小时前';
-        } else if (date('Y-m-d', $time) == date('Y-m-d')) {
+        } elseif (date('Y-m-d', $time) == date('Y-m-d')) {
             $return = '今天 ' . $htime;
-        } else if (date('Y-m-d', $time) == date('Y-m-d', strtotime('-1 day'))) {
+        } elseif (date('Y-m-d', $time) == date('Y-m-d', strtotime('-1 day'))) {
             $return = '昨天 ' . $htime;
-        } else if (date('Y-m-d', $time) == date('Y-m-d', strtotime('-2 day'))) {
+        } elseif (date('Y-m-d', $time) == date('Y-m-d', strtotime('-2 day'))) {
             $return = '前天 ' . $htime;
-        } else if (date('Y', $time) == date('Y')) {
+        } elseif (date('Y', $time) == date('Y')) {
             $return = date('m-d H:i', $time);
         } else {
             $return = date('Y-m-d H:i', $time);

@@ -7,6 +7,7 @@
  */
 namespace framework\http;
 
+use framework\exception\FileNotFoundException;
 use Workerman\Protocols\Http\Response as WorkerResponse;
 
 /**
@@ -86,9 +87,33 @@ class Response
         return $this;
     }
 
-    public function file($file, $offset = 0, $length = 0): self
+    /**
+     * 返回文件.
+     * @throws \framework\exception\FileNotFoundException
+     * @return $this
+     */
+    public function file(string $file): self
     {
-        $this->workerResponse->withFile($file, $offset, $length);
+        if (! file_exists($file)) {
+            throw new FileNotFoundException('文件不存在!');
+        }
+        $this->workerResponse->withFile($file);
+        return $this;
+    }
+
+    /**
+     * @throws \framework\exception\FileNotFoundException
+     * @return $this
+     */
+    public function download(string $file, string $downloadName = ''): self
+    {
+        if (! file_exists($file)) {
+            throw new FileNotFoundException('文件不存在!');
+        }
+        $this->workerResponse->withFile($file);
+        if ($downloadName) {
+            $this->header('Content-Disposition', "attachment; filename=\"{$downloadName}\"");
+        }
         return $this;
     }
 

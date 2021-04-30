@@ -45,6 +45,15 @@ class ProxyCollects
         }
     }
 
+    public function setMethodMaps(): void
+    {
+        foreach ($this->classMethodMap as $aopClass => $methodMap) {
+            if (isset($this->classesMap[$aopClass])) {
+                $this->classesMap[$aopClass]['methodsMap'] = $methodMap;
+            }
+        }
+    }
+
     public function setNewPath(string $className, string $filePath): void
     {
         $this->classesMap[$className]['newPath'] = $filePath;

@@ -79,6 +79,7 @@ class AspectCollects
         foreach ($aopCollects as $className => $methods) {
             $proxyCollects->addClassMap($className, $class, $methods, $this->classLoader->findFile($className));
         }
+        $proxyCollects->setMethodMaps();
         return $aopCollects;
     }
 

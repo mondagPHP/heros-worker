@@ -18,7 +18,7 @@ trait ProxyCallTrait
     public static function _proxyCall(string $className, string $classMethod, array $arguments, \Closure $closure)
     {
         $entryClass = new ProceedingJoinPoint($className, $classMethod, $arguments, $closure);
-        $pipeLine = new PipeLine(array_values(ClassLoader::$classMap[$className]['aspects'] ?? []));
+        $pipeLine = new PipeLine(array_values(ClassLoader::$classMap[$className]['methodsMap'][$classMethod] ?? []));
         return $pipeLine->run($entryClass, function ($entry) {
             return $entry->processOriginClosure();
         });

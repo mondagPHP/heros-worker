@@ -109,6 +109,11 @@ class PhpDocReader
             return null;
         }
 
+        //去掉; 适配@var className;
+        if (strpos($type, ';')) {
+            $type = str_replace(';', '', $type);
+        }
+
         // Ignore primitive types
         if (isset(self::PRIMITIVE_TYPES[$type])) {
             if ($allowPrimitiveTypes) {

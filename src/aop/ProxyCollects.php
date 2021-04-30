@@ -43,6 +43,10 @@ class ProxyCollects
             }
             $this->classMethodMap[$className][$method][] = $aspectName;
         }
+        foreach ($methods as $method) {
+            $this->classMethodMap[$className][$method] = array_unique($this->classMethodMap[$className][$method]);
+        }
+
     }
 
     public function setMethodMaps(): void

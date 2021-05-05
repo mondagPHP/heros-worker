@@ -25,8 +25,8 @@ return [
             $path = '/' . $path;
         }
         $classAnnotation = (new AnnotationReader())->getClassAnnotation($method->getDeclaringClass(), Controller::class);
-        if (($classAnnotation instanceof Controller) && ! empty(trim(trim($classAnnotation->routePrefix), '/'))) {
-            $path = '/' . trim($classAnnotation->routePrefix, '/') . $path;
+        if (($classAnnotation instanceof Controller) && ! empty(trim(trim($classAnnotation->prefix), '/'))) {
+            $path = '/' . trim($classAnnotation->prefix, '/') . $path;
         }
         $requestMethod = count($self->method) > 0 ? $self->method : ['GET'];
         /**

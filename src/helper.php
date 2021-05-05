@@ -203,3 +203,30 @@ if (! function_exists('redirect')) {
         return $response;
     }
 }
+
+if (! function_exists('passStart')) {
+    function passStart($str, $start, $end = 0, $dot = '*', $charset = 'UTF-8'): string
+    {
+        $len = mb_strlen($str, $charset);
+        if (0 == $start || $start > $len) {
+            $start = 1;
+        }
+        if (0 != $end && $end > $len) {
+            $end = $len - 2;
+        }
+        $endStart = $len - $end;
+        $top = mb_substr($str, 0, $start, $charset);
+        $bottom = '';
+        if ($endStart > 0) {
+            $bottom = mb_substr($str, $endStart, $end, $charset);
+        }
+        $len = $len - mb_strlen($top, $charset);
+        $len = $len - mb_strlen($bottom, $charset);
+        $newStr = $top;
+        for ($i = 0; $i < $len; ++$i) {
+            $newStr .= $dot;
+        }
+        $newStr .= $bottom;
+        return $newStr;
+    }
+}

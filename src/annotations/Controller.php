@@ -18,5 +18,5 @@ class Controller
 {
     public $msg = '';
 
-    public $routePrefix = '';
+    public $prefix = '';
 }

@@ -17,7 +17,7 @@ class FileUtils
      * @param  string $path 需要创建路径
      * @return bool   成功时返回true，失败则返回false;
      */
-    public static function makeFileDirs($path): bool
+    public static function makeFileDirs(string $path): bool
     {
         //必须考虑 "/" 和 "\" 两种目录分隔符
         $files = preg_split('/[\/|\\\]/s', $path);
@@ -25,7 +25,7 @@ class FileUtils
         foreach ($files as $value) {
             $dir .= $value . DIRECTORY_SEPARATOR;
             if (! file_exists($dir) && ! mkdir($dir, 0777) && ! is_dir($dir)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
+                return false;
             }
         }
         return true;

@@ -226,7 +226,10 @@ class HeroTemplate implements IView
             $content = preg_replace(array_keys(self::$tempRules), self::$tempRules, $content);
             //生成编译目录
             if (! file_exists(dirname($compileFile))) {
-                FileUtils::makeFileDirs(dirname($compileFile));
+                $b = FileUtils::makeFileDirs(dirname($compileFile));
+                if (false === $b) {
+                    throw new HeroException("创建编译目录 {$compileFile} 失败。");
+                }
             }
             //生成php文件
             if (! file_put_contents($compileFile, $content, LOCK_EX)) {

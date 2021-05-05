@@ -5,10 +5,10 @@
  * @contact  mondagroup_php@163.com
  *
  */
-
 namespace framework\http;
 
 use framework\exception\FileException;
+use framework\file\FileUtils;
 
 /**
  * Class UploadFile.
@@ -56,7 +56,7 @@ class UploadFile extends \SplFileInfo
     }
 
     /**
-     * @return mixed
+     * @return array|string|string[]
      */
     public function getUploadExtension()
     {
@@ -81,13 +81,15 @@ class UploadFile extends \SplFileInfo
     public function move($destination): \SplFileInfo
     {
         $path = pathinfo($destination, PATHINFO_DIRNAME);
-        if (!is_dir($path) && !mkdir($path, 0777, true)) {
-            throw new FileException(sprintf('Unable to create the "%s" directory', $path));
+        if (! is_dir($path)) {
+            $b = FileUtils::makeFileDirs($path);
+            if (false === $b) {
+                throw new FileException(sprintf('Unable to create the "%s" directory', $path));
+            }
         }
-        if (!rename($this->getPathname(), $destination)) {
+        if (! rename($this->getPathname(), $destination)) {
             throw new FileException(sprintf('Could not move the file "%s" to "%s"', $this->getPathname(), $destination));
         }
-        restore_error_handler();
         @chmod($destination, 0666 & ~umask());
         return new \SplFileInfo($destination);
     }

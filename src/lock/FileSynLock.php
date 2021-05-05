@@ -8,6 +8,7 @@
 namespace framework\lock;
 
 use framework\file\FileUtils;
+use http\Exception\RuntimeException;
 
 /**
  * Class FileSynLock.
@@ -19,7 +20,10 @@ class FileSynLock implements ISynLock
     public function __construct($key)
     {
         $lockDir = runtime_path() . '/lock/';
-        FileUtils::makeFileDirs($lockDir);
+        $bool = FileUtils::makeFileDirs($lockDir);
+        if (false === $bool) {
+            throw new RuntimeException("create path ({$lockDir}) error!!!");
+        }
         $this->fileHandler = fopen($lockDir . md5($key) . '.lock', 'wb');
     }
 

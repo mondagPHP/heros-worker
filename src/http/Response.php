@@ -121,6 +121,8 @@ class Response
     {
         switch (gettype($this->content)) {
             case 'object':
+                $content = (string)$this->content;
+                break;
             case 'array':
                 $content = json_encode($this->content);
                 break;

@@ -46,7 +46,7 @@ class HttpServer
      */
     private $config;
 
-    private static $_request;
+    private static $_request = null;
 
     /**
      * callback.

@@ -79,26 +79,26 @@ class Request
         $this->port = $port;
     }
 
-    public static function init(WorkerRequest $request, string $ip, int $port): self
+    public static function init(WorkerRequest $workerRequest, string $ip, int $port): self
     {
-        $params = $request->get() + $request->post();
+        $params = $workerRequest->get() + $workerRequest->post();
         $request = new self(
             $params,
-            $request->rawBody(),
-            $request->header(),
-            $request->cookie(),
-            $request->file(),
-            $request->host(),
-            $request->method(),
-            $request->uri(),
-            $request->path(),
-            $request->queryString(),
-            $request->protocolVersion(),
-            $request->sessionId(),
+            $workerRequest->rawBody(),
+            $workerRequest->header(),
+            $workerRequest->cookie(),
+            $workerRequest->file(),
+            $workerRequest->host(),
+            $workerRequest->method(),
+            $workerRequest->uri(),
+            $workerRequest->path(),
+            $workerRequest->queryString(),
+            $workerRequest->protocolVersion(),
+            $workerRequest->sessionId(),
             $ip,
             $port
         );
-        $request->setWorkerRequest($request);
+        $request->setWorkerRequest($workerRequest);
         return $request;
     }
 

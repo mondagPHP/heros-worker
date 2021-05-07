@@ -381,6 +381,17 @@ class Request
         }
         return $result;
     }
+    
+   /**
+     * @param $name
+     * @param null $default
+     * @return mixed|null
+     */
+    public function getHeaderByName($name, $default = null)
+    {
+        return $this->header[$name] ?? $default;
+    }
+
 
     /**
      * @return null|mixed

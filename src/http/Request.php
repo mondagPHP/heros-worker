@@ -383,16 +383,15 @@ class Request
         return $result;
     }
     
-   /**
-     * @param $name
-     * @param null $default
-     * @return mixed|null
-     */
+    /**
+      * @param $name
+      * @param null $default
+      * @return mixed|null
+      */
     public function getHeaderByName($name, $default = null)
     {
         return $this->header[$name] ?? $default;
     }
-
 
     /**
      * @return null|mixed
@@ -406,7 +405,8 @@ class Request
         return $all;
     }
 
-    public function session(){
+    public function session()
+    {
         return $this->workerRequest->session();
     }
 }

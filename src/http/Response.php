@@ -121,11 +121,11 @@ class Response
     {
         switch (gettype($this->content)) {
             case 'object':
-                $this->header("Content-Type", "application/json;charset=utf-8");
+                $this->header('Content-Type', 'application/json;charset=utf-8');
                 $content = (string)$this->content;
                 break;
             case 'array':
-                $this->header("Content-Type", "application/json;charset=utf-8");
+                $this->header('Content-Type', 'application/json;charset=utf-8');
                 $content = json_encode($this->content);
                 break;
             case 'string':

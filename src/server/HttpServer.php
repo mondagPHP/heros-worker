@@ -46,6 +46,8 @@ class HttpServer
      */
     private $config;
 
+    private static $_request;
+
     /**
      * callback.
      * @var string[]
@@ -125,6 +127,7 @@ class HttpServer
         static::tryFreshWorker();
         //request
         $httpRequest = HttpRequest::init($request, $connection->getRemoteIp(), $connection->getRemotePort());
+        static::$_request = $httpRequest;
         //response
         $httpResponse = HttpResponse::init(new Response(200));
         //session
@@ -167,15 +170,21 @@ class HttpServer
         return null;
     }
 
+    public static function request()
+    {
+        return static::$_request;
+    }
+
     /**
+     * @param \Workerman\Connection\TcpConnection $connection
      * @param $response
-     * @param \Webman\Http\Request $request
+     * @param \Workerman\Protocols\Http\Request $request
      */
     protected static function send(TcpConnection $connection, $response, Request $request)
     {
-        $keep_alive = $request->header('connection');
-        if ((null === $keep_alive && '1.1' === $request->protocolVersion())
-            || 'keep-alive' === $keep_alive || 'Keep-Alive' === $keep_alive
+        $keepAlive = $request->header('connection');
+        if ((null === $keepAlive && '1.1' === $request->protocolVersion())
+            || 'keep-alive' === $keepAlive || 'Keep-Alive' === $keepAlive
         ) {
             $connection->send($response);
             return;
@@ -204,8 +213,8 @@ class HttpServer
             $exceptionHandler->report($e);
             return $exceptionHandler->render($request, $e);
         } catch (Throwable $e) {
-            Log::error((string) $e);
-            return $response->body((string) $e);
+            Log::error((string)$e);
+            return $response->body((string)$e);
         }
     }
 

@@ -8,6 +8,8 @@
 use framework\bootstrap\Container;
 use framework\core\Config;
 use framework\http\Response;
+use framework\server\HttpServer;
+use framework\view\View;
 use Workerman\Protocols\Http\Response as WorkerResponse;
 
 // 配置文件路径
@@ -58,7 +60,7 @@ if (! function_exists('view')) {
 if (! function_exists('assign')) {
     function assign(string $name, $value): void
     {
-        \framework\view\View::assign($name, $value);
+        View::assign($name, $value);
     }
 }
 
@@ -150,7 +152,7 @@ if (! function_exists('cpu_count')) {
         } else {
             $count = shell_exec('nproc');
         }
-        return (int) $count > 0 ? (int) $count : 4;
+        return (int)$count > 0 ? (int)$count : 4;
     }
 }
 
@@ -235,5 +237,12 @@ if (! function_exists('load')) {
     function load(string $clazz)
     {
         return \container()->get($clazz);
+    }
+}
+
+if (! function_exists('request')) {
+    function request()
+    {
+        return HttpServer::request();
     }
 }

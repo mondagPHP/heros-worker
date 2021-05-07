@@ -39,6 +39,7 @@ class Request
     //获取请求sessionId
     private $sessionId;
     //原生request对象
+    /** @var \Workerman\Protocols\Http\Request $workerRequest*/
     private $workerRequest;
     private $ip;
     private $port;
@@ -403,5 +404,9 @@ class Request
             unset($all[$key]);
         }
         return $all;
+    }
+
+    public function session(){
+        return $this->workerRequest->session();
     }
 }

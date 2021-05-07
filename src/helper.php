@@ -230,3 +230,10 @@ if (! function_exists('passStart')) {
         return $newStr;
     }
 }
+
+if (! function_exists('load')) {
+    function load(string $clazz)
+    {
+        return \container()->get($clazz);
+    }
+}

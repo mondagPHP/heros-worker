@@ -7,6 +7,7 @@
  */
 namespace framework\validate;
 
+use framework\exception\ValidateException;
 use SplFileObject;
 
 class Validate
@@ -442,6 +443,20 @@ class Validate
         }
 
         return ! empty($this->error) ? false : true;
+    }
+
+    /**
+     * 数据自动验证
+     * @param $data
+     * @param array $rules
+     * @param string $scene
+     * @throws ValidateException
+     */
+    public function valid($data, $rules = [], $scene = ''): void
+    {
+        if (! $this->check($data, $rules, $scene)) {
+            throw new ValidateException($this->getError());
+        }
     }
 
     /**

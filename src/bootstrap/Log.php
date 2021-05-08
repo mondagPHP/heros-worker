@@ -37,13 +37,6 @@ class Log implements Bootstrap
      */
     public static function __callStatic($name, $arguments)
     {
-        //不后端启动时候显示
-        if (! Worker::$daemonize && config('app.debug')) {
-            $message = $arguments[0] ?? '';
-            print_ok("Log devel:{$name} | message: {$message}");
-            $content = $arguments[1] ?? [];
-            $content && print_r($content);
-        }
         return static::channel('default')->{$name}(...$arguments);
     }
 

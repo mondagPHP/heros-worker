@@ -153,7 +153,7 @@ class HttpServer
                     break;
                 case Dispatcher::FOUND:
                     $handler = $routeInfo[1];
-                    $vars = $routeInfo[2];
+                    $vars = array_merge($httpRequest->getParams(), $routeInfo[2] ?: []);
                     $extVars = [$httpRequest, $httpResponse, $httpSession];
                     $responseObj = $handler($httpRequest, $vars, $extVars);
                     if ($responseObj instanceof HttpResponse) {

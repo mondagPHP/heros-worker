@@ -56,7 +56,7 @@ return [
                             $vo = ModelTransformUtils::map2Model($parameterClass->getName(), $request->getParams());
                             //vo验证
                             if (container()->has($parameterClass->getName())) {
-                                container()->get($parameterClass->getName())($vo);
+                                container()->get($parameterClass->getName())($vo, $method->getName());
                             }
                             $inputParams[] = $vo;
                         } else {

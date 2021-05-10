@@ -7,6 +7,7 @@
  */
 namespace framework\http;
 
+use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Request as WorkerRequest;
 
 /**
@@ -39,10 +40,15 @@ class Request
     //获取请求sessionId
     private $sessionId;
     //原生request对象
-    /** @var \Workerman\Protocols\Http\Request $workerRequest*/
+    /** @var \Workerman\Protocols\Http\Request $workerRequest */
     private $workerRequest;
     private $ip;
     private $port;
+
+    /**
+     * @var TcpConnection $connection
+     */
+    private $connection;
 
     /**
      * Session constructor.
@@ -79,7 +85,7 @@ class Request
         $this->port = $port;
     }
 
-    public static function init(WorkerRequest $workerRequest, string $ip, int $port): self
+    public static function init(TcpConnection $connection, WorkerRequest $workerRequest): self
     {
         $params = $workerRequest->get() + $workerRequest->post();
         $request = new self(
@@ -95,11 +101,28 @@ class Request
             $workerRequest->queryString(),
             $workerRequest->protocolVersion(),
             $workerRequest->sessionId(),
-            $ip,
-            $port
+            $connection->getRemoteIp(),
+            $connection->getRemotePort()
         );
         $request->setWorkerRequest($workerRequest);
+        $request->setConnection($connection);
         return $request;
+    }
+
+    /**
+     * @return \Workerman\Connection\TcpConnection
+     */
+    public function getConnection(): TcpConnection
+    {
+        return $this->connection;
+    }
+
+    /**
+     * @param \Workerman\Connection\TcpConnection $connection
+     */
+    public function setConnection(TcpConnection $connection): void
+    {
+        $this->connection = $connection;
     }
 
     /**
@@ -336,7 +359,7 @@ class Request
 
     public function isPjax(): bool
     {
-        return (bool) $this->workerRequest->header('X-PJAX');
+        return (bool)$this->workerRequest->header('X-PJAX');
     }
 
     /**
@@ -382,12 +405,12 @@ class Request
         }
         return $result;
     }
-    
+
     /**
-      * @param $name
-      * @param null $default
-      * @return mixed|null
-      */
+     * @param $name
+     * @param null $default
+     * @return mixed|null
+     */
     public function getHeaderByName($name, $default = null)
     {
         return $this->header[$name] ?? $default;

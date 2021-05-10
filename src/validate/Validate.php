@@ -8,6 +8,7 @@
 namespace framework\validate;
 
 use framework\exception\ValidateException;
+use framework\http\Request;
 use SplFileObject;
 
 class Validate
@@ -452,8 +453,12 @@ class Validate
      * @param string $scene
      * @throws ValidateException
      */
-    public function valid($data, $rules = [], $scene = ''): void
+    public function valid($data = [], $rules = [], $scene = ''): void
     {
+        if (empty($data) && $request = request()) {
+            /** @var Request $request */
+            $data = $request->getParams();
+        }
         if (! $this->check($data, $rules, $scene)) {
             throw new ValidateException($this->getError());
         }

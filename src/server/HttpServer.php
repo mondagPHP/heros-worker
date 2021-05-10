@@ -126,7 +126,7 @@ class HttpServer
         //尝试更新
         static::tryFreshWorker();
         //request
-        $httpRequest = HttpRequest::init($request, $connection->getRemoteIp(), $connection->getRemotePort());
+        $httpRequest = HttpRequest::init($connection, $request);
         static::$_request = $httpRequest;
         //response
         $httpResponse = HttpResponse::init(new Response(200));
@@ -154,7 +154,7 @@ class HttpServer
                 case Dispatcher::FOUND:
                     $handler = $routeInfo[1];
                     $vars = $routeInfo[2];
-                    $extVars = [$httpRequest, $httpResponse, $httpSession];
+                    $extVars = [$httpRequest, $httpResponse, $httpSession, $connection];
                     $responseObj = $handler($httpRequest, $vars, $extVars);
                     if ($responseObj instanceof HttpResponse) {
                         self::send($connection, $responseObj->end(), $request);

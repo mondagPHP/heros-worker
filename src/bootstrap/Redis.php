@@ -220,7 +220,7 @@ class Redis implements Bootstrap
     /**
      * @param string $name
      */
-    public static function connection($name = 'default'): Connection
+    public static function connection(string $name = 'default'): Connection
     {
         return static::$_manager->connection($name);
     }

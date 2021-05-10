@@ -22,4 +22,9 @@ abstract class Controller
             $this->_initialize();
         }
     }
+
+    public function getMiddleware(): array
+    {
+        return [];
+    }
 }

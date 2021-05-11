@@ -17,6 +17,4 @@ use Doctrine\Common\Annotations\Annotation\Target;
 class Controller
 {
     public $msg = '';
-
-    public $prefix = '';
 }

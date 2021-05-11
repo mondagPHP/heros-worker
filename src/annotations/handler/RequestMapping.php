@@ -24,10 +24,6 @@ return [
         if (0 !== strpos($path, '/')) {
             $path = '/' . $path;
         }
-        $classAnnotation = (new AnnotationReader())->getClassAnnotation($method->getDeclaringClass(), Controller::class);
-        if (($classAnnotation instanceof Controller) && ! empty(trim(trim($classAnnotation->prefix), '/'))) {
-            $path = '/' . trim($classAnnotation->prefix, '/') . $path;
-        }
         $requestMethod = count($self->method) > 0 ? $self->method : ['GET'];
         foreach ($requestMethod as &$itemRequestMethod) {
             $itemRequestMethod = strtoupper($itemRequestMethod);

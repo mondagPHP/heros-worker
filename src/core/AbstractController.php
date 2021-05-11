@@ -10,7 +10,7 @@ namespace framework\core;
 /**
  * Class Controller.
  */
-abstract class Controller
+abstract class AbstractController
 {
     /**
      * 注册initialize方法

@@ -25,7 +25,7 @@ return [
             $path = '/' . $path;
         }
         $requestMethod = count($self->method) > 0 ? $self->method : ['GET'];
-        foreach ($requestMethod as &$itemRequestMethod) {
+        foreach ($requestMethod ?? [] as &$itemRequestMethod) {
             $itemRequestMethod = strtoupper($itemRequestMethod);
         }
         /**

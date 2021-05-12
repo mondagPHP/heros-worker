@@ -219,6 +219,7 @@ class Redis implements Bootstrap
 
     /**
      * @param string $name
+     * @return \Illuminate\Redis\Connections\Connection
      */
     public static function connection(string $name = 'default'): Connection
     {

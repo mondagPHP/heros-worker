@@ -5,6 +5,7 @@
  * @contact  mondagroup_php@163.com
  *
  */
+
 namespace framework\util;
 
 use framework\string\StringUtils;
@@ -37,12 +38,14 @@ class Result
     /**
      * @var object 对象
      */
-    private $extra;
+    private $extra = [];
 
     /**
      * @var Pager 分页
      */
     private $pager;
+
+    private $isUsePage = 0;
 
     /**
      * Result constructor.
@@ -61,17 +64,23 @@ class Result
             'success' => $this->success,
             'message' => $this->message,
         ];
-        //设置数据
-        if (! is_null($this->data)) {
-            $array['data'] = $this->data;
+        //是否分页
+        if ($this->isUsePage === 1) {
+            $array['data']['result'] = $this->data ?? [];
+            $array['data']['pager'] = [
+                'currentPage' => optional($this->pager)->currentPage,
+                'pageSize' => $this->pager->pageSize,
+                'total' => $this->pager->total,
+                'totalPage' => 0 != $this->pager->pageSize ? ceil($this->pager->total / $this->pager->pageSize) : 0
+            ];
+        } else {
+            $array['data'] = $this->data ?? [];
         }
-        //设置额外数据
-        if (! is_null($this->extra)) {
+        if (!empty($this->extra)) {
             $array['extra'] = $this->extra;
         }
-        //分页
-        if (! is_null($this->pager)) {
-            $array['pager'] = $this->pager;
+        if (empty($array['data'])) {
+            unset($array['data']);
         }
         return StringUtils::jsonEncode($array);
     }
@@ -103,13 +112,14 @@ class Result
      * @param $pageSize
      * @param $total
      * @param $data
-     * @param  array  $extra
+     * @param array $extra
      * @return Result
      *                      分页
      */
     public static function pager($page, $pageSize, $total, $data, $extra = []): self
     {
         $result = new self();
+        $result->isUsePage = 1;
         $result->isSuccess(true)->code(ResultCode::SUCCESS['code'])->message(ResultCode::SUCCESS['message'])->data($data)->extra($extra)->setPager(new Pager($page, $pageSize, $total));
 
         return $result;
@@ -161,7 +171,7 @@ class Result
     public function setPager(Pager $pager): self
     {
         $this->pager = $pager;
-
+        $this->isUsePage = 1;
         return $this;
     }
 

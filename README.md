@@ -74,7 +74,9 @@ composer require 'mondagroup/heros-worker:*@dev'
 ======
 
 ## version 1.0.0
+
 实现了框架的基本功能
+
 1. 项目组织结构
 2. `Aop`,`middleware`,`conrtab`,`redis_queue`等
 3. 数据DB层的操作

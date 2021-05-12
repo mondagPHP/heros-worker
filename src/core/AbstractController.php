@@ -27,13 +27,13 @@ abstract class AbstractController
     }
 
     /**
-     * @param array $middlewares
+     * @param string|array $middlewares
      * @param array $expect
      * @param array $only
      * @return $this
      * date 2021/5/12
      */
-    public function middleware($middlewares, array $expect = [], array $only = []): AbstractController
+    public function middleware($middlewares, array $expect = [], array $only = []): self
     {
         $filter = function (array $arr) {
             $resArr = [];

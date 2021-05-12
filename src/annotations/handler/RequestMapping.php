@@ -76,8 +76,7 @@ return [
         $middlewareCollector = container()->get(MiddleWareCollector::class);
         $middlewares = $middlewareCollector->get($path);
         if (method_exists($instance, 'getMiddleware')) {
-            $cusMiddlewares = $instance->getMiddleware();
-            $middlewares = array_unique(array_merge($middlewares, $cusMiddlewares));
+            $middlewares = $instance->getMiddleware($method->getName(), $middlewares);
         }
         $routerDispatch = container()->get(PipeLine::class)->create()->setClasses($middlewares)->run($routerDispatch);
         $routerCollector->addRouter($requestMethod, $path, $routerDispatch);

@@ -119,6 +119,7 @@ class Result
     public static function pager($page, $pageSize, $total, $data, $extra = []): self
     {
         $result = new self();
+        $result->isUsePage = 1;
         $result->isSuccess(true)->code(ResultCode::SUCCESS['code'])->message(ResultCode::SUCCESS['message'])->data($data)->extra($extra)->setPager(new Pager($page, $pageSize, $total));
 
         return $result;
@@ -170,7 +171,7 @@ class Result
     public function setPager(Pager $pager): self
     {
         $this->pager = $pager;
-
+        $this->isUsePage = 1;
         return $this;
     }
 

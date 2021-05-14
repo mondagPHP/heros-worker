@@ -28,12 +28,12 @@ abstract class AbstractController
 
     /**
      * @param string|array $middlewares
-     * @param array $expect
+     * @param array $except
      * @param array $only
      * @return $this
      * date 2021/5/12
      */
-    public function middleware($middlewares, array $expect = [], array $only = []): self
+    public function middleware($middlewares, array $except = [], array $only = []): self
     {
         $filter = function (array $arr) {
             $resArr = [];
@@ -51,16 +51,16 @@ abstract class AbstractController
             }
             return $resArr;
         };
-        $localExpect = $filter(Arr::pack($expect['expect'] ?? []));
+        $localExcept = $filter(Arr::pack($except['except'] ?? []));
         $localOnly = $filter(Arr::pack($only['only'] ?? []));
         $middlewares = Arr::pack($middlewares);
         foreach ($middlewares as $middleware) {
             if (isset($this->middlewares[$middleware])) {
-                $this->middlewares[$middleware]['expect'] = array_unique(array_merge($this->middlewares[$middleware]['expect'], $localExpect));
+                $this->middlewares[$middleware]['except'] = array_unique(array_merge($this->middlewares[$middleware]['except'], $localExcept));
                 $this->middlewares[$middleware]['only'] = array_unique(array_merge($this->middlewares[$middleware]['only'], $localOnly));
             } else {
                 $this->middlewares[$middleware] = [
-                    'expect' => $localExpect,
+                    'except' => $localExcept,
                     'only' => $localOnly,
                 ];
             }
@@ -76,13 +76,13 @@ abstract class AbstractController
         $sortMiddles = [];
         foreach ($global as $item) {
             $sortMiddles[$item] = [
-                'expect' => [],
+                'except' => [],
                 'only' => [],
             ];
         }
         foreach ($this->middlewares as $middleware => $conditions) {
             if (isset($sortMiddles[$middleware])) {
-                $sortMiddles[$middleware]['expect'] = array_merge($sortMiddles[$middleware]['expect'], $conditions['expect']);
+                $sortMiddles[$middleware]['except'] = array_merge($sortMiddles[$middleware]['except'], $conditions['except']);
                 $sortMiddles[$middleware]['only'] = array_merge($sortMiddles[$middleware]['only'], $conditions['only']);
             } else {
                 $sortMiddles[$middleware] = $conditions;
@@ -91,7 +91,7 @@ abstract class AbstractController
         unset($middleware);
         $return = [];
         foreach ($sortMiddles as $sortMiddle => $conditions) {
-            if (in_array($method, $conditions['expect'], true)) {
+            if (in_array($method, $conditions['except'], true)) {
                 continue;
             }
             if (! empty($conditions['only']) && ! in_array($method, $conditions['only'], true)) {

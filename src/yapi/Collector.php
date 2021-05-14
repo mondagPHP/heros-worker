@@ -47,7 +47,7 @@ class Collector
     {
         $files = $this->getAllBeansFiles($dir);
         foreach ($files ?? [] as $file) {
-            require $file;
+            require_once $file;
         }
         $reader = new AnnotationReader();
         foreach (get_declared_classes() ?? [] as $class) {
@@ -90,6 +90,7 @@ class Collector
     /**
      * @param ReflectionClass $refClass
      * @param AnnotationReader $reader
+     * @throws \ReflectionException
      */
     private function parseMethod(ReflectionClass $refClass, AnnotationReader $reader): void
     {

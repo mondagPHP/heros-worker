@@ -31,20 +31,45 @@ class Json
             }
             /** @var Method $method */
             foreach ($methodMap[$class] ?? [] as $method) {
-                $this->apiMap[$class]['list'][] = [
-                    'status' => 'undone',
+                $json = [
                     'method' => $method->getMethod(),
                     'title' => $method->getMsg(),
                     'path' => $method->getUri(),
-                    'project_id' => 924,
                     'req_params' => $method->getUriParamsJson(),
-                    'req_query' => $method->getQueryParamsJson(),
                 ];
+                $this->apiMap[$class]['list'][] = array_merge($json, $this->buildParams($method));
             }
         }
         sort($this->apiMap);
         $fileName = $this->path . '/yapi.json';
         file_put_contents($fileName, StringUtils::jsonEncode($this->apiMap));
-        echo $fileName . PHP_EOL;
+        echo 'json文件位置：' . $fileName . PHP_EOL;
+    }
+
+    /**
+     * @param Method $method
+     * @return array
+     */
+    private function buildParams(Method $method): array
+    {
+        $json = [];
+        switch ($method->getMethod()) {
+            case 'GET':
+            case 'DELETE':
+                $json = [
+                    'req_query' => $method->getQueryParamsJson(),
+                ];
+                break;
+            case 'POST':
+            case 'PUT':
+                $json = [
+                    'req_headers' => [['name' => 'name', 'value' => 'application/x-www-form-urlencoded']],
+                    'req_body_form' => $method->getQueryParamsJson(),
+                    'req_body_type' => 'form',
+                ];
+                break;
+            default:
+        }
+        return $json;
     }
 }

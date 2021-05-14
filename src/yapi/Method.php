@@ -83,6 +83,7 @@ class Method
         foreach ($this->queryParams ?? [] as $param) {
             $return[] = [
                 'name' => $param,
+                'type' => 'text',
             ];
         }
         return $return;
@@ -113,6 +114,7 @@ class Method
         foreach ($this->uriParams ?? [] as $param) {
             $return[] = [
                 'name' => $param,
+                'type' => 'text',
             ];
         }
         return $return;
@@ -156,6 +158,10 @@ class Method
                 //跳过route参数
                 continue;
             }
+            if ($parameter->getClass() === null) {
+                $this->queryParams[] = $parameter->getName();
+                continue;
+            }
             if ($parameter->getClass() !== null && stripos($parameter->getClass(), RequestVoInterface::class) !== false) {
                 $instance = new \ReflectionClass($parameter->getClass()->getName());
                 if ($instance->newInstanceArgs([]) instanceof RequestVoInterface) {
@@ -165,7 +171,6 @@ class Method
                     continue;
                 }
             }
-            $this->queryParams[] = $parameter->getName();
         }
         $this->uriParams = $uriParams;
     }

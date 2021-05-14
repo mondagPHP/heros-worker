@@ -111,7 +111,9 @@ class HeroTemplate implements IView
      */
     public static function render($template, $vars)
     {
-        return static::display($template, $vars);
+         $html = static::display($template, $vars);
+         static::$_vars = [];
+         return $html;
     }
 
     /**

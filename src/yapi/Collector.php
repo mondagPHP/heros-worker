@@ -13,9 +13,9 @@ class Collector
 {
     protected $scanPath;
 
-    private $controllerMap;
+    private $controllerMap = [];
 
-    private $methodMap;
+    private $methodMap = [];
 
     /**
      * Collector constructor.
@@ -32,7 +32,7 @@ class Collector
      */
     public function collector(): array
     {
-        foreach ($this->scanPath ?? [] as $scanDir => $scanRootNamespace) {
+        foreach ($this->scanPath ?: [] as $scanDir => $scanRootNamespace) {
             $this->scanController($scanDir, $scanRootNamespace);
         }
         return [$this->controllerMap, $this->methodMap];

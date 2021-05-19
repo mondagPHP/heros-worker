@@ -48,8 +48,7 @@ class Yapi
     protected function setScanPath(string $module): void
     {
         if (! isset($this->config['scan_path'][$module]) && strtoupper($module) !== 'ALL') {
-            $this->scanPath = [];
-            return;
+            throw new YapiException('请先在app/config/yapi.php文件配置 ："' . $module . '" 模块映射信息');
         }
         if (strtoupper($module) === 'ALL') {
             foreach ($this->config['scan_path'] ?? [] as $path) {

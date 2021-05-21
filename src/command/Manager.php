@@ -19,6 +19,11 @@ class Manager
 {
     private static $commands = [];
 
+    public function __construct()
+    {
+        (new BuildInCommand($this))->build();
+    }
+
     /**
      * 执行command命令.
      * @param  CommandInterface|string $command

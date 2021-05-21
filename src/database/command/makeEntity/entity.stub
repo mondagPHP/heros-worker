@@ -1,0 +1,17 @@
+<?php
+
+namespace {{namespace}};
+
+use framework\database\HeroModel;
+
+/**
+ * Class {{class}}
+ */
+class {{class}} extends HeroModel
+{
+    public $incrementing = true;
+
+    protected $table = '';
+
+    protected $fillable = [];
+}

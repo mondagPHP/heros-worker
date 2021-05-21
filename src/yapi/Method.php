@@ -165,8 +165,9 @@ class Method
             if ($parameter->getClass() !== null && stripos($parameter->getClass(), RequestVoInterface::class) !== false) {
                 $instance = new \ReflectionClass($parameter->getClass()->getName());
                 if ($instance->newInstanceArgs([]) instanceof RequestVoInterface) {
-                    foreach ($instance->getProperties() ?? [] as $property) {
-                        $this->queryParams[] = $property->getName();
+                    $properties = $this->getProperties($instance);
+                    foreach ($properties ?? [] as $property) {
+                        $this->queryParams[] = $property;
                     }
                     continue;
                 }
@@ -196,5 +197,21 @@ class Method
             }
         }
         return $variables;
+    }
+
+    /**
+     * @param \ReflectionClass $reflectionClass
+     * @return array
+     */
+    private function getProperties(\ReflectionClass $reflectionClass): array
+    {
+        $params = [];
+        foreach ($reflectionClass->getProperties() ?? [] as $property) {
+            $params[] = $property->getName();
+        }
+        if ($reflectionClass->getParentClass()) {
+            $params = array_merge($params, $this->getProperties($reflectionClass->getParentClass()));
+        }
+        return $params;
     }
 }

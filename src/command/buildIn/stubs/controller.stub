@@ -1,0 +1,29 @@
+<?php
+namespace {{namespace}};
+
+use framework\util\Result;
+use framework\core\AbstractController;
+use framework\annotations\RequestMapping;
+use framework\annotations\Controller;
+
+/**
+ * Class {{className}}
+ * @package {{namespace}}
+ * @Controller(msg="")
+ */
+class {{className}} extends AbstractController
+{
+    public function _initialize()
+    {
+        //doSomething init
+    }
+
+    /**
+     * @return Result
+     * @RequestMapping(value="/{{fullClass}}/test", method={"get"}, msg="test")
+     */
+    public function test(): Result
+    {
+        return Result::ok();
+    }
+}

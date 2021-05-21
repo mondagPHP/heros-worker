@@ -53,6 +53,11 @@ abstract class AbstractCommand implements CommandInterface
         return $this->name;
     }
 
+    public function description(): string
+    {
+        return $this->description;
+    }
+
     public function run(Input $input = null): void
     {
         throw new CommandException('command : the run method is not implemented');

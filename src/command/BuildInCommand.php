@@ -7,6 +7,13 @@
  */
 namespace framework\command;
 
+use framework\command\buildIn\ListCommand;
+use framework\command\buildIn\MakeAspectCommand;
+use framework\command\buildIn\MakeCommandCommand;
+use framework\command\buildIn\MakeControllerCommand;
+use framework\command\buildIn\MakeDaoCommand;
+use framework\command\buildIn\MakeMiddlewareCommand;
+use framework\command\buildIn\MakeServiceCommand;
 use framework\database\command\MakeEntityCommand;
 use framework\yapi\command\YapiCommand;
 
@@ -17,7 +24,14 @@ use framework\yapi\command\YapiCommand;
 class BuildInCommand
 {
     private $commands = [
+        ListCommand::class,
         MakeEntityCommand::class,
+        MakeCommandCommand::class,
+        MakeControllerCommand::class,
+        MakeServiceCommand::class,
+        MakeDaoCommand::class,
+        MakeAspectCommand::class,
+        MakeMiddlewareCommand::class,
         YapiCommand::class
     ];
 

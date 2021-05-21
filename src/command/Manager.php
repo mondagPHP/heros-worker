@@ -44,6 +44,7 @@ class Manager
 
     /**
      * @param $command
+     * @return bool
      */
     public static function hasCommand($command): bool
     {
@@ -52,6 +53,7 @@ class Manager
 
     /**
      * 扫描command配置，加载所有commands.
+     * @param array $scanCommands
      */
     public function scans(array $scanCommands): void
     {
@@ -95,6 +97,15 @@ class Manager
     }
 
     /**
+     * @return array
+     */
+    public static function getCommands(): array
+    {
+        return self::$commands;
+    }
+
+    /**
+     * @param CommandInterface $command
      * @return $this
      */
     public function withAddCommand(CommandInterface $command): self

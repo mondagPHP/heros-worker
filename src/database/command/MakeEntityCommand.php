@@ -10,6 +10,7 @@ namespace framework\database\command;
 use framework\command\AbstractCommand;
 use framework\command\exception\CommandException;
 use framework\command\Input;
+use framework\command\MakeTraits;
 use framework\database\command\makeEntity\ClassVisitor;
 use framework\database\command\makeEntity\Field;
 use framework\database\HeroDB;
@@ -23,6 +24,8 @@ use PhpParser\PrettyPrinter\Standard;
  */
 class MakeEntityCommand extends AbstractCommand
 {
+    use MakeTraits;
+
     //command 名称
     protected $name = 'make:entity';
 
@@ -36,17 +39,7 @@ class MakeEntityCommand extends AbstractCommand
 
     private $table = '';
 
-    private $tableClass = '';
-
     private $tableClassMap = [];
-
-    private $path = '';
-
-    private $namespace = '';
-
-    private $rootPath = '';
-
-    private $filePath = '';
 
     private $pdo = null;
 
@@ -58,7 +51,7 @@ class MakeEntityCommand extends AbstractCommand
     public function run(Input $input = null): void
     {
         echo '正在生成entity文件...' . PHP_EOL;
-        $this->initRootPath();
+        $this->initMakeProperties($input);
         $this->initParams($input);
         $this->generateEntity();
     }
@@ -70,7 +63,7 @@ class MakeEntityCommand extends AbstractCommand
     public function optionDefinition(): array
     {
         return [
-            ['-path', 'require', '以app_path()根目录开始,命名空间与路径对应 eg:app\entity'],
+            ['-path', 'require', '以app_path()根目录开始,命名空间与路径对应 eg:app/entity'],
             ['-connect', '数据库连接, 默认default'],
             ['-table', '关联创建的数据表名,不传默认创建当前连接库下所有的表'],
             ['-class', '需要自定义了类名,不传默认以数据表名称,传此参数旧必须传递-table参数']
@@ -90,9 +83,9 @@ class MakeEntityCommand extends AbstractCommand
         }
         foreach ($tables as $table) {
             $this->table = $table;
-            $this->tableClass = $this->tableClassMap[$this->table] ?? str_replace('_', '', ucwords($table, '_'));
+            $this->className = $this->tableClassMap[$this->table] ?? str_replace('_', '', ucwords($table, '_'));
             $this->create();
-            echo sprintf("完成'%s'文件\n", $this->namespace . '\\' . $this->tableClass);
+            echo sprintf("完成'%s'文件\n", $this->getFullClassName());
         }
     }
 
@@ -101,8 +94,7 @@ class MakeEntityCommand extends AbstractCommand
      */
     private function create(): void
     {
-        $className = $this->namespace . '\\' . $this->tableClass;
-        if (! class_exists($className)) {
+        if (! $this->existClass()) {
             $this->newFileFromStub();
         }
         $fields = [];
@@ -127,12 +119,12 @@ class MakeEntityCommand extends AbstractCommand
         $traverser = new NodeTraverser();
         $prettyPrinter = new Standard();
 
-        $stmts = $parser->parse(file_get_contents($this->getEntityFile()));
+        $stmts = $parser->parse(file_get_contents($this->getFile()));
         $traverser->addVisitor(new ClassVisitor($fields, $this->table));
         $newStmts = $traverser->traverse($stmts);
 
         $newCode = $prettyPrinter->prettyPrintFile($newStmts);
-        file_put_contents($this->getEntityFile(), $newCode);
+        file_put_contents($this->getFile(), $newCode);
     }
 
     /**
@@ -140,21 +132,12 @@ class MakeEntityCommand extends AbstractCommand
      */
     private function newFileFromStub(): void
     {
-        $stubFile = __DIR__ . '/makeEntity/entity.stub';
-        $code = file_get_contents($stubFile);
-        $code = str_replace(['{{namespace}}', '{{class}}'], [$this->namespace, $this->tableClass], $code);
-        $file = $this->getEntityFile();
-        file_put_contents($file, $code);
-    }
-
-    private function getEntityFile(): string
-    {
-        return $this->filePath . '/' . sprintf('%s.php', $this->tableClass);
-    }
-
-    private function initRootPath(): void
-    {
-        $this->rootPath = app_path();
+        $this->newByStub(function () {
+            $stubFile = __DIR__ . '/makeEntity/entity.stub';
+            $code = file_get_contents($stubFile);
+            $code = str_replace(['{{namespace}}', '{{class}}'], [$this->namespace, $this->className], $code);
+            return $code;
+        });
     }
 
     /**
@@ -163,39 +146,13 @@ class MakeEntityCommand extends AbstractCommand
      */
     private function initParams(Input $input): void
     {
-        $this->path = trim($input->getOption('path'), '\\');
-        $this->checkPath();
-        $this->namespace = str_replace('/', '\\', $this->path);
         $connect = $input->getOption('connect');
         if (! empty($connect)) {
             $this->connect = $connect;
         }
         $this->checkConnect();
         $this->table = $input->getOption('table');
-        $this->tableClass = $input->getOption('class');
-        $this->tableClassMap[$this->table] = $this->tableClass;
-    }
-
-    /**
-     * @return bool
-     */
-    private function checkPath(): bool
-    {
-        if (strpos($this->path, 'app/') !== 0) {
-            throw new CommandException('path 参数错误，必须以“app/”开始');
-        }
-        $this->filePath = $this->rootPath . substr($this->path, 3);
-        if (is_dir($this->filePath)) {
-            return true;
-        }
-        try {
-            if (! mkdir($concurrentDirectory = $this->filePath, 0777, true) && ! is_dir($concurrentDirectory)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
-            }
-        } catch (\Exception $e) {
-            throw  new CommandException('can not create dir: ' . $this->filePath);
-        }
-        return true;
+        $this->tableClassMap[$this->table] = $this->className;
     }
 
     /**

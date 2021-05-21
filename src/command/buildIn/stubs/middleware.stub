@@ -1,0 +1,17 @@
+<?php
+namespace {{namespace}};
+
+use framework\http\Request;
+
+/**
+ * Class {{className}}
+ * @package {{namespace}}
+ */
+class {{className}}
+{
+    public function handle(Request $request, array $vars, array $extVars, \Closure $next)
+    {
+        //doSomething
+        return $next($request, $vars, $extVars);
+    }
+}

@@ -117,7 +117,7 @@ class ClassVisitor extends NodeVisitorAbstract
         foreach ($this->newCommentText as $key => $value) {
             $this->newCommentText[$key] = ' ' . $value;
         }
-        $newCommentTxt = sprintf("/**\n%s*/", implode("", $this->newCommentText));
+        $newCommentTxt = sprintf("/**\n%s */", implode("", $this->newCommentText));
         $node->setDocComment(new Doc($newCommentTxt));
     }
 

@@ -61,7 +61,27 @@ class ClassVisitor extends NodeVisitorAbstract
                 $newNode = new Property('fillable');
                 $newNode->setDefault($this->fillable);
                 $newNode->makeProtected();
-                return $newNode->getNode();
+                $newNode->setDocComment(new Doc('/** @var array $fillable */'));
+                $newNode = $newNode->getNode();
+                $usbNode = $newNode->props[0]->default;
+                if ($usbNode instanceof Node\Expr\Array_) {
+                    $usbNode->setAttribute('kind', Node\Expr\Array_::KIND_SHORT);
+                    /** @var Node\Expr\ArrayItem $arrItem */
+                    foreach ($usbNode->items as $arrItem) {
+                        $arrItem->setDocComment(new Doc('//Format each item with a new line'));
+                        break;
+                    }
+                }
+                return $newNode;
+            case $node instanceof Node\Expr\Array_:
+                /** @var Node\Expr\ArrayItem $arrItem */
+                foreach ($node->items as $arrItem) {
+                    if (! $arrItem->getComments()) {
+                        $arrItem->setDocComment(new Doc('//Format each item with a new line'));
+                    }
+                    break;
+                }
+                break;
             case $node instanceof Node\Stmt\PropertyProperty && $node->name->name === 'table':
                 $node->default = new Node\Scalar\String_($this->table, $node->default->getAttributes());
                 break;

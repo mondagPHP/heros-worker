@@ -50,7 +50,6 @@ class MakeEntityCommand extends AbstractCommand
 
     private $pdo = null;
 
-
     /**
      * eg:  php artisan.php test
      * output: test.
@@ -93,7 +92,7 @@ class MakeEntityCommand extends AbstractCommand
             $this->table = $table;
             $this->tableClass = $this->tableClassMap[$this->table] ?? str_replace('_', '', ucwords($table, '_'));
             $this->create();
-            echo sprintf("完成'%s'文件\n", $this->namespace . '\\' .$this->tableClass);
+            echo sprintf("完成'%s'文件\n", $this->namespace . '\\' . $this->tableClass);
         }
     }
 
@@ -116,7 +115,6 @@ class MakeEntityCommand extends AbstractCommand
             throw new CommandException($e->getMessage());
         }
         $this->updateFile($fields);
-
     }
 
     /**
@@ -129,7 +127,7 @@ class MakeEntityCommand extends AbstractCommand
         $traverser = new NodeTraverser();
         $prettyPrinter = new Standard();
 
-        $stmts =  $parser->parse(file_get_contents($this->getEntityFile()));
+        $stmts = $parser->parse(file_get_contents($this->getEntityFile()));
         $traverser->addVisitor(new ClassVisitor($fields, $this->table));
         $newStmts = $traverser->traverse($stmts);
 
@@ -169,7 +167,7 @@ class MakeEntityCommand extends AbstractCommand
         $this->checkPath();
         $this->namespace = str_replace('/', '\\', $this->path);
         $connect = $input->getOption('connect');
-        if (!empty($connect)) {
+        if (! empty($connect)) {
             $this->connect = $connect;
         }
         $this->checkConnect();
@@ -181,24 +179,23 @@ class MakeEntityCommand extends AbstractCommand
     /**
      * @return bool
      */
-    private  function checkPath(): bool
+    private function checkPath(): bool
     {
         if (strpos($this->path, 'app/') !== 0) {
             throw new CommandException('path 参数错误，必须以“app/”开始');
         }
-        $this->filePath = $this->rootPath  . substr($this->path, 3);
+        $this->filePath = $this->rootPath . substr($this->path, 3);
         if (is_dir($this->filePath)) {
             return true;
         }
         try {
-            if (!mkdir($concurrentDirectory = $this->filePath, 0777, true) && !is_dir($concurrentDirectory)) {
+            if (! mkdir($concurrentDirectory = $this->filePath, 0777, true) && ! is_dir($concurrentDirectory)) {
                 throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
         } catch (\Exception $e) {
             throw  new CommandException('can not create dir: ' . $this->filePath);
         }
         return true;
-
     }
 
     /**
@@ -213,5 +210,4 @@ class MakeEntityCommand extends AbstractCommand
         }
         return true;
     }
-
 }

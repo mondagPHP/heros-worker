@@ -63,7 +63,7 @@ class Json
             case 'POST':
             case 'PUT':
                 $json = [
-                    'req_headers' => [['name' => 'name', 'value' => 'application/x-www-form-urlencoded']],
+                    'req_headers' => [['name' => 'Content-Type', 'value' => 'application/x-www-form-urlencoded']],
                     'req_body_form' => $method->getQueryParamsJson(),
                     'req_body_type' => 'form',
                 ];

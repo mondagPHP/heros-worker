@@ -16,6 +16,8 @@ class {{className}} extends AbstractController
     public function _initialize()
     {
         //doSomething init
+        //such as 配置一些局部中间件
+        //$this->middleware()
     }
 
     /**

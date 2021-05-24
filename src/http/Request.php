@@ -5,6 +5,7 @@
  * @contact  mondagroup_php@163.com
  *
  */
+
 namespace framework\http;
 
 use Workerman\Connection\TcpConnection;
@@ -44,6 +45,8 @@ class Request
     private $workerRequest;
     private $ip;
     private $port;
+    /** @var \framework\http\Session $session */
+    private $session;
 
     /**
      * @var TcpConnection $connection
@@ -85,7 +88,7 @@ class Request
         $this->port = $port;
     }
 
-    public static function init(TcpConnection $connection, WorkerRequest $workerRequest): self
+    public static function init(TcpConnection $connection, WorkerRequest $workerRequest, Session $session): self
     {
         $params = $workerRequest->get() + $workerRequest->post();
         $request = new self(
@@ -106,8 +109,18 @@ class Request
         );
         $request->setWorkerRequest($workerRequest);
         $request->setConnection($connection);
+        $request->setSession($session);
         return $request;
     }
+
+    /**
+     * @param \framework\http\Session $session
+     */
+    public function setSession(Session $session): void
+    {
+        $this->session = $session;
+    }
+
 
     /**
      * @return \Workerman\Connection\TcpConnection
@@ -384,7 +397,7 @@ class Request
     public function file(string $name)
     {
         $files = $this->getFiles();
-        if (null === $files || ! isset($files[$name])) {
+        if (null === $files || !isset($files[$name])) {
             return null;
         }
         $file = $files[$name];
@@ -428,8 +441,8 @@ class Request
         return $all;
     }
 
-    public function session()
+    public function session(): Session
     {
-        return $this->workerRequest->session();
+        return $this->session;
     }
 }

@@ -5,6 +5,7 @@
  * @contact  mondagroup_php@163.com
  *
  */
+
 namespace framework\server;
 
 use ErrorException;
@@ -125,13 +126,12 @@ class HttpServer
     {
         //尝试更新
         static::tryFreshWorker();
-        //request
-        $httpRequest = HttpRequest::init($connection, $request);
+        //session
+        $httpSession = Session::init($request->session());
+        $httpRequest = HttpRequest::init($connection, $request, $httpSession);
         static::$_request = $httpRequest;
         //response
         $httpResponse = HttpResponse::init(new Response(200));
-        //session
-        $httpSession = Session::init($request->session());
         try {
             $routeInfo = $this->dispatcher->dispatch($httpRequest->getMethod(), $httpRequest->getPath());
             switch ($routeInfo[0]) {

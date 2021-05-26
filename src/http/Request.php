@@ -5,7 +5,6 @@
  * @contact  mondagroup_php@163.com
  *
  */
-
 namespace framework\http;
 
 use Workerman\Connection\TcpConnection;
@@ -41,11 +40,12 @@ class Request
     //获取请求sessionId
     private $sessionId;
     //原生request对象
-    /** @var \Workerman\Protocols\Http\Request $workerRequest */
+    /** @var WorkerRequest $workerRequest */
     private $workerRequest;
     private $ip;
     private $port;
-    /** @var \framework\http\Session $session */
+
+    /** @var Session $session */
     private $session;
 
     /**
@@ -114,16 +114,15 @@ class Request
     }
 
     /**
-     * @param \framework\http\Session $session
+     * @param Session $session
      */
     public function setSession(Session $session): void
     {
         $this->session = $session;
     }
 
-
     /**
-     * @return \Workerman\Connection\TcpConnection
+     * @return TcpConnection
      */
     public function getConnection(): TcpConnection
     {
@@ -131,7 +130,7 @@ class Request
     }
 
     /**
-     * @param \Workerman\Connection\TcpConnection $connection
+     * @param TcpConnection $connection
      */
     public function setConnection(TcpConnection $connection): void
     {
@@ -348,7 +347,7 @@ class Request
 
     public function getParameter(string $name, $default = null)
     {
-        return isset($this->params[$name]) ? $this->params[$name] : $default;
+        return $this->params[$name] ?? $default;
     }
 
     /**
@@ -392,12 +391,12 @@ class Request
     }
 
     /**
-     * @return null|\framework\http\UploadFile
+     * @return null|UploadFile
      */
     public function file(string $name)
     {
         $files = $this->getFiles();
-        if (null === $files || !isset($files[$name])) {
+        if (null === $files || ! isset($files[$name])) {
             return null;
         }
         $file = $files[$name];

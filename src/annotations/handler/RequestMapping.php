@@ -5,8 +5,6 @@
  * @contact  mondagroup_php@163.com
  *
  */
-use Doctrine\Common\Annotations\AnnotationReader;
-use framework\annotations\Controller;
 use framework\annotations\RequestMapping;
 use framework\boot\MiddleWareCollector;
 use framework\boot\RouterCollector;

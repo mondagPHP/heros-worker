@@ -5,7 +5,6 @@
  * @contact  mondagroup_php@163.com
  *
  */
-
 namespace framework\server;
 
 use ErrorException;
@@ -127,7 +126,7 @@ class HttpServer
         //尝试更新
         static::tryFreshWorker();
         //session
-        $httpSession = Session::init($request->session());
+        $httpSession = Session::init($request);
         $httpRequest = HttpRequest::init($connection, $request, $httpSession);
         static::$_request = $httpRequest;
         //response

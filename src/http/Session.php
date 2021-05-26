@@ -7,98 +7,46 @@
  */
 namespace framework\http;
 
-use Workerman\Protocols\Http\Session as WorkerSession;
+use Workerman\Protocols\Http\Request;
 
 /**
  * Class Session.
+ * @method array all()
+ * @method mixed get(string $name, $default = null)
+ * @method void set(string $name, $value)
+ * @method void put(string $name, $value = null)
+ * @method void pull(string $name, $value = null)
+ * @method void forget(string $name)
+ * @method void delete(string $name)
+ * @method bool exists(string $name)
+ * @method bool has(string $name)
+ * @method void clear(string $name)
+ * @method void flush()
  */
 class Session
 {
-    private $session;
+    protected $request;
 
-    public function __construct(WorkerSession $session)
+    public function __construct(Request $request)
     {
-        $this->session = $session;
+        $this->request = $request;
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     */
+    public function __call($name, $arguments)
+    {
+        return $this->request->session()->{$name}(...$arguments);
     }
 
     /**
      * @return static
      */
-    public static function init(WorkerSession $session): self
+    public static function init(Request $request): self
     {
-        return new self($session);
-    }
-
-    public function all(): array
-    {
-        return $this->session->all();
-    }
-
-    /**
-     * @param $name
-     * @param  null       $default
-     * @return null|mixed
-     */
-    public function get($name, $default = null)
-    {
-        return $this->session->get($name, $default);
-    }
-
-    /**
-     * @param $name
-     * @param $value
-     */
-    public function set($name, $value)
-    {
-        $this->session->set($name, $value);
-    }
-
-    /**
-     * @param $key
-     * @param null $value
-     */
-    public function put($key, $value = null)
-    {
-        $this->session->put($key, $value);
-    }
-
-    public function forget($name)
-    {
-        $this->session->forget($name);
-    }
-
-    public function delete($name)
-    {
-        $this->forget($name);
-    }
-
-    public function pull($name, $default = null)
-    {
-        $this->session->pull($name, $default);
-    }
-
-    public function flush()
-    {
-        $this->session->flush();
-    }
-
-    public function clear()
-    {
-        $this->flush();
-    }
-
-    public function has($name): bool
-    {
-        return $this->session->has($name);
-    }
-
-    public function exists($name): bool
-    {
-        return $this->session->exists($name);
-    }
-
-    public function getWorkerSession(): WorkerSession
-    {
-        return $this->session;
+        return new self($request);
     }
 }

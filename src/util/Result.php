@@ -5,7 +5,6 @@
  * @contact  mondagroup_php@163.com
  *
  */
-
 namespace framework\util;
 
 use framework\string\StringUtils;
@@ -76,7 +75,7 @@ class Result
         } else {
             $array['data'] = $this->data ?? [];
         }
-        if (!empty($this->extra)) {
+        if (! empty($this->extra)) {
             $array['extra'] = $this->extra;
         }
         if (empty($array['data'])) {

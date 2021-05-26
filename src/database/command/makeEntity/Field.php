@@ -72,9 +72,9 @@ class Field
             case 'datetime':
                 if (in_array($this->name(), ['created_at', 'updated_at'])) {
                     return 'Carbon';
-                } else {
-                    return 'string';
                 }
+                    return 'string';
+                
             case 'int':
             case 'tinyint':
             case 'integer':
@@ -96,6 +96,4 @@ class Field
         $this->comment = $fieldInfos['Comment'];
         $this->isAutoIncrement = $fieldInfos['Extra'] === 'auto_increment';
     }
-
-
 }

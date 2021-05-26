@@ -56,5 +56,4 @@ class MakeCommandCommand extends AbstractCommand
             ['-desc', 'command描述'],
         ];
     }
-
 }

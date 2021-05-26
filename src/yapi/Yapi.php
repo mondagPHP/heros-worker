@@ -14,17 +14,17 @@ class Yapi
     private $controllerMap;
     private $methodMap;
 
+    private function __construct(string $module)
+    {
+        $this->config = \config('yapi');
+        $this->setScanPath($module);
+    }
+
     public static function run(string $module): void
     {
         $yapi = new self($module);
         $yapi->collectMap();
         $yapi->createJson();
-    }
-
-    private function __construct(string $module)
-    {
-        $this->config = \config('yapi');
-        $this->setScanPath($module);
     }
 
     /**

@@ -31,4 +31,3 @@ class ListCommand extends AbstractCommand
         echo implode('', $lists);
     }
 }
-

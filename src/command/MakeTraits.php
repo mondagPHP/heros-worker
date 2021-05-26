@@ -128,5 +128,4 @@ trait MakeTraits
     {
         return $this->namespace . '\\' . $this->className;
     }
-
 }

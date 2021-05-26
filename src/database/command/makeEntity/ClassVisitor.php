@@ -7,13 +7,13 @@
  */
 namespace framework\database\command\makeEntity;
 
+use Carbon\Carbon;
 use PhpParser\Builder\Property;
 use PhpParser\Builder\Use_;
 use PhpParser\Comment\Doc;
 use PhpParser\Node;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
-use Carbon\Carbon;
 
 /**
  * Class ClassVisitor
@@ -21,7 +21,6 @@ use Carbon\Carbon;
  */
 class ClassVisitor extends NodeVisitorAbstract
 {
-
     /** @var Field $primaryKeyField */
     private $primaryKeyField;
 
@@ -33,7 +32,8 @@ class ClassVisitor extends NodeVisitorAbstract
 
     private $fillable = [];
 
-    public function __construct(array $fields, string $table) {
+    public function __construct(array $fields, string $table)
+    {
         $this->fields = $fields;
         $this->table = $table;
         $this->init();
@@ -52,7 +52,7 @@ class ClassVisitor extends NodeVisitorAbstract
                 break;
             case $node instanceof Node\Stmt\Property && $node->props[0]->name->name === 'incrementing':
                 $propertyProperty = $node->props[0];
-                $propertyProperty->default = new Node\Expr\ConstFetch(new Node\Name(["false"], $propertyProperty->getAttributes()), $propertyProperty->default->getAttributes());
+                $propertyProperty->default = new Node\Expr\ConstFetch(new Node\Name(['false'], $propertyProperty->getAttributes()), $propertyProperty->default->getAttributes());
                 if ($this->primaryKeyField && $this->primaryKeyField->isAutoIncrement()) {
                     return NodeTraverser::REMOVE_NODE;
                 }
@@ -137,7 +137,7 @@ class ClassVisitor extends NodeVisitorAbstract
         foreach ($this->newCommentText as $key => $value) {
             $this->newCommentText[$key] = ' ' . $value;
         }
-        $newCommentTxt = sprintf("/**\n%s */", implode("", $this->newCommentText));
+        $newCommentTxt = sprintf("/**\n%s */", implode('', $this->newCommentText));
         $node->setDocComment(new Doc($newCommentTxt));
     }
 

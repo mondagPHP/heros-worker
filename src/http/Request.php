@@ -91,6 +91,7 @@ class Request
     public static function init(TcpConnection $connection, WorkerRequest $workerRequest, Session $session): self
     {
         $params = $workerRequest->get() + $workerRequest->post();
+        $params = self::parseParams($params);
         $request = new self(
             $params,
             $workerRequest->rawBody(),
@@ -443,5 +444,20 @@ class Request
     public function session(): Session
     {
         return $this->session;
+    }
+
+    /**
+     * @param array $params
+     * @return mixed
+     */
+    private static function parseParams(array $params)
+    {
+        $str = $dot = '';
+        foreach ($params ?? [] as $k => $v) {
+            $str .= $dot . $k . '=' . $v;
+            $dot = '&';
+        }
+        parse_str($str, $output);
+        return $output;
     }
 }

@@ -445,19 +445,4 @@ class Request
     {
         return $this->session;
     }
-
-    /**
-     * @param array $params
-     * @return mixed
-     */
-    private static function parseParams(array $params)
-    {
-        $str = $dot = '';
-        foreach ($params ?? [] as $k => $v) {
-            $str .= $dot . $k . '=' . urlencode($v);
-            $dot = '&';
-        }
-        parse_str($str, $output);
-        return $output;
-    }
 }

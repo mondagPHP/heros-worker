@@ -91,7 +91,7 @@ class Request
     public static function init(TcpConnection $connection, WorkerRequest $workerRequest, Session $session): self
     {
         $params = $workerRequest->get() + $workerRequest->post();
-        $params = self::parseParams($params);
+        //$params = self::parseParams($params);
         $request = new self(
             $params,
             $workerRequest->rawBody(),

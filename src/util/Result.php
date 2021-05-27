@@ -72,14 +72,12 @@ class Result
                 'total' => $this->pager->total,
                 'totalPage' => 0 != $this->pager->pageSize ? ceil($this->pager->total / $this->pager->pageSize) : 0
             ];
-        } else {
-            $array['data'] = $this->data ?? [];
+        }
+        if (isset($this->data) && $this->isUsePage !== 1) {
+            $array['data'] = $this->data;
         }
         if (! empty($this->extra)) {
             $array['extra'] = $this->extra;
-        }
-        if (empty($array['data'])) {
-            unset($array['data']);
         }
         return StringUtils::jsonEncode($array);
     }

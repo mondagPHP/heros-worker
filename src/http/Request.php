@@ -401,7 +401,7 @@ class Request
             return null;
         }
         $file = $files[$name];
-        return new UploadFile($file['tmp_name'], $file['name'], $file['type'], $file['error']);
+        return new UploadFile($file['tmp_name'], $file['name'], $file['type'], $file['error'], $file['size']);
     }
 
     /**

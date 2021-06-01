@@ -29,6 +29,8 @@ class UploadFile extends \SplFileInfo
      * @var int
      */
     protected $uploadErrorCode;
+    
+    private $size;
 
     /**
      * UploadFile constructor.
@@ -37,11 +39,12 @@ class UploadFile extends \SplFileInfo
      * @param mixed $uploadMimeType
      * @param mixed $uploadErrorCode
      */
-    public function __construct($fileName, $uploadName, $uploadMimeType, $uploadErrorCode)
+    public function __construct($fileName, $uploadName, $uploadMimeType, $uploadErrorCode,$size)
     {
         $this->uploadName = $uploadName;
         $this->uploadMimeType = $uploadMimeType;
         $this->uploadErrorCode = $uploadErrorCode;
+        $this->size = $size;
         parent::__construct($fileName);
     }
 
@@ -92,5 +95,14 @@ class UploadFile extends \SplFileInfo
         }
         @chmod($destination, 0666 & ~umask());
         return new \SplFileInfo($destination);
+    }
+    
+    
+    /**
+     * @return mixed
+     */
+    public function getSize()
+    {
+        return $this->size;
     }
 }

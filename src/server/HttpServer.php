@@ -8,7 +8,6 @@
 
 namespace framework\server;
 
-use Carbon\Carbon;
 use ErrorException;
 use FastRoute\Dispatcher;
 use framework\App;
@@ -142,22 +141,6 @@ class HttpServer
                         //禁止访问.开头的隐藏文件
                         if (false !== strpos($path, '/.')) {
                             self::send($connection, $httpResponse->body('<h1>403 forbidden</h1>')->status(403)->end(), $request);
-                            return;
-                        }
-                        if (isset($this->config['public_expires_time']) && isset($this->config['enable_expire']) && $this->config['enable_expire']) {
-                            $fileMTime = filemtime($path);
-                            $modifiedTime = $httpRequest->getHeaderByName('if-modified-since', null);
-                            $modifiedFileTime = $httpRequest->getHeaderByName('if-none-match', 0);
-                            $cacheTime = (int)$this->config['public_expires_time'];
-                            if ($modifiedTime !== null && ($modifiedFileTime == $fileMTime) && Carbon::parse($modifiedTime)->addSeconds($cacheTime)->gt(Carbon::now())) {
-                                $connection->send(new Response(304));
-                                return;
-                            }
-                            self::send($connection, $httpResponse->status(200)
-                                        ->header('Etag', $fileMTime)
-                                        ->header('Last-Modified', Carbon::now()->toRfc822String())
-                                        ->header('Expires', Carbon::now()->addSeconds($cacheTime)->toRfc822String())
-                                        ->file($path)->end(), $request);
                             return;
                         }
                         self::send($connection, $httpResponse->status(200)->file($path)->end(), $request);

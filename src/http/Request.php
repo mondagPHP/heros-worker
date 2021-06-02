@@ -353,6 +353,7 @@ class Request
 
     /**
      * 设置参数.
+     * @param string $name
      * @param $value
      */
     public function setParameter(string $name, $value): void
@@ -392,7 +393,8 @@ class Request
     }
 
     /**
-     * @return null|UploadFile
+     * @param string $name
+     * @return mixed
      */
     public function file(string $name)
     {
@@ -405,9 +407,10 @@ class Request
     }
 
     /**
+     * @param array $keys
      * @return array
      */
-    public function only(array $keys = [])
+    public function only(array $keys = []): array
     {
         $all = $this->getParams();
         $result = [];

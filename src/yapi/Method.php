@@ -216,6 +216,6 @@ class Method
         if ($reflectionClass->getParentClass()) {
             $params = array_merge($params, $this->getProperties($reflectionClass->getParentClass()));
         }
-        return $params;
+        return array_unique($params);
     }
 }

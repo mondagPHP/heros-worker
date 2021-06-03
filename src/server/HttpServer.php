@@ -5,6 +5,7 @@
  * @contact  mondagroup_php@163.com
  *
  */
+
 namespace framework\server;
 
 use ErrorException;
@@ -131,6 +132,13 @@ class HttpServer
         static::$_request = $httpRequest;
         //response
         $httpResponse = HttpResponse::init(new Response(200));
+
+        //遇到option
+        $cors = config('cors', null);
+        if (!empty($cors) && isset($cors['enable']) && $cors['enable'] && $request->method() == 'OPTIONS') {
+            self::send($connection, $httpResponse->body('')->end(), $request);
+            return;
+        }
         try {
             $routeInfo = $this->dispatcher->dispatch($httpRequest->getMethod(), $httpRequest->getPath());
             switch ($routeInfo[0]) {
@@ -179,8 +187,14 @@ class HttpServer
      * @param $response
      * @param \Workerman\Protocols\Http\Request $request
      */
-    protected static function send(TcpConnection $connection, $response, Request $request)
+    protected static function send(TcpConnection $connection, Response $response, Request $request)
     {
+        $cors = config('cors', null);
+        if (!empty($cors) && isset($cors['enable']) && $cors['enable'] && is_array($cors)) {
+            foreach ($cors ?? [] as $key => $value) {
+                $response->header($key, $value);
+            }
+        }
         $keepAlive = $request->header('connection');
         if ((null === $keepAlive && '1.1' === $request->protocolVersion())
             || 'keep-alive' === $keepAlive || 'Keep-Alive' === $keepAlive

@@ -18,7 +18,7 @@ class CommonTools
      * @param  int   $num [发几个]，默认为10个
      * @return array [生成红包金额数组]
      */
-    public function getRedGift($total, $num = 10)
+    public function getRedGift($total, $num = 10): array
     {
         $min = 0.01;
         $temp = [];

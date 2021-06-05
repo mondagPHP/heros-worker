@@ -225,14 +225,15 @@ if (! function_exists('passStart')) {
         $len = $len - mb_strlen($top, $charset);
         $len = $len - mb_strlen($bottom, $charset);
         $newStr = $top;
-        for ($i = 0; $i < $len; ++$i) {
-            $newStr .= $dot;
-        }
+        $newStr .= str_repeat($dot, $len);
         $newStr .= $bottom;
         return $newStr;
     }
 }
 
+/**
+ *  加载容器的对象
+ */
 if (! function_exists('load')) {
     function load(string $clazz)
     {
@@ -240,6 +241,9 @@ if (! function_exists('load')) {
     }
 }
 
+/**
+ * 当前请求对象
+ */
 if (! function_exists('request')) {
     function request()
     {

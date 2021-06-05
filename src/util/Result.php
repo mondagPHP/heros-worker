@@ -180,7 +180,6 @@ class Result
     public function code($code): self
     {
         $this->code = $code;
-
         return $this;
     }
 
@@ -193,7 +192,6 @@ class Result
     public function extra($extra): self
     {
         $this->extra = $extra;
-
         return $this;
     }
 }

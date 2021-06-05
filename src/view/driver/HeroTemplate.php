@@ -108,6 +108,7 @@ class HeroTemplate implements IView
      * @param $template
      * @param $vars
      * @return false|string
+     * @throws \framework\exception\HeroException
      */
     public static function render($template, $vars)
     {
@@ -169,8 +170,10 @@ class HeroTemplate implements IView
     }
 
     /**
+     * @param string $tempFile
      * @param $vars
      * @return false|string
+     * @throws \framework\exception\HeroException
      */
     private static function display(string $tempFile, $vars)
     {
@@ -189,6 +192,7 @@ class HeroTemplate implements IView
 
     /**
      * 获取页面执行后的代码
+     * @param string $compileTemplate
      * @param $vars
      * @return false|string
      */

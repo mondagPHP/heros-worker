@@ -32,10 +32,13 @@ class ClassVisitor extends NodeVisitorAbstract
 
     private $fillable = [];
 
-    public function __construct(array $fields, string $table)
+    private $connect;
+
+    public function __construct(array $fields, string $table, string $connect = 'default')
     {
         $this->fields = $fields;
         $this->table = $table;
+        $this->connect = $connect;
         $this->init();
     }
 
@@ -56,6 +59,13 @@ class ClassVisitor extends NodeVisitorAbstract
                 if ($this->primaryKeyField && $this->primaryKeyField->isAutoIncrement()) {
                     return NodeTraverser::REMOVE_NODE;
                 }
+                break;
+            case $node instanceof Node\Stmt\Property && $node->props[0]->name->name === 'connection':
+                $propertyProperty = $node->props[0];
+                if ($this->connect === 'default') {
+                    return NodeTraverser::REMOVE_NODE;
+                }
+                $propertyProperty->default = new Node\Scalar\String_($this->connect, $propertyProperty->default->getAttributes());
                 break;
             case $node instanceof Node\Stmt\Property && $node->props[0]->name->name === 'fillable':
                 $newNode = new Property('fillable');

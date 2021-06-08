@@ -83,10 +83,19 @@ class MakeEntityCommand extends AbstractCommand
         }
         foreach ($tables as $table) {
             $this->table = $table;
-            $this->className = $this->tableClassMap[$this->table] ?? str_replace('_', '', ucwords($table, '_'));
+            $this->reSetClassName();
             $this->create();
             echo sprintf("完成'%s'文件\n", $this->getFullClassName());
         }
+    }
+
+    /**
+     * 重置className
+     */
+    private function reSetClassName(): void
+    {
+        $className = $this->tableClassMap[$this->table] ?? $this->className;
+        $this->className = $className ?: str_replace('_', '', ucwords($this->table, '_'));
     }
 
     /**
@@ -120,7 +129,7 @@ class MakeEntityCommand extends AbstractCommand
         $prettyPrinter = new Standard();
 
         $stmts = $parser->parse(file_get_contents($this->getFile()));
-        $traverser->addVisitor(new ClassVisitor($fields, $this->table));
+        $traverser->addVisitor(new ClassVisitor($fields, $this->table, $this->connect));
         $newStmts = $traverser->traverse($stmts);
 
         $newCode = $prettyPrinter->prettyPrintFile($newStmts);

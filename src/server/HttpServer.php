@@ -89,6 +89,7 @@ class HttpServer
      */
     public function onWorkerStart(Worker $worker)
     {
+        //注册错误
         set_error_handler(function ($level, $message, $file = '', $line = 0, $context = []) {
             if (error_reporting() & $level) {
                 throw new ErrorException($message, 0, $level, $file, $line);
@@ -99,6 +100,7 @@ class HttpServer
                 sleep(1);
             }
         }, time());
+
         $bootStrapFiles = config('bootstrap');
         foreach ($bootStrapFiles as $className) {
             // @var Bootstrap $className
@@ -113,6 +115,7 @@ class HttpServer
                 $listen->listen();
             }
         }
+
         App::init();
         $this->dispatcher = container()->get(RouterCollector::class)->getDispatcher();
         //闭包
@@ -125,12 +128,20 @@ class HttpServer
     {
         //尝试更新
         static::tryFreshWorker();
-        //session
+
+        //注册框架的http
         $httpSession = Session::init($request);
         $httpRequest = HttpRequest::init($connection, $request, $httpSession);
-        static::$_request = $httpRequest;
-        //response
         $httpResponse = HttpResponse::init(new Response(200));
+        static::$_request = $httpRequest;
+
+        //跨域返回空
+        $corsConfig = config('cors') ?? [];
+        if (isset($corsConfig['enable']) && $corsConfig['enable'] && strtoupper($request->method()) === 'OPTIONS') {
+            self::send($connection, $httpResponse->body('')->end(), $request);
+            return;
+        }
+
         try {
             $routeInfo = $this->dispatcher->dispatch($httpRequest->getMethod(), $httpRequest->getPath());
             switch ($routeInfo[0]) {
@@ -155,18 +166,21 @@ class HttpServer
                     $vars = array_merge($httpRequest->getParams(), $routeInfo[2]);
                     $extVars = [$httpRequest, $httpResponse, $httpSession, $connection];
                     $responseObj = $handler($httpRequest, $vars, $extVars);
+                    //框架的httpResponse 直接end
                     if ($responseObj instanceof HttpResponse) {
                         self::send($connection, $responseObj->end(), $request);
+                    //workerman response
                     } elseif ($responseObj instanceof Response) {
                         self::send($connection, $responseObj, $request);
                     } else {
                         self::send($connection, $httpResponse->body($responseObj)->end(), $request);
                     }
+                    return;
             }
         } catch (Throwable $exception) {
             self::send($connection, $this->exceptionResponse($exception, $httpRequest, $httpResponse)->end(), $request);
+            return;
         }
-        return null;
     }
 
     public static function request()
@@ -176,19 +190,28 @@ class HttpServer
 
     /**
      * @param \Workerman\Connection\TcpConnection $connection
-     * @param $response
+     * @param \Workerman\Protocols\Http\Response $response
      * @param \Workerman\Protocols\Http\Request $request
      */
-    protected static function send(TcpConnection $connection, $response, Request $request)
+    protected static function send(TcpConnection $connection, Response $response, Request $request)
     {
+        //跨域
+        $cors = config('cors', null) ?? [];
+        if (isset($cors['enable']) && $cors['enable'] && is_array($cors)) {
+            foreach ($cors ?? [] as $key => $value) {
+                if ($key === 'enable') {
+                    continue;
+                }
+                $response->header($key, $value);
+            }
+        }
         $keepAlive = $request->header('connection');
-        if ((null === $keepAlive && '1.1' === $request->protocolVersion())
-            || 'keep-alive' === $keepAlive || 'Keep-Alive' === $keepAlive
-        ) {
+        if ((null === $keepAlive && '1.1' === $request->protocolVersion()) || 'keep-alive' === $keepAlive || 'Keep-Alive' === $keepAlive) {
             $connection->send($response);
             return;
         }
         $connection->close($response);
+        return;
     }
 
     protected static function tryFreshWorker(): void
@@ -212,7 +235,6 @@ class HttpServer
             $exceptionHandler->report($e);
             return $exceptionHandler->render($request, $e);
         } catch (Throwable $e) {
-            Log::error((string)$e);
             return $response->body((string)$e);
         }
     }

@@ -89,8 +89,8 @@ class Response
 
     /**
      * 返回文件.
-     * @throws \framework\exception\FileNotFoundException
      * @return $this
+     * @throws \framework\exception\FileNotFoundException
      */
     public function file(string $file): self
     {
@@ -102,8 +102,8 @@ class Response
     }
 
     /**
-     * @throws \framework\exception\FileNotFoundException
      * @return $this
+     * @throws \framework\exception\FileNotFoundException
      */
     public function download(string $file, string $downloadName = ''): self
     {
@@ -122,7 +122,11 @@ class Response
         switch (gettype($this->content)) {
             case 'object':
                 $this->header('Content-Type', 'application/json;charset=utf-8');
-                $content = (string)$this->content;
+                if (method_exists($this->content, '__toString')) {
+                    $content = (string)$this->content;
+                } else {
+                    $content = json_encode($this->content);
+                }
                 break;
             case 'array':
                 $this->header('Content-Type', 'application/json;charset=utf-8');
@@ -133,9 +137,9 @@ class Response
                 $content = $this->content;
                 break;
         }
-        $enableGzip = config('server.enable_gzip', false);
-        if ($enableGzip) {
-            $content = gzencode($content);
+        //框架发现没有处理头
+        if ($this->workerResponse->getHeader('Content-Type') === null) {
+            $this->header('Content-Type', 'text/html;charset=utf-8');
         }
         $this->workerResponse->withBody($content);
         return $this->workerResponse;

@@ -17,7 +17,6 @@ class ModelTransformUtils
 {
     /**
      * map转换为数据模型.
-     * @throws HeroException
      * @throws \ReflectionException
      */
     public static function map2Model(string $class, array $map = []): object
@@ -37,10 +36,14 @@ class ModelTransformUtils
     /**
      * 模型对象转为map.
      * @param $model
-     * @throws \ReflectionException
+     * @return array
+     * @throws \ReflectionException|\framework\exception\HeroException
      */
     public static function model2Map($model): array
     {
+        if (! is_object($model)) {
+            throw new HeroException('请传入对象');
+        }
         $refClass = new \ReflectionClass($model);
         $properties = $refClass->getProperties();
         $map = [];

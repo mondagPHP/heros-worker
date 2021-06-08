@@ -7,13 +7,10 @@
  */
 namespace framework\http;
 
-use framework\exception\FileException;
-use framework\file\FileUtils;
-
 /**
  * Class UploadFile.
  */
-class UploadFile extends \SplFileInfo
+class UploadFile extends File
 {
     /**
      * @var string
@@ -30,6 +27,8 @@ class UploadFile extends \SplFileInfo
      */
     protected $uploadErrorCode;
 
+    private $size;
+
     /**
      * UploadFile constructor.
      * @param mixed $fileName
@@ -37,11 +36,12 @@ class UploadFile extends \SplFileInfo
      * @param mixed $uploadMimeType
      * @param mixed $uploadErrorCode
      */
-    public function __construct($fileName, $uploadName, $uploadMimeType, $uploadErrorCode)
+    public function __construct($fileName, $uploadName, $uploadMimeType, $uploadErrorCode, $size)
     {
         $this->uploadName = $uploadName;
         $this->uploadMimeType = $uploadMimeType;
         $this->uploadErrorCode = $uploadErrorCode;
+        $this->size = $size;
         parent::__construct($fileName);
     }
 
@@ -74,23 +74,10 @@ class UploadFile extends \SplFileInfo
     }
 
     /**
-     * @param $destination
-     * @return \SplFileInfo
-     * @throws \framework\exception\FileException
+     * @return mixed
      */
-    public function move($destination): \SplFileInfo
+    public function getSize()
     {
-        $path = pathinfo($destination, PATHINFO_DIRNAME);
-        if (! is_dir($path)) {
-            $b = FileUtils::makeFileDirs($path);
-            if (false === $b) {
-                throw new FileException(sprintf('Unable to create the "%s" directory', $path));
-            }
-        }
-        if (! rename($this->getPathname(), $destination)) {
-            throw new FileException(sprintf('Could not move the file "%s" to "%s"', $this->getPathname(), $destination));
-        }
-        @chmod($destination, 0666 & ~umask());
-        return new \SplFileInfo($destination);
+        return $this->size;
     }
 }

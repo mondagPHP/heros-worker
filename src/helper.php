@@ -189,6 +189,22 @@ if (! function_exists('response')) {
     }
 }
 
+/**
+ * 封装Result 返回 response
+ */
+if (! function_exists('packResult')) {
+    function packResult($result): Response
+    {
+        $header = [
+            'Content-Type' => 'application/json;charset=utf-8'
+        ];
+        if ($result instanceof Response) {
+            return $result;
+        }
+        return response((string)$result, 200, $header);
+    }
+}
+
 /*
  * @param $location
  * @param int $status

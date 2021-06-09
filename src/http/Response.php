@@ -58,10 +58,14 @@ class Response
 
     /**
      * @param $url
+     * @param int $code
+     * @return Response
      */
-    public function redirect($url): void
+    public function redirect($url, $code = 302): self
     {
+        $this->status($code);
         $this->workerResponse->header('Location', $url);
+        return $this;
     }
 
     /**

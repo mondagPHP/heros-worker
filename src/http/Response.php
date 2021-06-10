@@ -141,10 +141,6 @@ class Response
                 $content = $this->content;
                 break;
         }
-        //框架发现没有处理头
-        if ($this->workerResponse->getHeader('Content-Type') === null) {
-            $this->header('Content-Type', 'text/html;charset=utf-8');
-        }
         $this->workerResponse->withBody($content);
         return $this->workerResponse;
     }

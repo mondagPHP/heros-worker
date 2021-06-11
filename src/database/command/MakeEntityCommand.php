@@ -94,7 +94,7 @@ class MakeEntityCommand extends AbstractCommand
      */
     private function reSetClassName(): void
     {
-        $className = $this->tableClassMap[$this->table] ?? $this->className;
+        $className = $this->tableClassMap[$this->table] ?? null;
         $this->className = $className ?: str_replace('_', '', ucwords($this->table, '_'));
     }
 

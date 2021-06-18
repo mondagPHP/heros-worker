@@ -35,6 +35,6 @@ return [
             }
         };
         $voClass = new ReflectionClass($instance);
-        container()->set($voClass->getName(), $validFun);
+        container()->set(getLoadVoClosureName($voClass->getName()), $validFun);
     },
 ];

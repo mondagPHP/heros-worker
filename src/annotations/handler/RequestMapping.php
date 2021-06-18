@@ -49,8 +49,8 @@ return [
                         if ($parameterClass->implementsInterface(RequestVoInterface::class)) {
                             $vo = ModelTransformUtils::map2Model($parameterClass->getName(), $request->getParams());
                             //vo验证
-                            if (container()->has($parameterClass->getName())) {
-                                container()->get($parameterClass->getName())($vo, $method->getName());
+                            if (container()->has(getLoadVoClosureName($parameterClass->getName()))) {
+                                container()->get(getLoadVoClosureName($parameterClass->getName()))($vo, $method->getName());
                             }
                             $inputParams[] = $vo;
                         } else {

@@ -5,10 +5,12 @@
  * @contact  mondagroup_php@163.com
  *
  */
+
 namespace framework\server;
 
 use ErrorException;
 use FastRoute\Dispatcher;
+use Workerman\Timer;
 use framework\App;
 use framework\boot\RouterCollector;
 use framework\bootstrap\Log;
@@ -48,6 +50,17 @@ class HttpServer
 
     private static $_request = null;
 
+
+    /**
+     * @var int
+     */
+    protected static $_maxRequestCount = 1000000;
+
+    /**
+     * @var int
+     */
+    protected static $_gracefulStopTimer = null;
+
     /**
      * callback.
      * @var string[]
@@ -68,6 +81,11 @@ class HttpServer
         $this->config = array_merge(['listen' => 'http://127.0.0.1:8080', 'count' => 2, 'context' => [], 'name' => 'monda-php-worker'], $config);
         $this->worker = new Worker($this->config['listen'], $this->config['context']);
         $this->worker->reloadable = true;
+        //默认值
+        $maxRequestCount = (int)config('server.http.max_request', 100000);
+        if ($maxRequestCount > 0) {
+            static::$_maxRequestCount = $maxRequestCount;
+        }
         //设置属性
         $propertyMap = ['name', 'count', 'user', 'group', 'reusePort', 'transport'];
         foreach ($propertyMap as $property) {
@@ -115,7 +133,6 @@ class HttpServer
                 $listen->listen();
             }
         }
-
         App::init();
         $this->dispatcher = container()->get(RouterCollector::class)->getDispatcher();
         //闭包
@@ -126,23 +143,21 @@ class HttpServer
 
     public function onMessage(TcpConnection $connection, Request $request)
     {
-        //尝试更新
-        static::tryFreshWorker();
-
-        //注册框架的http
-        $httpSession = Session::init($request);
-        $httpRequest = HttpRequest::init($connection, $request, $httpSession);
-        $httpResponse = HttpResponse::init(new Response(200));
-        static::$_request = $httpRequest;
-
-        //跨域返回空
-        $corsConfig = config('cors') ?? [];
-        if (isset($corsConfig['enable']) && $corsConfig['enable'] && strtoupper($request->method()) === 'OPTIONS') {
-            self::send($connection, $httpResponse->body('')->end(), $request);
-            return;
+        static $requestCount = 0;
+        if (++$requestCount > static::$_maxRequestCount) {
+            $this->tryToGracefulExit();
         }
-
         try {
+            $httpSession = Session::init($request);
+            $httpRequest = HttpRequest::init($connection, $request, $httpSession);
+            $httpResponse = HttpResponse::init(new Response(200));
+            static::$_request = $httpRequest;
+            //跨域返回空
+            $corsConfig = config('cors') ?? [];
+            if (isset($corsConfig['enable']) && $corsConfig['enable'] && strtoupper($request->method()) === 'OPTIONS') {
+                self::send($connection, $httpResponse->body('')->end(), $request);
+                return;
+            }
             $routeInfo = $this->dispatcher->dispatch($httpRequest->getMethod(), $httpRequest->getPath());
             switch ($routeInfo[0]) {
                 case Dispatcher::NOT_FOUND:
@@ -169,7 +184,7 @@ class HttpServer
                     //框架的httpResponse 直接end
                     if ($responseObj instanceof HttpResponse) {
                         self::send($connection, $responseObj->end(), $request);
-                    //workerman response
+                        //workerman response
                     } elseif ($responseObj instanceof Response) {
                         self::send($connection, $responseObj, $request);
                     } else {
@@ -189,9 +204,9 @@ class HttpServer
     }
 
     /**
-     * @param \Workerman\Connection\TcpConnection $connection
-     * @param \Workerman\Protocols\Http\Response $response
-     * @param \Workerman\Protocols\Http\Request $request
+     * @param TcpConnection $connection
+     * @param Response $response
+     * @param Request $request
      */
     protected static function send(TcpConnection $connection, Response $response, Request $request)
     {
@@ -214,12 +229,17 @@ class HttpServer
         return;
     }
 
-    protected static function tryFreshWorker(): void
+    /**
+     * 定时器关闭，防止马上触发stopALL导致无法访问
+     */
+    protected function tryToGracefulExit(): void
     {
-        static $requestCount;
-        // 业务处理略
-        if (++$requestCount > config('server.max_request', 100000)) {
-            Worker::stopAll();
+        if (static::$_gracefulStopTimer === null) {
+            static::$_gracefulStopTimer = Timer::add(rand(1, 10), function () {
+                if (\count($this->worker->connections) === 0) {
+                    Worker::stopAll();
+                }
+            });
         }
     }
 

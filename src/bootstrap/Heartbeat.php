@@ -25,6 +25,10 @@ class Heartbeat implements Bootstrap
         }
         Timer::add(HEARTBEAT_TIME, function () use ($database) {
             foreach ($database ?? [] as $connectionName => $value) {
+                //默认没有配置也是加入心跳
+                if (isset($value['is_beat']) && ! $value['is_beat']) {
+                    continue;
+                }
                 HeroDB::connection($connectionName)->select('select 1 limit 1');
             }
         });

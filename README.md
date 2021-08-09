@@ -41,7 +41,7 @@ GitHub: [https://github.com/mondagPHP/heros-worker](https://github.com/mondagPHP
 开发手册
 =======
 
-手册地址: [https://herosworkre.wiki](https://herosworkre.wiki)
+手册地址: [https://herosworker.wiki](https://herosworker.wiki)
 
 联系作者
 =====

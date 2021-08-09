@@ -38,6 +38,9 @@
             "src/helper.php"
         ]
     },
+    "suggest": {
+        "ext-event": "For better performance. "
+    },
     "repositories": {
         "packagist": {
             "type": "composer",

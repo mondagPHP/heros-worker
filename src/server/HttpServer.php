@@ -5,12 +5,10 @@
  * @contact  mondagroup_php@163.com
  *
  */
-
 namespace framework\server;
 
 use ErrorException;
 use FastRoute\Dispatcher;
-use Workerman\Timer;
 use framework\App;
 use framework\boot\RouterCollector;
 use framework\bootstrap\Log;
@@ -25,6 +23,7 @@ use Throwable;
 use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Request;
 use Workerman\Protocols\Http\Response;
+use Workerman\Timer;
 use Workerman\Worker;
 
 /**
@@ -32,6 +31,15 @@ use Workerman\Worker;
  */
 class HttpServer
 {
+    /**
+     * @var int
+     */
+    protected static $_maxRequestCount = 1000000;
+
+    /**
+     * @var int
+     */
+    protected static $_gracefulStopTimer = null;
     /**
      * @var Worker
      */
@@ -49,17 +57,6 @@ class HttpServer
     private $config;
 
     private static $_request = null;
-
-
-    /**
-     * @var int
-     */
-    protected static $_maxRequestCount = 1000000;
-
-    /**
-     * @var int
-     */
-    protected static $_gracefulStopTimer = null;
 
     /**
      * callback.
@@ -184,7 +181,7 @@ class HttpServer
                     //框架的httpResponse 直接end
                     if ($responseObj instanceof HttpResponse) {
                         self::send($connection, $responseObj->end(), $request);
-                        //workerman response
+                    //workerman response
                     } elseif ($responseObj instanceof Response) {
                         self::send($connection, $responseObj, $request);
                     } else {
@@ -226,7 +223,6 @@ class HttpServer
             return;
         }
         $connection->close($response);
-        return;
     }
 
     /**

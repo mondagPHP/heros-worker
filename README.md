@@ -3,9 +3,9 @@
 为什么要造这个轮子？
 ====
 
-"PHP是世界上最好的变成语言",这句话虽然是一个梗但是他却代表了php这门语言在编程语言中的江湖地位。那既然是最好的语言，那么免不了就会出现各种各样的框架啦，包括php官方的 zendframe, Laravel,Yii,包括国产的thinkPHP,ci等框架。那既然有这么多框架，为什么我们还要造这个轮子呢。原因有以下几点：
+"PHP是世界上最好的变成语言",这句话虽然是一个梗但是他却代表了php这门语言在编程语言中的江湖地位。那既然是最好的语言，那么免不了就会出现各种各样的框架啦，包括php官方的 zendFrame, Laravel,Yii,包括国产的thinkPHP,ci等框架。那既然有这么多框架，为什么我们还要造这个轮子呢。原因有以下几点：
 
-1. 目前开源的php框架总有这样或者那样的不符合公司项目要求的，使着不顺手，要么就过于重量级，像zendframe,thinkPHP那样太过于臃肿，学习成本太高，要么就是扩展性和或性能达不到要求，使用起来也很不方便。
+1. 目前开源的php框架总有这样或者那样的不符合公司项目要求的，使着不顺手，要么就过于重量级，像Laravel,zendFrame,thinkPHP那样太过于臃肿，学习成本太高，要么就是扩展性和或性能达不到要求，使用起来也很不方便。
 2. 想把自己学习到的php编程知识做下沉淀，那最好的方法莫过于写php开发框架了。
 3. 目前的开源框架都是为了兼容高中低端各种用户而牺牲了框架本身的性能和特性，这显然没有办法完全满足公司的全部需求，而修改像thinkPHP这种大型框架是一件很痛苦的事情，跟自己开发的成本差不多。这估计也是很多大点的公司都有自己的框架的原因了。
 
@@ -22,7 +22,7 @@ Heros-worker是一套web应用开发框架，我们觉得好开发框架应该�
 
 我们始终坚持<strong>一个问题只保留一种你能够实现的最优解决方案即可</strong>，所以我们屏蔽了一些不规范的编码习惯，比如说路由定义几乎所有的框架都支持路由文件或者通过文件路径作为路由，但是在heros-worker中，对不起，你只能使用我们提供的通过注解的方式编写路由，这样的设计是第一是为了使代码可读性更高，调理清晰。二是框架采用了`illuminate/database`优秀的数据库`ORM`,使得代码更健壮。当然这个见仁见智，认同点赞，不喜勿喷。
 
-像其他框架一样，我们也会提供middleware（中间件），aop，validate（验证器），session（会话）等开发过程中常用的工具的功能，跟其他框架不一样的是，我们还提供了类似springboot的`@Controller`,`@Resource`,`@Component`注解，这个开发者无需关心性能的问题，在框架启动的时候，已经把`bean`加载到内存中，借鉴java中springboot框架的模式实现服务资源的托管。
+像其他框架一样，我们也会提供laravel ORM ,middleware（中间件），aop，validate（验证器），session（会话）等开发过程中常用的工具的功能，跟其他框架不一样的是，我们还提供了类似springboot的`@Controller`,`@Resource`,`@Component`注解，这个开发者无需关心性能的问题，在框架启动的时候，已经把`bean`加载到内存中，借鉴java中springboot框架的模式实现服务资源的托管。
 
 Heros-worker的特性
 =======
@@ -39,9 +39,9 @@ GitHub 源码地址
 GitHub: [https://github.com/mondagPHP/heros-worker](https://github.com/mondagPHP/heros-worker)
 
 开发手册
-========
+=======
 
-正在努力制造中。。
+手册地址: [https://herosworkre.wiki](https://herosworkre.wiki)
 
 联系作者
 =====
@@ -69,16 +69,3 @@ GitHub: [https://github.com/mondagPHP/heros-worker](https://github.com/mondagPHP
 ```bash
 composer require 'mondagroup/heros-worker:*@dev'
 ```
-
-版本更新记录
-======
-
-## version 1.0.0
-
-实现了框架的基本功能
-
-1. 项目组织结构
-2. `Aop`,`middleware`,`conrtab`,`redis_queue`等
-3. 数据DB层的操作
-4. MVC设计模式, 自己实现的模板引擎
-5. 基本工具类，如果文件上传，图片裁剪，文件处理等

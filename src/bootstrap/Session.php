@@ -20,6 +20,7 @@ class Session implements Bootstrap
     public static function start(Worker $worker)
     {
         $config = config('session');
+        //如果不定义，默认使用php.ini的配置
         if (isset($config['gc_maxlifetime'])) {
             ini_set('session.gc_maxlifetime', (int)$config['gc_maxlifetime']);
         }

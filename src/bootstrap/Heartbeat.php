@@ -19,17 +19,16 @@ class Heartbeat implements Bootstrap
 {
     public static function start(Worker $worker)
     {
-        $database = config('database');
+        $database = config('database', []);
         if (HEARTBEAT_TIME <= 0) {
             return;
         }
         Timer::add(HEARTBEAT_TIME, function () use ($database) {
             foreach ($database ?? [] as $connectionName => $value) {
                 //默认没有配置也是加入心跳
-                if (isset($value['is_beat']) && ! $value['is_beat']) {
-                    continue;
+                if (isset($value['is_beat']) && $value['is_beat']) {
+                    HeroDB::connection($connectionName)->select('select 1 limit 1');
                 }
-                HeroDB::connection($connectionName)->select('select 1 limit 1');
             }
         });
     }

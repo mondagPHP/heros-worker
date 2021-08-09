@@ -57,10 +57,10 @@ class Log implements Bootstrap
     }
 
     /**
-     * @param  string $name
+     * @param string $name
      * @return Logger
      */
-    public static function channel($name = 'default'): ?Logger
+    public static function channel(string $name = 'default'): ?Logger
     {
         return static::$instance[$name] ?? null;
     }

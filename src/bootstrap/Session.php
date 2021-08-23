@@ -23,6 +23,7 @@ class Session implements Bootstrap
         //如果不定义，默认使用php.ini的配置
         if (isset($config['gc_maxlifetime'])) {
             ini_set('session.gc_maxlifetime', (int)$config['gc_maxlifetime']);
+            ini_set('session.cookie_lifetime', (int)$config['gc_maxlifetime']);
         }
         if (isset($config['enable']) && $config['enable']) {
             Http::sessionName($config['session_name']);

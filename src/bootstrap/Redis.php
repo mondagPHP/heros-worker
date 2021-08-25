@@ -13,16 +13,19 @@ use Illuminate\Redis\RedisManager;
 use Workerman\Worker;
 
 /**
- * Class Redis.
+ * Class Redis
+ * @package support
+ *
+ * Strings methods
  * @method static int append($key, $value)
  * @method static int bitCount($key)
- * @method static int decr($key, $value)
+ * @method static int decr($key, $value = 1)
  * @method static int decrBy($key, $value)
  * @method static string|bool get($key)
  * @method static int getBit($key, $offset)
  * @method static string getRange($key, $start, $end)
  * @method static string getSet($key, $value)
- * @method static int incr($key, $value)
+ * @method static int incr($key, $value = 1)
  * @method static int incrBy($key, $value)
  * @method static float incrByFloat($key, $value)
  * @method static array mGet(array $keys)
@@ -36,7 +39,7 @@ use Workerman\Worker;
  * @method static bool setNx($key, $value)
  * @method static string setRange($key, $offset, $value)
  * @method static int strLen($key)
- *                                                                                                                    Keys methods
+ * Keys methods
  * @method static int del(...$keys)
  * @method static int unlink(...$keys)
  * @method static false|string dump($key)
@@ -48,6 +51,7 @@ use Workerman\Worker;
  * @method static array keys($pattern)
  * @method static bool|array scan($it)
  * @method static void migrate($host, $port, $keys, $dbIndex, $timeout, $copy = false, $replace = false)
+ * @method static bool select($dbIndex)
  * @method static bool move($key, $dbIndex)
  * @method static string|int|bool object($information, $key)
  * @method static bool persist($key)
@@ -59,7 +63,7 @@ use Workerman\Worker;
  * @method static int ttl($key)
  * @method static int pttl($key)
  * @method static void restore($key, $ttl, $value)
- *                                                                                                                    Hashes methods
+ * Hashes methods
  * @method static false|int hSet($key, $hashKey, $value)
  * @method static bool hSetNx($key, $hashKey, $value)
  * @method static false|string hGet($key, $hashKey)
@@ -75,7 +79,7 @@ use Workerman\Worker;
  * @method static array hMGet($key, $memberKeys)
  * @method static array hScan($key, $iterator, $pattern = '', $count = 0)
  * @method static int hStrLen($key, $hashKey)
- *                                                                                                                    Lists methods
+ * Lists methods
  * @method static array blPop($keys, $timeout)
  * @method static array brPop($keys, $timeout)
  * @method static false|string bRPopLPush($srcKey, $dstKey, $timeout)
@@ -85,7 +89,7 @@ use Workerman\Worker;
  * @method static false|int lPush($key, ...$entries)
  * @method static false|int lPushx($key, $value)
  * @method static array lRange($key, $start, $end)
- * @method static false|int lRem($key, $value, $count)
+ * @method static false|int lRem($key, $count, $value)
  * @method static bool lSet($key, $index, $value)
  * @method static false|array lTrim($key, $start, $end)
  * @method static false|string rPop($key)
@@ -93,7 +97,7 @@ use Workerman\Worker;
  * @method static false|int rPush($key, ...$entries)
  * @method static false|int rPushX($key, $value)
  * @method static false|int lLen($key)
- *                                                                                                                    Sets methods
+ * Sets methods
  * @method static int sAdd($key, $value)
  * @method static int sCard($key)
  * @method static array sDiff($keys)
@@ -109,7 +113,7 @@ use Workerman\Worker;
  * @method static array sUnion(...$keys)
  * @method static false|int sUnionStore($dst, ...$keys)
  * @method static false|array sScan($key, $iterator, $pattern = '', $count = 0)
- *                                                                                                                    Sorted sets methods
+ * Sorted sets methods
  * @method static array bzPopMin($keys, $timeout)
  * @method static array bzPopMax($keys, $timeout)
  * @method static int zAdd($key, $score, $value)
@@ -132,18 +136,18 @@ use Workerman\Worker;
  * @method static double zScore($key, $member)
  * @method static int zunionstore($keyOutput, $arrayZSetKeys, $arrayWeights = [], $aggregateFunction = '')
  * @method static false|array zScan($key, $iterator, $pattern = '', $count = 0)
- *                                                                                                                    HyperLogLogs methods
+ * HyperLogLogs methods
  * @method static int pfAdd($key, $values)
  * @method static int pfCount($keys)
  * @method static bool pfMerge($dstKey, $srcKeys)
- *                                                                                                                    Geocoding methods
+ * Geocoding methods
  * @method static int geoAdd($key, $longitude, $latitude, $member, ...$items)
  * @method static array geoHash($key, ...$members)
  * @method static array geoPos($key, ...$members)
  * @method static double geoDist($key, $members, $unit = '')
  * @method static int|array geoRadius($key, $longitude, $latitude, $radius, $unit, $options = [])
  * @method static array geoRadiusByMember($key, $member, $radius, $units, $options = [])
- *                                                                                                                    Streams methods
+ * Streams methods
  * @method static int xAck($stream, $group, $arrMessages)
  * @method static string xAdd($strKey, $strId, $arrMessage, $iMaxLen = 0, $booApproximate = false)
  * @method static array xClaim($strKey, $strGroup, $strConsumer, $minIdleTime, $arrIds, $arrOptions = [])
@@ -157,21 +161,20 @@ use Workerman\Worker;
  * @method static array xReadGroup($strGroup, $strConsumer, $arrStreams, $iCount = 0, $iBlock = null)
  * @method static array xRevRange($strStream, $strEnd, $strStart, $iCount = 0)
  * @method static int xTrim($strStream, $iMaxLen, $booApproximate = null)
- *                                                                                                                    Pub/sub methods
+ * Pub/sub methods
  * @method static mixed pSubscribe($patterns, $callback)
  * @method static mixed publish($channel, $message)
  * @method static mixed subscribe($channels, $callback)
  * @method static mixed pubSub($keyword, $argument = null)
- *                                                                                                                    Generic methods
+ * Generic methods
  * @method static mixed rawCommand(...$commandAndArgs)
- *                                                                                                                    Transactions methods
- * @method static \
- * Redis multi()
+ * Transactions methods
+ * @method static \Redis multi()
  * @method static mixed exec()
  * @method static mixed discard()
  * @method static mixed watch($keys)
  * @method static mixed unwatch($keys)
- *                                                              Scripting methods
+ * Scripting methods
  * @method static mixed eval($script, $args = [], $numKeys = 0)
  * @method static mixed evalSha($sha, $args = [], $numKeys = 0)
  * @method static mixed script($command, ...$scripts)
@@ -181,7 +184,7 @@ use Workerman\Worker;
  * @method static mixed _prefix($value)
  * @method static mixed _serialize($value)
  * @method static mixed _unserialize($value)
- *                                                              Introspection methods
+ * Introspection methods
  * @method static bool isConnected()
  * @method static mixed getHost()
  * @method static mixed getPort()
@@ -196,7 +199,7 @@ class Redis implements Bootstrap
     /**
      * @var RedisManager
      */
-    protected static $_manager = null;
+    protected static $manager = null;
 
     /**
      * @param $name
@@ -205,7 +208,7 @@ class Redis implements Bootstrap
      */
     public static function __callStatic($name, $arguments)
     {
-        return static::$_manager->connection('default')->{$name}(...$arguments);
+        return static::$manager->connection('default')->{$name}(...$arguments);
     }
 
     public static function start(Worker $worker)
@@ -214,15 +217,15 @@ class Redis implements Bootstrap
             return;
         }
         $config = config('redis');
-        static::$_manager = new RedisManager(null, 'phpredis', $config);
+        static::$manager = new RedisManager(null, 'phpredis', $config);
     }
 
     /**
      * @param string $name
-     * @return \Illuminate\Redis\Connections\Connection
+     * @return Connection
      */
     public static function connection(string $name = 'default'): Connection
     {
-        return static::$_manager->connection($name);
+        return static::$manager->connection($name);
     }
 }

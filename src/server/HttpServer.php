@@ -13,6 +13,7 @@ use framework\App;
 use framework\boot\RouterCollector;
 use framework\bootstrap\Log;
 use framework\exception\ExceptionHandlerInterface;
+use framework\exception\HeroException;
 use framework\exception\RequestMethodException;
 use framework\exception\RouteNotFoundException;
 use framework\http\Request as HttpRequest;
@@ -259,10 +260,15 @@ class HttpServer
      * 静态资源文件.
      * @param $path
      * @return false|string
+     * @throws HeroException
      */
     private function findFile($path)
     {
         $file = \realpath(public_path() . '/' . trim($path, '/'));
+        //避免web 遍历目录
+        if (strpos($file, public_path()) !== 0) {
+            throw new HeroException("目录不可读!");
+        }
         if (false === $file || false === \is_file($file)) {
             return false;
         }

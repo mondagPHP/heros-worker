@@ -228,11 +228,12 @@ class HttpServer
 
     /**
      * 定时器关闭，防止马上触发stopALL导致无法访问
+     * @throws \Exception
      */
     protected function tryToGracefulExit(): void
     {
         if (static::$_gracefulStopTimer === null) {
-            static::$_gracefulStopTimer = Timer::add(rand(1, 10), function () {
+            static::$_gracefulStopTimer = Timer::add(random_int(1, 10), function () {
                 if (\count($this->worker->connections) === 0) {
                     Worker::stopAll();
                 }
@@ -260,14 +261,13 @@ class HttpServer
      * 静态资源文件.
      * @param $path
      * @return false|string
-     * @throws HeroException
      */
     private function findFile($path)
     {
         $file = \realpath(public_path() . '/' . trim($path, '/'));
         //避免web 遍历目录
         if (strpos($file, public_path()) !== 0) {
-            throw new HeroException("目录不可读!");
+           return false;
         }
         if (false === $file || false === \is_file($file)) {
             return false;

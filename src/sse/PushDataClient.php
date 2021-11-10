@@ -17,6 +17,14 @@ use Workerman\Protocols\Http\ServerSentEvents;
 /**
  * Class PushDataClient
  * @package framework\sse
+ * 当浏览器出现推送请求自动断开时，检查一下nginx配置
+ * 增加以下配置，保持长连接
+ * proxy_http_version 1.1;
+ * proxy_set_header Connection "";
+ * # 将客户端的 Host 和 IP 信息一并转发到对应节点
+ * proxy_set_header Host $http_host;
+ * proxy_set_header X-Real-IP $remote_addr;
+ * proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
  */
 class PushDataClient
 {
@@ -50,16 +58,23 @@ class PushDataClient
                     return;
                 }
                 $data = $object->pushData();
-                $connection->send(new ServerSentEvents(['event' => 'message', 'data' => StringUtils::jsonEncode($data)]));
+                $connection->send(new ServerSentEvents([
+                    'id' => uniqid('', true),
+                    'event' => 'message',
+                    'data' => StringUtils::jsonEncode($data),
+                ]));
                 $connection->baseWrite();
             });
             $response = new Response(200, ['Content-Type' => 'text/event-stream', 'access-control-allow-origin' => '*']);
             $response->withHeader('Cache-Control', 'no-cache');
             $response->withHeader('X-Accel-Buffering', 'no');
             $response->withBody((string)new ServerSentEvents([
+                'id' => uniqid('', true),
                 'event' => 'message',
-                'data' => StringUtils::jsonEncode($object->pushData())
+                'data' => StringUtils::jsonEncode($object->pushData()),
             ]));
+            $connection->send($response);
+            $connection->baseWrite();
             return $response;
         }
         return new Response(200, ['Content-Type' => 'application/json;charset=utf-8', 'access-control-allow-origin' => '*']);

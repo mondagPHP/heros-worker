@@ -15,6 +15,7 @@ use framework\command\buildIn\MakeDaoCommand;
 use framework\command\buildIn\MakeMiddlewareCommand;
 use framework\command\buildIn\MakeServiceCommand;
 use framework\database\command\MakeEntityCommand;
+use framework\database\command\UpdateEntityCommand;
 use framework\yapi\command\YapiCommand;
 
 /**
@@ -32,7 +33,8 @@ class BuildInCommand
         MakeDaoCommand::class,
         MakeAspectCommand::class,
         MakeMiddlewareCommand::class,
-        YapiCommand::class
+        YapiCommand::class,
+        UpdateEntityCommand::class
     ];
 
     /** @var Manager $manager */

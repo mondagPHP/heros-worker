@@ -15,5 +15,7 @@ class {{class}} extends HeroModel
 
     protected $connection = 'default';
 
+    protected $keyType = 'string';
+    
     protected $fillable = [];
 }

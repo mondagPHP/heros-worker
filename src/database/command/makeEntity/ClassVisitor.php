@@ -60,6 +60,11 @@ class ClassVisitor extends NodeVisitorAbstract
                     return NodeTraverser::REMOVE_NODE;
                 }
                 break;
+            case $node instanceof Node\Stmt\Property && $node->props[0]->name->name === 'keyType':
+                    if ($this->primaryKeyField && $this->primaryKeyField->getTypeMap() == 'int') {
+                        return NodeTraverser::REMOVE_NODE;
+                    }
+                    break;
             case $node instanceof Node\Stmt\Property && $node->props[0]->name->name === 'connection':
                 $propertyProperty = $node->props[0];
                 if ($this->connect === 'default') {

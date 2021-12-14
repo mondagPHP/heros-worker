@@ -69,6 +69,17 @@ class FileUtils
     }
 
     /**
+     * 适配系统路径  '/' '\' => DIRECTORY_SEPARATOR
+     *
+     * @param string $path
+     * @return string
+     */
+    public static function sysPath(string $path): string
+    {
+        return str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
+    }
+
+    /**
      * 获取目录文件.
      * @param $absolute_dir //目录绝对路径
      * @param $relative_dir //目录相对路径

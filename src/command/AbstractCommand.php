@@ -12,6 +12,8 @@ use framework\command\interfaces\CommandInterface;
 
 abstract class AbstractCommand implements CommandInterface
 {
+    public static $csFix = true;
+    
     /** @var string command 名称 */
     protected $name = '';
 
@@ -66,5 +68,22 @@ abstract class AbstractCommand implements CommandInterface
     public function optionDefinition(): array
     {
         return [];
+    }
+
+    /**
+     * 格式化目录文件
+     *
+     * @return void
+     */
+    protected function csFix(): void
+    {
+        if (self::$csFix == false) {
+            return;
+        }
+        $csFixBin = BASE_PATH . '/vendor/bin/php-cs-fixer';
+        if (property_exists($this, 'path') && file_exists($csFixBin) && is_executable($csFixBin)) {
+            $shell = 'cd ' . BASE_PATH . ' && php ' . $csFixBin . ' fix ' . BASE_PATH . '/' . $this->path;
+            @exec($shell);
+        }
     }
 }

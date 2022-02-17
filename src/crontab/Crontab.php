@@ -5,13 +5,10 @@
  * @contact  mondagroup_php@163.com
  *
  */
-namespace framework\crontab;
+namespace Framework\Crontab;
 
 use Workerman\Lib\Timer;
 
-/**
- * Class Crontab.
- */
 class Crontab
 {
     /**

@@ -5,11 +5,8 @@
  * @contact  mondagroup_php@163.com
  *
  */
-namespace framework\crontab;
+namespace Framework\Crontab;
 
-/**
- * Class Parser.
- */
 class Parser
 {
     /**

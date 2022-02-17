@@ -1,18 +1,16 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of monda-worker.
  *
  * @contact  mondagroup_php@163.com
  *
  */
-namespace framework\exception;
+namespace Framework\Exception;
 
-use framework\http\Response;
-
-class ValidateException extends \Exception
+/**
+ * 数据验证异常
+ */
+class ValidateException extends \RuntimeException
 {
-    public function render(): Response
-    {
-        return \response($this->getMessage(), 200);
-    }
 }

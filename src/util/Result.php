@@ -1,50 +1,54 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of monda-worker.
  *
  * @contact  mondagroup_php@163.com
  *
  */
-namespace framework\util;
 
-use framework\string\StringUtils;
+namespace Framework\Util;
+
+use Framework\Application;
+use Monda\Utils\String\StringUtil;
 
 /**
- * Class JsonResponse.
+ * Class Result
+ * @package Framework\Util
  */
 class Result
 {
     /**
      * @var bool 是否true false
      */
-    private $success;
+    private bool $success;
 
     /**
      * @var string 状态码
      */
-    private $code;
+    private string $code;
 
     /**
      * @var string 返回信息
      */
-    private $message;
+    private string $message;
 
     /**
-     * @var object 对象
+     * @var array 对象
      */
-    private $data;
+    private array $data = [];
 
     /**
-     * @var object 对象
+     * @var array 对象
      */
-    private $extra = [];
+    private array $extra = [];
 
     /**
      * @var Pager 分页
      */
-    private $pager;
+    private Pager $pager;
 
-    private $isUsePage = 0;
+    private int $isUsePage = 0;
 
     /**
      * Result constructor.
@@ -76,10 +80,10 @@ class Result
         if (isset($this->data) && $this->isUsePage !== 1) {
             $array['data'] = $this->data;
         }
-        if (! empty($this->extra)) {
+        if (!empty($this->extra)) {
             $array['extra'] = $this->extra;
         }
-        return StringUtils::jsonEncode($array);
+        return StringUtil::jsonEncode($array);
     }
 
     /**
@@ -105,16 +109,18 @@ class Result
     }
 
     /**
-     * @param $page
-     * @param $pageSize
-     * @param $total
+     * @param int $total
      * @param $data
      * @param array $extra
      * @return Result
      *                      分页
      */
-    public static function pager($page, $pageSize, $total, $data, $extra = []): self
+    public static function pager(int $total, $data, array $extra = []): self
     {
+        $pageParameterConfig = config('request.pageParameter', 'page');
+        $pageSizeParameterConfig = config('request.pageSizeParameter', 'pageSize');
+        $page = (int)Application::$request->get($pageParameterConfig, 1);
+        $pageSize = (int)Application::$request->get($pageSizeParameterConfig, 10);
         $result = new self();
         $result->isSuccess(true)->code(ResultCode::SUCCESS['code'])->message(ResultCode::SUCCESS['message'])->data($data)->extra($extra)->setPager(new Pager($page, $pageSize, $total));
 
@@ -122,12 +128,12 @@ class Result
     }
 
     /**
-     * @param $success
+     * @param bool $success
      *
      * @return $this
      *               设置success
      */
-    public function isSuccess($success): self
+    public function isSuccess(bool $success): self
     {
         $this->success = $success;
 
@@ -140,7 +146,7 @@ class Result
      * @return $this
      *               设置数据
      */
-    public function data($data): self
+    public function data(array $data): self
     {
         $this->data = $data;
 
@@ -148,12 +154,12 @@ class Result
     }
 
     /**
-     * @param $message
+     * @param string $message
      *
      * @return $this
      *               设置信息
      */
-    public function message($message): self
+    public function message(string $message): self
     {
         $this->message = $message;
 
@@ -172,12 +178,12 @@ class Result
     }
 
     /**
-     * @param $code
+     * @param string $code
      *
      * @return $this
      *               设置状态码
      */
-    public function code($code): self
+    public function code(string $code): self
     {
         $this->code = $code;
         return $this;

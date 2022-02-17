@@ -1,50 +1,52 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of monda-worker.
  *
  * @contact  mondagroup_php@163.com
  *
  */
-namespace framework\util;
+namespace Framework\Util;
 
 /**
- * Class Pager.
+ * Class Pager
+ * @package Framework\Util
  */
 class Pager
 {
     /**
      * @var int 当前页
      */
-    public $currentPage;
+    public int $currentPage;
 
     /**
      * @var int 分页数量
      */
-    public $pageSize;
+    public int $pageSize;
 
     /**
      * @var int 总量
      */
-    public $total;
+    public int $total;
 
     /**
      * @var int 总页数
      */
-    public $totalPage;
+    public int $totalPage;
 
     /**
      * Pager constructor.
      *
-     * @param $currentPage
-     * @param $pageSize
-     * @param $total
+     * @param int $currentPage
+     * @param int $pageSize
+     * @param int $total
      * 分页
      */
-    public function __construct($currentPage, $pageSize, $total)
+    public function __construct(int $currentPage, int $pageSize, int $total)
     {
         $this->currentPage = $currentPage;
         $this->pageSize = $pageSize;
         $this->total = $total;
-        $this->totalPage = 0 != $pageSize ? ceil($total / $pageSize) : 0;
+        $this->totalPage = 0 != $pageSize ? (int)ceil($total / $pageSize) : 0;
     }
 }

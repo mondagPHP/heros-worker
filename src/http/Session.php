@@ -1,13 +1,14 @@
 <?php
+declare(strict_types=1);
 /**
  * This file is part of monda-worker.
  *
  * @contact  mondagroup_php@163.com
  *
  */
-namespace framework\http;
+namespace Framework\Http;
 
-use Workerman\Protocols\Http\Request;
+use Workerman\Protocols\Http\Request as WorkerRequest;
 
 /**
  * Class Session.
@@ -25,27 +26,28 @@ use Workerman\Protocols\Http\Request;
  */
 class Session
 {
-    protected $request;
+    private WorkerRequest $request;
 
-    public function __construct(Request $request)
+    private function __construct(WorkerRequest $request)
     {
         $this->request = $request;
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @param $arguments
      * @return mixed
      */
-    public function __call($name, $arguments)
+    public function __call(string $name, $arguments)
     {
         return $this->request->session()->{$name}(...$arguments);
     }
 
     /**
+     * @param WorkerRequest $request
      * @return static
      */
-    public static function init(Request $request): self
+    public static function init(WorkerRequest $request): self
     {
         return new self($request);
     }

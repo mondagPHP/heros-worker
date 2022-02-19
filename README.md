@@ -67,5 +67,5 @@ GitHub: [https://github.com/mondagPHP/heros-worker](https://github.com/mondagPHP
 然后在 app 根目录下运行
 
 ```bash
-composer require 'mondagroup/heros-worker:*@dev'
+composer require 'mondagroup/herosworker:*@dev'
 ```

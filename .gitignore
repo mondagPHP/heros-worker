@@ -1,3 +1,8 @@
 vendor/
 .idea/
 .php_cs.cache
+.php-cs-fixer.cache
+runtime/
+.env
+composer.phar
+.DS_Store

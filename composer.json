@@ -1,5 +1,5 @@
 {
-    "name": "mondagroup/herosworker",
+    "name": "mondagroup/heros-worker",
     "description": "monda php framework  workerman",
     "require": {
         "php": ">=8.0",

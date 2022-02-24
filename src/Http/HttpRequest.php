@@ -4,9 +4,10 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
+
 namespace Framework\Http;
 
-use Workerman\Protocols\Http\Request as WorkerRequest;
+use Workerman\Protocols\Http\Request;
 
 /**
  * Class Request
@@ -27,17 +28,17 @@ use Workerman\Protocols\Http\Request as WorkerRequest;
  * @method string rawBody()
  * @method string rawBuffer()
  */
-class Request
+class HttpRequest
 {
     private array $params;
 
     private array $injectObject = [];
 
-    private WorkerRequest $request;
+    private Request $request;
 
     private Session $session;
 
-    private function __construct(WorkerRequest $request)
+    private function __construct(Request $request)
     {
         $this->request = $request;
     }
@@ -53,11 +54,11 @@ class Request
     }
 
     /**
-     * @param WorkerRequest $request
+     * @param Request $request
      * @param Session $session
      * @return static
      */
-    public static function init(WorkerRequest $request, Session $session): self
+    public static function init(Request $request, Session $session): self
     {
         $httpRequest = new self($request);
         $httpRequest->setParams($request->get() + $request->post());

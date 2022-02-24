@@ -6,7 +6,7 @@ declare(strict_types=1);
  */
 namespace Framework\Contract;
 
-use Framework\Http\Request;
+use Framework\Http\HttpRequest;
 
 /**
  * 中间件
@@ -19,8 +19,8 @@ interface MiddlewareInterface
      * Processes an incoming server request in order to produce a response.
      * If unable to produce the response itself, it may delegate to the provided
      * request handler to do so.
-     * @param Request $request httpRequest
+     * @param HttpRequest $request httpRequest
      * @param callable $handler 闭包
      */
-    public function process(Request $request, callable $handler);
+    public function process(HttpRequest $request, callable $handler);
 }

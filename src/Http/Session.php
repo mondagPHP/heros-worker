@@ -6,7 +6,7 @@ declare(strict_types=1);
  */
 namespace Framework\Http;
 
-use Workerman\Protocols\Http\Request as WorkerRequest;
+use Workerman\Protocols\Http\Request;
 
 /**
  * Class Session.
@@ -24,9 +24,9 @@ use Workerman\Protocols\Http\Request as WorkerRequest;
  */
 class Session
 {
-    private WorkerRequest $request;
+    private Request $request;
 
-    private function __construct(WorkerRequest $request)
+    private function __construct(Request $request)
     {
         $this->request = $request;
     }
@@ -42,10 +42,10 @@ class Session
     }
 
     /**
-     * @param WorkerRequest $request
+     * @param Request $request
      * @return static
      */
-    public static function init(WorkerRequest $request): self
+    public static function init(Request $request): self
     {
         return new self($request);
     }

@@ -148,7 +148,12 @@ class Application
                     if (str_contains($path, '/.')) {
                         throw new HerosException('403 forbidden');
                     }
-                    $response = \response()->withFile($path);
+                    //304
+                    if ($this->notModifiedSince($request, $path)) {
+                        $response = \response('', 304);
+                    } else {
+                        $response = \response()->withFile($path);
+                    }
                     break;
                 case Dispatcher::METHOD_NOT_ALLOWED:
                     throw new RequestMethodException('request method not allow!');
@@ -171,6 +176,21 @@ class Application
             Log::error($exception->getTraceAsString());
             static::send($connection, static::exceptionResponse($exception, $httpRequest), $request);
         }
+    }
+
+
+    /**
+     * @param Request $request
+     * @param string $file
+     * @return bool
+     */
+    protected function notModifiedSince(Request $request, string $file): bool
+    {
+        $ifModifiedSince = $request->header('if-modified-since');
+        if ($ifModifiedSince === null || !($mtime = \filemtime($file))) {
+            return false;
+        }
+        return $ifModifiedSince === \gmdate('D, d M Y H:i:s', $mtime) . ' GMT';
     }
 
     /**

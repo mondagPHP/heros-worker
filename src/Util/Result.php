@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace Framework\Util;
 
 use Framework\Application;
-use Framework\Crontab\JsonAble;
+use Framework\Contract\JsonAble;
 use Monda\Utils\String\StringUtil;
 
 /**

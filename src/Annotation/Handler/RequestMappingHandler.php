@@ -12,7 +12,7 @@ use Framework\Component\MiddleWareCollector;
 use Framework\Component\RouterCollector;
 use Framework\Core\Container;
 use Framework\Exception\ClassNotFoundException;
-use Framework\Http\Request;
+use Framework\Http\HttpRequest;
 use Framework\Util\PipeLine;
 use Framework\Validate\Validate;
 use Monda\Utils\Util\ModelTransformUtil;
@@ -34,9 +34,12 @@ return [
         }
         /** @var RouterCollector $routerCollector */
         $routerCollector = container()->get(RouterCollector::class);
-        $routerDispatch = static function (Request $request) use ($method, $instance) {
+        $routerDispatch = static function (HttpRequest $request) use ($method, $instance) {
             $params = $request->getParams();
-            $extParams = array_merge($request->getInjectObject(), [$request, $request->getSession()]);
+            //注入
+            $request->pushInjectObject($request);
+            $request->pushInjectObject($request->getSession());
+            $extParams = $request->getInjectObject();
             //验证器Vo
             $validAttributes = $method->getAttributes(Valid::class);
             foreach ($validAttributes ?? [] as $validAttribute) {
@@ -90,13 +93,12 @@ return [
             }
             return $method->invokeArgs($instance, $inputParams);
         };
-
         /** @var MiddleWareCollector $middlewareCollector */
         $middlewareCollector = container()->get(MiddleWareCollector::class);
         $middlewares = $middlewareCollector->get($path);
         $routerDispatch = container()->get(PipeLine::class)->create()->setClasses($middlewares)->run($routerDispatch);
         foreach ($requestMethods ?? [] as $requestMethod) {
-            $routerCollector->addRouter($requestMethod, $path, $routerDispatch);
+            $routerCollector->addRouter($requestMethod, strtolower($path), $routerDispatch);
         }
         return $instance;
     },

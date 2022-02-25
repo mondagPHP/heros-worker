@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace Framework\Core;
 
 use Framework\Contract\ExceptionHandlerInterface;
-use Framework\Http\Request;
+use Framework\Http\HttpRequest;
 use Throwable;
 
 /**
@@ -43,7 +43,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
         Log::error($e->getMessage(), ['exception' => (string)$e]);
     }
 
-    public function render(Request $request, Throwable $e)
+    public function render(HttpRequest $request, Throwable $e)
     {
         $error = $this->debug ? nl2br((string)$e) : 'Server internal error';
         return \response($error, 500);

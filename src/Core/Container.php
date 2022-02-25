@@ -4,6 +4,7 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
+
 namespace Framework\Core;
 
 /**
@@ -15,7 +16,7 @@ namespace Framework\Core;
  */
 class Container
 {
-    protected static $_instance = null;
+    private static $_instance = null;
 
     /**
      * @param $name
@@ -28,12 +29,12 @@ class Container
     }
 
     /**
-     * @return Container|null
+     * @return IOC
      */
     public static function instance()
     {
-        if (! static::$_instance) {
-            static::$_instance = new \Monda\Utils\Container\Container();
+        if (!static::$_instance) {
+            static::$_instance = new IOC();
         }
         return static::$_instance;
     }

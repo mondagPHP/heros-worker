@@ -11,19 +11,21 @@ use ErrorException;
 use FastRoute\Dispatcher;
 use Framework\Component\RouterCollector;
 use Framework\Contract\BootstrapInterface;
+use Framework\Contract\JsonAble;
 use Framework\Core\Container;
 use Framework\Core\ExceptionHandler;
 use Framework\Core\Log;
 use Framework\Core\Scanner;
-use Framework\Crontab\JsonAble;
+use Framework\Exception\FileNotFoundException;
 use Framework\Exception\HerosException;
 use Framework\Exception\RequestMethodException;
-use Framework\Exception\RouteNotFoundException;
-use Framework\Http\Request as HttpRequest;
-use Framework\Http\Response;
+use Framework\Http\HttpRequest;
+use Framework\Http\HttpResponse;
 use Framework\Http\Session;
+use Illuminate\Pagination\Paginator;
 use Workerman\Connection\TcpConnection;
-use Workerman\Protocols\Http\Request as WorkerRequest;
+use Workerman\Protocols\Http\Request;
+use Workerman\Protocols\Http\Response;
 use Workerman\Timer;
 use Workerman\Worker;
 
@@ -67,32 +69,20 @@ class Application
      */
     protected static ?int $_gracefulStopTimer = null;
 
-    /**
-     * callback.
-     * @var string[]
-     */
-    private array $callbackMap = [
-        'onConnect',
-        'onMessage',
-        'onClose',
-        'onError',
-        'onBufferFull',
-        'onBufferDrain',
-        'onWorkerStop',
-        'onWebSocketConnect',
-    ];
+    private static array $handlerMappings = [];
 
+    /**
+     * @return void
+     */
     public function run(): void
     {
         $this->config = config('server', []);
         $this->worker = new Worker($this->config['listen'], $this->config['context']);
         $this->worker->reloadable = true;
-        //默认值
         $maxRequestCount = (int)$this->config['max_request'];
         if ($maxRequestCount > 0) {
             static::$_maxRequestCount = $maxRequestCount;
         }
-        //设置属性
         $propertyMap = ['name', 'count', 'user', 'group', 'reusePort', 'transport'];
         foreach ($propertyMap as $property) {
             if (isset($this->config[$property])) {
@@ -130,7 +120,7 @@ class Application
     /**
      * @throws \Exception
      */
-    public function onMessage(TcpConnection $connection, WorkerRequest $request)
+    public function onMessage(TcpConnection $connection, Request $request)
     {
         static $requestCount = 0;
         $httpSession = Session::init($request);
@@ -140,50 +130,78 @@ class Application
             $this->tryToGracefulExit();
         }
         try {
-            $routeInfo = $this->dispatcher->dispatch($httpRequest->method(), $httpRequest->path());
+            $requestPath = strtolower($httpRequest->path());
+            //做了一层缓存，加快响应
+            if (isset(static::$handlerMappings[$requestPath])) {
+                $vars = array_merge($request->get() + $request->post(), static::$handlerMappings[$requestPath]['params']);
+                $httpRequest->setParams($vars);
+                $response = self::handlerRequestResult(static::$handlerMappings[$requestPath]['handler']($httpRequest));
+                self::send($connection, $response, $request);
+                return;
+            }
+            $routeInfo = $this->dispatcher->dispatch($httpRequest->method(), $requestPath);
             switch ($routeInfo[0]) {
                 case Dispatcher::NOT_FOUND:
-                    //静态资源文件
                     $path = $this->findFile($httpRequest->path());
                     if (!$path) {
-                        Log::debug("route not found:{$httpRequest->path()}!");
-                        throw new RouteNotFoundException("route not found:{$httpRequest->path()}");
+                        throw new FileNotFoundException("file not found:{$httpRequest->path()}");
                     }
-                    //禁止访问.开头的隐藏文件
                     if (str_contains($path, '/.')) {
-                        $response = \response('<h1>403 forbidden</h1>', 403);
+                        throw new HerosException('403 forbidden');
+                    }
+                    //304
+                    if ($this->notModifiedSince($request, $path)) {
+                        $response = \response('', 304);
                     } else {
                         $response = \response()->withFile($path);
                     }
                     break;
                 case Dispatcher::METHOD_NOT_ALLOWED:
-                    Log::error("request method not allow.{$httpRequest->path()}!");
                     throw new RequestMethodException('request method not allow!');
                 case Dispatcher::FOUND:
                     $vars = array_merge($request->get() + $request->post(), $routeInfo[2]);
                     $httpRequest->setParams($vars);
                     $handler = $routeInfo[1];
                     $response = self::handlerRequestResult($handler($httpRequest));
+                    //加入缓存
+                    static::$handlerMappings[$requestPath] = [
+                        'handler' => $routeInfo[1],
+                        'params' => $routeInfo[2],
+                    ];
                     break;
                 default:
-                    Log::error("fast route error.{$httpRequest->path()}!");
                     throw new HerosException("fast route error.{$httpRequest->path()}!");
             }
             self::send($connection, $response, $request);
-            return;
         } catch (\Throwable $exception) {
+            Log::error($exception->getTraceAsString());
             static::send($connection, static::exceptionResponse($exception, $httpRequest), $request);
         }
+    }
+
+
+    /**
+     * @param Request $request
+     * @param string $file
+     * @return bool
+     */
+    protected function notModifiedSince(Request $request, string $file): bool
+    {
+        $ifModifiedSince = $request->header('if-modified-since');
+        if ($ifModifiedSince === null || !($mtime = \filemtime($file))) {
+            return false;
+        }
+        return $ifModifiedSince === \gmdate('D, d M Y H:i:s', $mtime) . ' GMT';
     }
 
     /**
      * 返回给前端
      * @param TcpConnection $connection
-     * @param Response $response
-     * @param WorkerRequest $request
+     * @param $response
+     * @param Request $request
      * @return void
      */
-    protected static function send(TcpConnection $connection, Response $response, WorkerRequest $request)
+    protected static function send(TcpConnection $connection, $response, Request $request)
     {
         $keepAlive = $request->header('connection');
         if (($keepAlive === null && $request->protocolVersion() === '1.1')
@@ -204,22 +222,26 @@ class Application
         if (static::$_gracefulStopTimer === null) {
             static::$_gracefulStopTimer = Timer::add(random_int(1, 10), function () {
                 if (\count($this->worker->connections) === 0) {
+                    self::$handlerMappings = [];
                     Worker::stopAll();
                 }
             });
         }
     }
 
-    private static function handlerRequestResult(mixed $responseObj): Response
+    /**
+     * @param mixed $responseObj
+     * @return Response|HttpResponse
+     */
+    private static function handlerRequestResult(mixed $responseObj): Response|HttpResponse
     {
-        if ($responseObj instanceof \Workerman\Protocols\Http\Response) {
+        if ($responseObj instanceof Response) {
             $response = $responseObj;
         } else {
             if ($responseObj instanceof JsonAble) {
                 $response = \response($responseObj->toJson(), 200, ['Content-Type' => 'application/json']);
             } elseif (is_array($responseObj)) {
-                $responseObj = json_encode($responseObj, JSON_UNESCAPED_UNICODE);
-                $response = \response($responseObj, 200, ['Content-Type' => 'application/json']);
+                $response = \response(json_encode($responseObj, JSON_UNESCAPED_UNICODE), 200, ['Content-Type' => 'application/json']);
             } else {
                 $response = \response($responseObj);
             }
@@ -230,9 +252,9 @@ class Application
     /**
      * @param \Throwable $e
      * @param HttpRequest $request
-     * @return Response
+     * @return HttpResponse
      */
-    private static function exceptionResponse(\Throwable $e, HttpRequest $request): Response
+    private static function exceptionResponse(\Throwable $e, HttpRequest $request): HttpResponse
     {
         try {
             /** @var ExceptionHandler $exceptionHandler */
@@ -247,10 +269,10 @@ class Application
 
     /**
      * 静态资源文件.
-     * @param $path
+     * @param string $path
      * @return false|string
      */
-    private function findFile($path): bool|string
+    private function findFile(string $path): bool|string
     {
         $file = \realpath(public_path() . '/' . trim($path, '/'));
         if (!$file) {

@@ -131,7 +131,6 @@ class Application
         }
         try {
             $requestPath = strtolower($httpRequest->path());
-            $this->initPaginator($request);
             //做了一层缓存，加快响应
             if (isset(static::$handlerMappings[$requestPath])) {
                 $vars = array_merge($request->get() + $request->post(), static::$handlerMappings[$requestPath]['params']);
@@ -286,22 +285,5 @@ class Application
             return false;
         }
         return $file;
-    }
-
-
-    /**
-     * 初始化Paginator
-     * @param Request $request
-     * @return void
-     */
-    private function initPaginator(Request $request): void
-    {
-        Paginator::currentPageResolver(function ($pageName = 'page') use ($request) {
-            $page = $request->get($pageName);
-            if (filter_var($page, FILTER_VALIDATE_INT) !== false && (int)$page >= 1) {
-                return $page;
-            }
-            return 1;
-        });
     }
 }

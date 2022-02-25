@@ -98,7 +98,7 @@ return [
         $middlewares = $middlewareCollector->get($path);
         $routerDispatch = container()->get(PipeLine::class)->create()->setClasses($middlewares)->run($routerDispatch);
         foreach ($requestMethods ?? [] as $requestMethod) {
-            $routerCollector->addRouter($requestMethod, $path, $routerDispatch);
+            $routerCollector->addRouter($requestMethod, strtolower($path), $routerDispatch);
         }
         return $instance;
     },

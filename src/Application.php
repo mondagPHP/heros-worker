@@ -14,6 +14,7 @@ use Framework\Contract\BootstrapInterface;
 use Framework\Contract\JsonAble;
 use Framework\Core\Container;
 use Framework\Core\ExceptionHandler;
+use Framework\Core\Log;
 use Framework\Core\Scanner;
 use Framework\Exception\FileNotFoundException;
 use Framework\Exception\HerosException;
@@ -66,6 +67,8 @@ class Application
      * @var int|null
      */
     protected static ?int $_gracefulStopTimer = null;
+
+    private static array $handlerMappings = [];
 
     /**
      * @return void
@@ -121,13 +124,21 @@ class Application
         static $requestCount = 0;
         $httpSession = Session::init($request);
         $httpRequest = HttpRequest::init($request, $httpSession);
-
         static::$request = $httpRequest;
         if (++$requestCount > static::$_maxRequestCount) {
             $this->tryToGracefulExit();
         }
         try {
-            $routeInfo = $this->dispatcher->dispatch($httpRequest->method(), $httpRequest->path());
+            $requestPath = strtolower($httpRequest->path());
+            //做了一层缓存，加快响应
+            if (isset(static::$handlerMappings[$requestPath])) {
+                $vars = array_merge($request->get() + $request->post(), static::$handlerMappings[$requestPath]['routeParam']);
+                $httpRequest->setParams($vars);
+                $response = self::handlerRequestResult(static::$handlerMappings[$requestPath]['handler']($httpRequest));
+                self::send($connection, $response, $request);
+                return;
+            }
+            $routeInfo = $this->dispatcher->dispatch($httpRequest->method(), $requestPath);
             switch ($routeInfo[0]) {
                 case Dispatcher::NOT_FOUND:
                     $path = $this->findFile($httpRequest->path());
@@ -146,12 +157,18 @@ class Application
                     $httpRequest->setParams($vars);
                     $handler = $routeInfo[1];
                     $response = self::handlerRequestResult($handler($httpRequest));
+                    //加入缓存
+                    static::$handlerMappings[$requestPath] = [
+                        'handler' => $routeInfo[1],
+                        'routeParam' => $routeInfo[2],
+                    ];
                     break;
                 default:
                     throw new HerosException("fast route error.{$httpRequest->path()}!");
             }
             self::send($connection, $response, $request);
         } catch (\Throwable $exception) {
+            Log::error($exception->getTraceAsString());
             static::send($connection, static::exceptionResponse($exception, $httpRequest), $request);
         }
     }
@@ -184,6 +201,7 @@ class Application
         if (static::$_gracefulStopTimer === null) {
             static::$_gracefulStopTimer = Timer::add(random_int(1, 10), function () {
                 if (\count($this->worker->connections) === 0) {
+                    self::$handlerMappings = [];
                     Worker::stopAll();
                 }
             });

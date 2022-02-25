@@ -134,7 +134,7 @@ class Application
             $this->initPaginator($request);
             //做了一层缓存，加快响应
             if (isset(static::$handlerMappings[$requestPath])) {
-                $vars = array_merge($request->get() + $request->post(), static::$handlerMappings[$requestPath]['routeParam']);
+                $vars = array_merge($request->get() + $request->post(), static::$handlerMappings[$requestPath]['params']);
                 $httpRequest->setParams($vars);
                 $response = self::handlerRequestResult(static::$handlerMappings[$requestPath]['handler']($httpRequest));
                 self::send($connection, $response, $request);
@@ -167,7 +167,7 @@ class Application
                     //加入缓存
                     static::$handlerMappings[$requestPath] = [
                         'handler' => $routeInfo[1],
-                        'routeParam' => $routeInfo[2],
+                        'params' => $routeInfo[2],
                     ];
                     break;
                 default:

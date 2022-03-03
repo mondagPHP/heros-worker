@@ -79,9 +79,9 @@ if (!function_exists('config')) {
 }
 
 if (!function_exists('container')) {
-    function container()
+    function container(string $clazz): mixed
     {
-        return Container::instance();
+        return Container::instance()->get($clazz);
     }
 }
 

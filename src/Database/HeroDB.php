@@ -23,6 +23,6 @@ use Illuminate\Database\Connection;
  * @method static void commit()
  * @method static Connection connection($connection = null)
  */
-class HerosDB extends Manager
+class HeroDB extends Manager
 {
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
+
 namespace Framework\Core;
 
 use Framework\Contract\ExceptionHandlerInterface;
@@ -43,7 +44,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
         Log::error($e->getMessage(), ['exception' => (string)$e]);
     }
 
-    public function render(HttpRequest $request, Throwable $e)
+    public function render(HttpRequest $request, Throwable $e): mixed
     {
         $error = $this->debug ? nl2br((string)$e) : 'Server internal error';
         return \response($error, 500);

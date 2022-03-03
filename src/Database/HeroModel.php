@@ -8,6 +8,6 @@ namespace Framework\Database;
 
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
-class HerosModel extends BaseModel
+class HeroModel extends BaseModel
 {
 }

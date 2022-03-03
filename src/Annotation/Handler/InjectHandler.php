@@ -11,7 +11,7 @@ return [
     Inject::class => function (ReflectionProperty $property, mixed $instance, \ReflectionAttribute $self) {
         $clazz = $property->getType()->getName();
         if (class_exists($clazz)) {
-            $resource = container()->get($clazz);
+            $resource = container($clazz);
             $property->setAccessible(true);
             $property->setValue($instance, $resource);
         }

@@ -14,7 +14,7 @@ use Monda\Utils\String\StringUtil;
  * Class Result
  * @package Framework\Util
  */
-class Result implements JsonAble
+class Res implements JsonAble
 {
     /**
      * @var bool 是否true false

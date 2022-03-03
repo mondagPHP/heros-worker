@@ -14,7 +14,6 @@ use Framework\Contract\BootstrapInterface;
 use Framework\Contract\JsonAble;
 use Framework\Core\Container;
 use Framework\Core\ExceptionHandler;
-use Framework\Core\Log;
 use Framework\Core\Scanner;
 use Framework\Exception\FileNotFoundException;
 use Framework\Exception\HerosException;
@@ -22,7 +21,7 @@ use Framework\Exception\RequestMethodException;
 use Framework\Http\HttpRequest;
 use Framework\Http\HttpResponse;
 use Framework\Http\Session;
-use Illuminate\Pagination\Paginator;
+use Monda\Utils\File\FileUtil;
 use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Request;
 use Workerman\Protocols\Http\Response;
@@ -74,11 +73,35 @@ class Application
     /**
      * @return void
      */
+    private function init(): void
+    {
+        $defaultTimezone = \config('app.default_timezone', 'Asia/Shanghai');
+        ini_set('session.gc_maxlifetime', (string)\config('session.gc_maxlifetime', '86400'));
+        ini_set('session.cookie_lifetime', (string)\config('session.cookie_lifetime', '86400'));
+        date_default_timezone_set($defaultTimezone);
+        $serverConfig = config('server', []);
+        $pidDir = dirname($serverConfig['pid_file']);
+        if (!file_exists($pidDir)) {
+            FileUtil::makeFileDirs($pidDir);
+        }
+        $stdoutLogDir = dirname($serverConfig['stdout_file']);
+        if (!file_exists($stdoutLogDir)) {
+            FileUtil::makeFileDirs($stdoutLogDir);
+        }
+        Worker::$pidFile = $serverConfig['pid_file'];
+        Worker::$stdoutFile = $serverConfig['stdout_file'];
+        TcpConnection::$defaultMaxPackageSize = $config['max_package_size'] ?? 10 * 1024 * 1024;
+    }
+
+    /**
+     * @return void
+     */
     public function run(): void
     {
+        $this->init();
         $this->config = config('server', []);
         $this->worker = new Worker($this->config['listen'], $this->config['context']);
-        $this->worker->reloadable = true;
+        $this->worker->reloadable = $this->config['reloadable'] ?? true;
         $maxRequestCount = (int)$this->config['max_request'];
         if ($maxRequestCount > 0) {
             static::$_maxRequestCount = $maxRequestCount;
@@ -114,13 +137,14 @@ class Application
             $className::start($worker);
         }
         Scanner::begin();
-        $this->dispatcher = container()->get(RouterCollector::class)->getDispatcher();
+        $this->dispatcher = container(RouterCollector::class)->getDispatcher();
     }
 
     /**
      * @throws \Exception
      */
-    public function onMessage(TcpConnection $connection, Request $request)
+    public
+    function onMessage(TcpConnection $connection, Request $request)
     {
         static $requestCount = 0;
         $httpSession = Session::init($request);
@@ -149,7 +173,6 @@ class Application
                     if (str_contains($path, '/.')) {
                         throw new HerosException('403 forbidden');
                     }
-                    //304
                     if ($this->notModifiedSince($request, $path)) {
                         $response = \response('', 304);
                     } else {
@@ -163,7 +186,6 @@ class Application
                     $httpRequest->setParams($vars);
                     $handler = $routeInfo[1];
                     $response = self::handlerRequestResult($handler($httpRequest));
-                    //加入缓存
                     static::$handlerMappings[$requestPath] = [
                         'handler' => $routeInfo[1],
                         'params' => $routeInfo[2],
@@ -174,8 +196,7 @@ class Application
             }
             self::send($connection, $response, $request);
         } catch (\Throwable $exception) {
-            Log::error($exception->getTraceAsString());
-            static::send($connection, static::exceptionResponse($exception, $httpRequest), $request);
+            static::send($connection, self::handlerRequestResult(static::exceptionResponse($exception, $httpRequest)), $request);
         }
     }
 
@@ -185,7 +206,8 @@ class Application
      * @param string $file
      * @return bool
      */
-    protected function notModifiedSince(Request $request, string $file): bool
+    protected
+    function notModifiedSince(Request $request, string $file): bool
     {
         $ifModifiedSince = $request->header('if-modified-since');
         if ($ifModifiedSince === null || !($mtime = \filemtime($file))) {
@@ -201,7 +223,8 @@ class Application
      * @param Request $request
      * @return void
      */
-    protected static function send(TcpConnection $connection, $response, Request $request)
+    protected
+    static function send(TcpConnection $connection, $response, Request $request)
     {
         $keepAlive = $request->header('connection');
         if (($keepAlive === null && $request->protocolVersion() === '1.1')
@@ -217,7 +240,8 @@ class Application
      * 定时器关闭，防止马上触发stopALL导致无法访问
      * @throws \Exception
      */
-    protected function tryToGracefulExit(): void
+    protected
+    function tryToGracefulExit(): void
     {
         if (static::$_gracefulStopTimer === null) {
             static::$_gracefulStopTimer = Timer::add(random_int(1, 10), function () {
@@ -233,7 +257,8 @@ class Application
      * @param mixed $responseObj
      * @return Response|HttpResponse
      */
-    private static function handlerRequestResult(mixed $responseObj): Response|HttpResponse
+    private
+    static function handlerRequestResult(mixed $responseObj): Response|HttpResponse
     {
         if ($responseObj instanceof Response) {
             $response = $responseObj;
@@ -252,9 +277,10 @@ class Application
     /**
      * @param \Throwable $e
      * @param HttpRequest $request
-     * @return HttpResponse
+     * @return mixed
      */
-    private static function exceptionResponse(\Throwable $e, HttpRequest $request): HttpResponse
+    private
+    static function exceptionResponse(\Throwable $e, HttpRequest $request): mixed
     {
         try {
             /** @var ExceptionHandler $exceptionHandler */
@@ -272,7 +298,8 @@ class Application
      * @param string $path
      * @return false|string
      */
-    private function findFile(string $path): bool|string
+    private
+    function findFile(string $path): bool|string
     {
         $file = \realpath(public_path() . '/' . trim($path, '/'));
         if (!$file) {

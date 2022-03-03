@@ -46,7 +46,7 @@ class Consumer
                     Log::error("{$class} not exist!");
                     continue;
                 }
-                $consumer = container()->get($class);
+                $consumer = container($class);
                 $connectionName = $consumer->connection ?? 'default';
                 $queue = $consumer->queue;
                 $connection = Client::connection($connectionName);

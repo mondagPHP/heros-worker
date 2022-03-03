@@ -33,7 +33,7 @@ return [
             $itemRequestMethod = strtoupper($itemRequestMethod);
         }
         /** @var RouterCollector $routerCollector */
-        $routerCollector = container()->get(RouterCollector::class);
+        $routerCollector = container(RouterCollector::class);
         $routerDispatch = static function (HttpRequest $request) use ($method, $instance) {
             $params = $request->getParams();
             //注入
@@ -94,9 +94,9 @@ return [
             return $method->invokeArgs($instance, $inputParams);
         };
         /** @var MiddleWareCollector $middlewareCollector */
-        $middlewareCollector = container()->get(MiddleWareCollector::class);
+        $middlewareCollector = container(MiddleWareCollector::class);
         $middlewares = $middlewareCollector->get($path);
-        $routerDispatch = container()->get(PipeLine::class)->create()->setClasses($middlewares)->run($routerDispatch);
+        $routerDispatch = container(PipeLine::class)->create()->setClasses($middlewares)->run($routerDispatch);
         foreach ($requestMethods ?? [] as $requestMethod) {
             $routerCollector->addRouter($requestMethod, strtolower($path), $routerDispatch);
         }

@@ -15,7 +15,7 @@ class RequestMapping
 
     public array $method;
 
-    public string $desc;
+    public string $name;
 
     /**
      * desc必填，保证代码可阅读
@@ -23,10 +23,10 @@ class RequestMapping
      * @param array $method
      * @param string $desc
      */
-    public function __construct(string $path, string $desc, array $method = ['GET'])
+    public function __construct(string $path, string $name, array $method = ['GET'])
     {
         $this->path = $path;
         $this->method = $method;
-        $this->desc = $desc;
+        $this->name = $name;
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
-
 use Framework\Application;
 use Framework\Contract\BootstrapInterface;
 use Framework\Core\Container;
@@ -16,7 +15,7 @@ use Framework\View\HerosTemplate;
 use Monda\Utils\Util\Config;
 
 //env_config
-if (!function_exists('env_config')) {
+if (! function_exists('env_config')) {
     function env_config(string $key, $default = null)
     {
         global $env;
@@ -27,14 +26,14 @@ if (!function_exists('env_config')) {
 /**
  * 公共方法
  */
-if (!function_exists('config_path')) {
+if (! function_exists('config_path')) {
     function config_path(): string
     {
         return BASE_PATH . '/config';
     }
 }
 
-if (!function_exists('app_path')) {
+if (! function_exists('app_path')) {
     function app_path(): string
     {
         return BASE_PATH . '/app';
@@ -44,14 +43,14 @@ if (!function_exists('app_path')) {
 /**
  * 运行环境
  */
-if (!function_exists('runtime_path')) {
+if (! function_exists('runtime_path')) {
     function runtime_path(): string
     {
         return BASE_PATH . '/runtime';
     }
 }
 
-if (!function_exists('public_path')) {
+if (! function_exists('public_path')) {
     function public_path(): string
     {
         return BASE_PATH . '/public';
@@ -61,7 +60,7 @@ if (!function_exists('public_path')) {
 /**
  * 基础路径
  */
-if (!function_exists('base_path')) {
+if (! function_exists('base_path')) {
     function base_path(): string
     {
         return BASE_PATH;
@@ -71,14 +70,14 @@ if (!function_exists('base_path')) {
 /**
  * 配置文件
  */
-if (!function_exists('config')) {
+if (! function_exists('config')) {
     function config(string $key, $default = null)
     {
         return Config::get($key, $default);
     }
 }
 
-if (!function_exists('container')) {
+if (! function_exists('container')) {
     function container(string $clazz): mixed
     {
         return Container::instance()->get($clazz);
@@ -90,7 +89,7 @@ if (!function_exists('container')) {
  * @param int $options
  * @return HttpResponse
  */
-if (!function_exists('json')) {
+if (! function_exists('json')) {
     function json(array $data, int $options = JSON_UNESCAPED_UNICODE): HttpResponse
     {
         return response(json_encode($data, $options), 200, ['Content-Type' => 'application/json']);
@@ -103,7 +102,7 @@ if (!function_exists('json')) {
  * @param array $headers
  * @return HttpResponse
  */
-if (!function_exists('redirect')) {
+if (! function_exists('redirect')) {
     function redirect(string $location, int $status = 302, array $headers = []): HttpResponse
     {
         $response = response('', $status, ['Location' => $location]);
@@ -118,7 +117,7 @@ if (!function_exists('redirect')) {
  * @param $worker
  * @param $class
  */
-if (!function_exists('worker_bind')) {
+if (! function_exists('worker_bind')) {
     function worker_bind($worker, $class)
     {
         $callbackMap = [
@@ -149,7 +148,7 @@ if (!function_exists('worker_bind')) {
  * @param string $body
  * @return \framework\http\Response
  */
-if (!function_exists('response')) {
+if (! function_exists('response')) {
     function response($body = '', $status = 200, $headers = []): HttpResponse
     {
         $response = HttpResponse::init();
@@ -166,28 +165,28 @@ if (!function_exists('response')) {
  * @param array $vars
  * @return string
  */
-if (!function_exists('view')) {
+if (! function_exists('view')) {
     function view(string $template, array $vars = []): string
     {
         return HerosTemplate::render($template, $vars);
     }
 }
 
-if (!function_exists('assign')) {
+if (! function_exists('assign')) {
     function assign(string $name, mixed $value): void
     {
         HerosTemplate::assign($name, $value);
     }
 }
 
-if (!function_exists('request')) {
+if (! function_exists('request')) {
     function request(): HttpRequest
     {
         return Application::$request;
     }
 }
 
-if (!function_exists('worker_start')) {
+if (! function_exists('worker_start')) {
     function worker_start(string $processName, array $config): void
     {
         $worker = new \Workerman\Worker($config['listen'] ?? null, $config['context'] ?? []);
@@ -213,7 +212,7 @@ if (!function_exists('worker_start')) {
                 $className::start($worker);
             }
             if (isset($config['handler'])) {
-                if (!class_exists($config['handler'])) {
+                if (! class_exists($config['handler'])) {
                     echo "process error: class {$config['handler']} not exists\r\n";
                     return;
                 }
@@ -228,7 +227,7 @@ if (!function_exists('worker_start')) {
  * 事件
  * @param $event
  */
-if (!function_exists('event')) {
+if (! function_exists('event')) {
     function event($event)
     {
         Event::dispatch($event);

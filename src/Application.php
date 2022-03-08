@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
-
 namespace Framework;
 
 use ErrorException;
@@ -73,29 +72,6 @@ class Application
     /**
      * @return void
      */
-    private function init(): void
-    {
-        $defaultTimezone = \config('app.default_timezone', 'Asia/Shanghai');
-        ini_set('session.gc_maxlifetime', (string)\config('session.gc_maxlifetime', '86400'));
-        ini_set('session.cookie_lifetime', (string)\config('session.cookie_lifetime', '86400'));
-        date_default_timezone_set($defaultTimezone);
-        $serverConfig = config('server', []);
-        $pidDir = dirname($serverConfig['pid_file']);
-        if (!file_exists($pidDir)) {
-            FileUtil::makeFileDirs($pidDir);
-        }
-        $stdoutLogDir = dirname($serverConfig['stdout_file']);
-        if (!file_exists($stdoutLogDir)) {
-            FileUtil::makeFileDirs($stdoutLogDir);
-        }
-        Worker::$pidFile = $serverConfig['pid_file'];
-        Worker::$stdoutFile = $serverConfig['stdout_file'];
-        TcpConnection::$defaultMaxPackageSize = $config['max_package_size'] ?? 10 * 1024 * 1024;
-    }
-
-    /**
-     * @return void
-     */
     public function run(): void
     {
         $this->init();
@@ -143,8 +119,7 @@ class Application
     /**
      * @throws \Exception
      */
-    public
-    function onMessage(TcpConnection $connection, Request $request)
+    public function onMessage(TcpConnection $connection, Request $request)
     {
         static $requestCount = 0;
         $httpSession = Session::init($request);
@@ -167,7 +142,7 @@ class Application
             switch ($routeInfo[0]) {
                 case Dispatcher::NOT_FOUND:
                     $path = $this->findFile($httpRequest->path());
-                    if (!$path) {
+                    if (! $path) {
                         throw new FileNotFoundException("file not found:{$httpRequest->path()}");
                     }
                     if (str_contains($path, '/.')) {
@@ -200,17 +175,15 @@ class Application
         }
     }
 
-
     /**
      * @param Request $request
      * @param string $file
      * @return bool
      */
-    protected
-    function notModifiedSince(Request $request, string $file): bool
+    protected function notModifiedSince(Request $request, string $file): bool
     {
         $ifModifiedSince = $request->header('if-modified-since');
-        if ($ifModifiedSince === null || !($mtime = \filemtime($file))) {
+        if ($ifModifiedSince === null || ! ($mtime = \filemtime($file))) {
             return false;
         }
         return $ifModifiedSince === \gmdate('D, d M Y H:i:s', $mtime) . ' GMT';
@@ -223,8 +196,7 @@ class Application
      * @param Request $request
      * @return void
      */
-    protected
-    static function send(TcpConnection $connection, $response, Request $request)
+    protected static function send(TcpConnection $connection, $response, Request $request)
     {
         $keepAlive = $request->header('connection');
         if (($keepAlive === null && $request->protocolVersion() === '1.1')
@@ -240,8 +212,7 @@ class Application
      * 定时器关闭，防止马上触发stopALL导致无法访问
      * @throws \Exception
      */
-    protected
-    function tryToGracefulExit(): void
+    protected function tryToGracefulExit(): void
     {
         if (static::$_gracefulStopTimer === null) {
             static::$_gracefulStopTimer = Timer::add(random_int(1, 10), function () {
@@ -254,11 +225,33 @@ class Application
     }
 
     /**
+     * @return void
+     */
+    private function init(): void
+    {
+        $defaultTimezone = \config('app.default_timezone', 'Asia/Shanghai');
+        ini_set('session.gc_maxlifetime', (string)\config('session.gc_maxlifetime', '86400'));
+        ini_set('session.cookie_lifetime', (string)\config('session.cookie_lifetime', '86400'));
+        date_default_timezone_set($defaultTimezone);
+        $serverConfig = config('server', []);
+        $pidDir = dirname($serverConfig['pid_file']);
+        if (! file_exists($pidDir)) {
+            FileUtil::makeFileDirs($pidDir);
+        }
+        $stdoutLogDir = dirname($serverConfig['stdout_file']);
+        if (! file_exists($stdoutLogDir)) {
+            FileUtil::makeFileDirs($stdoutLogDir);
+        }
+        Worker::$pidFile = $serverConfig['pid_file'];
+        Worker::$stdoutFile = $serverConfig['stdout_file'];
+        TcpConnection::$defaultMaxPackageSize = $config['max_package_size'] ?? 10 * 1024 * 1024;
+    }
+
+    /**
      * @param mixed $responseObj
      * @return Response|HttpResponse
      */
-    private
-    static function handlerRequestResult(mixed $responseObj): Response|HttpResponse
+    private static function handlerRequestResult(mixed $responseObj): Response|HttpResponse
     {
         if ($responseObj instanceof Response) {
             $response = $responseObj;
@@ -279,8 +272,7 @@ class Application
      * @param HttpRequest $request
      * @return mixed
      */
-    private
-    static function exceptionResponse(\Throwable $e, HttpRequest $request): mixed
+    private static function exceptionResponse(\Throwable $e, HttpRequest $request): mixed
     {
         try {
             /** @var ExceptionHandler $exceptionHandler */
@@ -298,14 +290,13 @@ class Application
      * @param string $path
      * @return false|string
      */
-    private
-    function findFile(string $path): bool|string
+    private function findFile(string $path): bool|string
     {
         $file = \realpath(public_path() . '/' . trim($path, '/'));
-        if (!$file) {
+        if (! $file) {
             return false;
         }
-        if (!str_starts_with($file, public_path())) {
+        if (! str_starts_with($file, public_path())) {
             return false;
         }
         if (false === \is_file($file)) {

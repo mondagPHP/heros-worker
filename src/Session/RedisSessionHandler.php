@@ -12,8 +12,8 @@ class RedisSessionHandler extends \Workerman\Protocols\Http\Session\RedisSession
 {
     public function __construct($config)
     {
-        if (!extension_loaded('redis')) {
-            throw new HerosException("please install redis ext");
+        if (! extension_loaded('redis')) {
+            throw new HerosException('please install redis ext');
         }
         parent::__construct($config);
     }

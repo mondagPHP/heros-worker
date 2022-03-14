@@ -253,6 +253,7 @@ class Application
         }
         Worker::$pidFile = $serverConfig['pid_file'];
         Worker::$stdoutFile = $serverConfig['stdout_file'];
+        Worker::$logFile = $serverConfig['log_file'];
         TcpConnection::$defaultMaxPackageSize = $config['max_package_size'] ?? 10 * 1024 * 1024;
     }
 

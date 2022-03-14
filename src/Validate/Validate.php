@@ -1364,6 +1364,7 @@ class Validate
      */
     protected function getDataValue(array $data, $key)
     {
+        $value = null;
         if (is_numeric($key)) {
             $value = $key;
         } elseif (is_string($key) && strpos($key, '.')) {

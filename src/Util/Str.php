@@ -40,17 +40,16 @@ class Str
      * @param  string|array $needles
      * @return bool
      */
-    #[Pure]
- public static function endsWith(string $haystack, $needles): bool
- {
-     foreach ((array) $needles as $needle) {
-         if ((string) $needle === static::substr($haystack, -static::length($needle))) {
-             return true;
+     public static function endsWith(string $haystack, $needles): bool
+     {
+         foreach ((array) $needles as $needle) {
+             if ((string) $needle === static::substr($haystack, -static::length($needle))) {
+                 return true;
+             }
          }
-     }
 
-     return false;
- }
+         return false;
+     }
 
     /**
      * 检查字符串是否以某些字符串开头

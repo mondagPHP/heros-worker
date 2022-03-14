@@ -4,6 +4,7 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
+
 namespace Framework\Queue;
 
 use Framework\Core\Log;
@@ -32,25 +33,27 @@ class Consumer
      */
     public function onWorkerStart(Worker $worker)
     {
-        $dirIterator = new \RecursiveDirectoryIterator($this->consumerDir);
-        $iterator = new \RecursiveIteratorIterator($dirIterator);
-        /**  @var \SplFileInfo $file */
-        foreach ($iterator as $file) {
-            if ($file->isDir()) {
-                continue;
-            }
-            $ext = $file->getExtension();
-            if ('php' === $ext) {
-                $class = '\\' . ucfirst(str_replace('/', '\\', substr(substr($file->getPath(), strlen(BASE_PATH)), 1))) . '\\' . substr($file->getFilename(), 0, -4);
-                if (! class_exists($class)) {
-                    Log::error("{$class} not exist!");
+        if (file_exists($this->consumerDir)) {
+            $dirIterator = new \RecursiveDirectoryIterator($this->consumerDir);
+            $iterator = new \RecursiveIteratorIterator($dirIterator);
+            /**  @var \SplFileInfo $file */
+            foreach ($iterator as $file) {
+                if ($file->isDir()) {
                     continue;
                 }
-                $consumer = container($class);
-                $connectionName = $consumer->connection ?? 'default';
-                $queue = $consumer->queue;
-                $connection = Client::connection($connectionName);
-                $connection->subscribe($queue, [$consumer, 'consume']);
+                $ext = $file->getExtension();
+                if ('php' === $ext) {
+                    $class = '\\' . ucfirst(str_replace('/', '\\', substr(substr($file->getPath(), strlen(BASE_PATH)), 1))) . '\\' . substr($file->getFilename(), 0, -4);
+                    if (!class_exists($class)) {
+                        Log::error("{$class} not exist!");
+                        continue;
+                    }
+                    $consumer = container($class);
+                    $connectionName = $consumer->connection ?? 'default';
+                    $queue = $consumer->queue;
+                    $connection = Client::connection($connectionName);
+                    $connection->subscribe($queue, [$consumer, 'consume']);
+                }
             }
         }
     }

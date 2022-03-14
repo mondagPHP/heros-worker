@@ -20,8 +20,8 @@ class RequestMapping
     /**
      * desc必填，保证代码可阅读
      * @param string $path
+     * @param string $name
      * @param array $method
-     * @param string $desc
      */
     public function __construct(string $path, string $name, array $method = ['GET'])
     {

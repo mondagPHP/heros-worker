@@ -85,7 +85,7 @@ class Res implements JsonAble
     }
 
     /**
-     * @return Result
+     * @return self
      *                设置成功
      */
     public static function ok(): self
@@ -96,7 +96,7 @@ class Res implements JsonAble
     }
 
     /**
-     * @return Result
+     * @return self
      *                错误
      */
     public static function error(): self
@@ -110,7 +110,7 @@ class Res implements JsonAble
      * @param int $total
      * @param $data
      * @param array $extra
-     * @return Result
+     * @return self
      *                      分页
      */
     public static function pager(int $total, $data, array $extra = []): self

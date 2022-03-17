@@ -35,10 +35,12 @@ return [
         /** @var RouterCollector $routerCollector */
         $routerCollector = container(RouterCollector::class);
         $routerDispatch = static function (HttpRequest $request) use ($method, $instance) {
+            //_initialize 初始化
+            if (method_exists($instance, '_initialize')) {
+                call_user_func([$instance, '_initialize']);
+            }
             $params = $request->getParams();
-            //注入
             $request->pushInjectObject($request);
-            $request->pushInjectObject($request->getSession());
             $extParams = $request->getInjectObject();
             //验证器Vo
             $validAttributes = $method->getAttributes(Valid::class);
@@ -98,7 +100,7 @@ return [
         $middlewares = $middlewareCollector->get($path);
         $routerDispatch = container(PipeLine::class)->create()->setClasses($middlewares)->run($routerDispatch);
         foreach ($requestMethods ?? [] as $requestMethod) {
-            $routerCollector->addRouter($requestMethod, strtolower($path), $routerDispatch);
+            $routerCollector->addRouter($requestMethod, $path, $routerDispatch);
         }
         return $instance;
     },

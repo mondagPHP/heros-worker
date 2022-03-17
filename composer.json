@@ -21,7 +21,9 @@
         "monolog/monolog": "^2.0",
         "workerman/workerman": "^4.0",
         "workerman/redis-queue": "^1.0",
-        "symfony/cache": "^6.0"
+        "symfony/console": ">=5.0",
+        "symfony/cache": "^6.0",
+        "nikic/php-parser": "^4.10.4"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
@@ -37,12 +39,6 @@
     },
     "suggest": {
         "ext-event": "For better performance. "
-    },
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://mirrors.aliyun.com/composer"
-        }
     },
     "scripts": {
         "cs": "composer dump -o && php-cs-fixer fix $1"

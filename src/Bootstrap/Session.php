@@ -17,7 +17,7 @@ use Workerman\Worker;
  */
 class Session implements BootstrapInterface
 {
-    public static function start(Worker $worker): void
+    public static function start(?Worker $worker): void
     {
         $config = config('session', []);
         if (isset($config['enable']) && $config['enable']) {

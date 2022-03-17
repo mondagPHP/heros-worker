@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
-
 namespace Framework\Core;
 
 /**
@@ -33,7 +32,7 @@ class Container
      */
     public static function instance()
     {
-        if (!static::$_instance) {
+        if (! static::$_instance) {
             static::$_instance = new IOC();
         }
         return static::$_instance;

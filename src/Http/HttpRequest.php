@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
-
 namespace Framework\Http;
 
 use Workerman\Protocols\Http\Request;
@@ -12,57 +11,21 @@ use Workerman\Protocols\Http\Request;
 /**
  * Class Request
  * @package Framework\Http
- * @method mixed get(?string $name = null, $default = null)
- * @method mixed post(?string $name = null, $default = null)
- * @method mixed header(?string $name = null, $default = null)
- * @method mixed cookie(?string $name = null, $default = null)
- * @method mixed file(?string $name = null)
- * @method string method()
- * @method string protocolVersion()
- * @method string host(bool $withoutPort = false)
- * @method string uri()
- * @method string path()
- * @method string queryString()
- * @method string sessionId()
- * @method string rawHead()
- * @method string rawBody()
- * @method string rawBuffer()
  */
-class HttpRequest
+class HttpRequest extends Request
 {
     private array $params;
 
     private array $injectObject = [];
 
-    private Request $request;
-
-    private Session $session;
-
-    private function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
-
-    /**
-     * @param string $name
-     * @param $arguments
-     * @return mixed
-     */
-    public function __call(string $name, $arguments)
-    {
-        return $this->request->{$name}(...$arguments);
-    }
-
     /**
      * @param Request $request
-     * @param Session $session
      * @return static
      */
-    public static function init(Request $request, Session $session): self
+    public static function init(Request $request): self
     {
         $httpRequest = new self($request);
         $httpRequest->setParams($request->get() + $request->post());
-        $httpRequest->setSession($session);
         return $httpRequest;
     }
 
@@ -90,22 +53,6 @@ class HttpRequest
     public function getParameter(string $name, $default = null): mixed
     {
         return $this->params[$name] ?? $default;
-    }
-
-    /**
-     * @return Session
-     */
-    public function getSession(): Session
-    {
-        return $this->session;
-    }
-
-    /**
-     * @param Session $session
-     */
-    public function setSession(Session $session): void
-    {
-        $this->session = $session;
     }
 
     /**

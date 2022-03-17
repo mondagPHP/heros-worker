@@ -4,18 +4,16 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
-
 namespace Framework\Session;
 
 use Framework\Exception\HerosException;
 
 class RedisClusterSessionHandler extends RedisSessionHandler
 {
-
     public function __construct(array $config)
     {
-        if (!extension_loaded('redis')) {
-            throw new HerosException("please install redis ext");
+        if (! extension_loaded('redis')) {
+            throw new HerosException('please install redis ext');
         }
         parent::__construct($config);
         $this->_maxLifeTime = (int)ini_get('session.gc_maxlifetime');

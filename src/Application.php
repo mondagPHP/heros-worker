@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
-
 namespace Framework;
 
 use ErrorException;
@@ -14,13 +13,13 @@ use Framework\Contract\BootstrapInterface;
 use Framework\Contract\JsonAble;
 use Framework\Core\Container;
 use Framework\Core\ExceptionHandler;
+use Framework\Core\Log;
 use Framework\Core\Scanner;
 use Framework\Exception\FileNotFoundException;
 use Framework\Exception\HerosException;
 use Framework\Exception\RequestMethodException;
 use Framework\Http\HttpRequest;
 use Framework\Http\HttpResponse;
-use Framework\Http\Session;
 use Monda\Utils\File\FileUtil;
 use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Request;
@@ -35,7 +34,7 @@ use Workerman\Worker;
  */
 class Application
 {
-    public const VERSION = '2.0.0';
+    public const VERSION = '2.0.5';
 
     /**
      * @var HttpRequest
@@ -68,38 +67,24 @@ class Application
      */
     protected static ?int $_gracefulStopTimer = null;
 
-    private static array $handlerMappings = [];
-
     /**
-     * @return void
+     * @var array 闭包mappings
      */
-    private function init(): void
-    {
-        $defaultTimezone = \config('app.default_timezone', 'Asia/Shanghai');
-        ini_set('session.gc_maxlifetime', (string)\config('session.gc_maxlifetime', '86400'));
-        ini_set('session.cookie_lifetime', (string)\config('session.cookie_lifetime', '86400'));
-        date_default_timezone_set($defaultTimezone);
-        $serverConfig = config('server', []);
-        $pidDir = dirname($serverConfig['pid_file']);
-        if (!file_exists($pidDir)) {
-            FileUtil::makeFileDirs($pidDir);
-        }
-        $stdoutLogDir = dirname($serverConfig['stdout_file']);
-        if (!file_exists($stdoutLogDir)) {
-            FileUtil::makeFileDirs($stdoutLogDir);
-        }
-        Worker::$pidFile = $serverConfig['pid_file'];
-        Worker::$stdoutFile = $serverConfig['stdout_file'];
-        TcpConnection::$defaultMaxPackageSize = $config['max_package_size'] ?? 10 * 1024 * 1024;
-    }
+    private static array $handlerMappings = [];
 
     /**
      * @return void
      */
     public function run(): void
     {
-        $this->init();
-        $this->config = config('server', []);
+        $this->initApp();
+        //增加默认值
+        $this->config = config('server', [
+            'listen' => 'http://0.0.0.0:8080',
+            'context' => [],
+            'reloadable' => 'true',
+            'max_request' => -1,
+        ]);
         $this->worker = new Worker($this->config['listen'], $this->config['context']);
         $this->worker->reloadable = $this->config['reloadable'] ?? true;
         $maxRequestCount = (int)$this->config['max_request'];
@@ -143,18 +128,16 @@ class Application
     /**
      * @throws \Exception
      */
-    public
-    function onMessage(TcpConnection $connection, Request $request)
+    public function onMessage(TcpConnection $connection, Request $request): void
     {
         static $requestCount = 0;
-        $httpSession = Session::init($request);
-        $httpRequest = HttpRequest::init($request, $httpSession);
+        $httpRequest = HttpRequest::init($request);
         static::$request = $httpRequest;
         if (++$requestCount > static::$_maxRequestCount) {
             $this->tryToGracefulExit();
         }
         try {
-            $requestPath = strtolower($httpRequest->path());
+            $requestPath = $httpRequest->path();
             //做了一层缓存，加快响应
             if (isset(static::$handlerMappings[$requestPath])) {
                 $vars = array_merge($request->get() + $request->post(), static::$handlerMappings[$requestPath]['params']);
@@ -167,8 +150,8 @@ class Application
             switch ($routeInfo[0]) {
                 case Dispatcher::NOT_FOUND:
                     $path = $this->findFile($httpRequest->path());
-                    if (!$path) {
-                        throw new FileNotFoundException("file not found:{$httpRequest->path()}");
+                    if (! $path) {
+                        throw new FileNotFoundException("path not found:{$httpRequest->path()}");
                     }
                     if (str_contains($path, '/.')) {
                         throw new HerosException('403 forbidden');
@@ -200,17 +183,15 @@ class Application
         }
     }
 
-
     /**
      * @param Request $request
      * @param string $file
      * @return bool
      */
-    protected
-    function notModifiedSince(Request $request, string $file): bool
+    protected function notModifiedSince(Request $request, string $file): bool
     {
         $ifModifiedSince = $request->header('if-modified-since');
-        if ($ifModifiedSince === null || !($mtime = \filemtime($file))) {
+        if ($ifModifiedSince === null || ! ($mtime = \filemtime($file))) {
             return false;
         }
         return $ifModifiedSince === \gmdate('D, d M Y H:i:s', $mtime) . ' GMT';
@@ -223,8 +204,7 @@ class Application
      * @param Request $request
      * @return void
      */
-    protected
-    static function send(TcpConnection $connection, $response, Request $request)
+    protected static function send(TcpConnection $connection, $response, Request $request)
     {
         $keepAlive = $request->header('connection');
         if (($keepAlive === null && $request->protocolVersion() === '1.1')
@@ -240,8 +220,7 @@ class Application
      * 定时器关闭，防止马上触发stopALL导致无法访问
      * @throws \Exception
      */
-    protected
-    function tryToGracefulExit(): void
+    protected function tryToGracefulExit(): void
     {
         if (static::$_gracefulStopTimer === null) {
             static::$_gracefulStopTimer = Timer::add(random_int(1, 10), function () {
@@ -254,11 +233,34 @@ class Application
     }
 
     /**
+     * @return void
+     */
+    private function initApp(): void
+    {
+        $defaultTimezone = \config('app.default_timezone', 'Asia/Shanghai');
+        ini_set('session.gc_maxlifetime', (string)\config('session.gc_maxlifetime', '86400'));
+        ini_set('session.cookie_lifetime', (string)\config('session.cookie_lifetime', '86400'));
+        date_default_timezone_set($defaultTimezone);
+        $serverConfig = config('server', []);
+        $pidDir = dirname($serverConfig['pid_file']);
+        if (! file_exists($pidDir)) {
+            FileUtil::makeFileDirs($pidDir);
+        }
+        $stdoutLogDir = dirname($serverConfig['stdout_file']);
+        if (! file_exists($stdoutLogDir)) {
+            FileUtil::makeFileDirs($stdoutLogDir);
+        }
+        Worker::$pidFile = $serverConfig['pid_file'];
+        Worker::$stdoutFile = $serverConfig['stdout_file'];
+        Worker::$logFile = $serverConfig['log_file'];
+        TcpConnection::$defaultMaxPackageSize = $config['max_package_size'] ?? 10 * 1024 * 1024;
+    }
+
+    /**
      * @param mixed $responseObj
      * @return Response|HttpResponse
      */
-    private
-    static function handlerRequestResult(mixed $responseObj): Response|HttpResponse
+    private static function handlerRequestResult(mixed $responseObj): Response|HttpResponse
     {
         if ($responseObj instanceof Response) {
             $response = $responseObj;
@@ -279,8 +281,7 @@ class Application
      * @param HttpRequest $request
      * @return mixed
      */
-    private
-    static function exceptionResponse(\Throwable $e, HttpRequest $request): mixed
+    private static function exceptionResponse(\Throwable $e, HttpRequest $request): mixed
     {
         try {
             /** @var ExceptionHandler $exceptionHandler */
@@ -288,7 +289,9 @@ class Application
             $exceptionHandler->report($e);
             return $exceptionHandler->render($request, $e);
         } catch (\Throwable $e) {
-            $message = config('app.debug') ? (string)$e : $e->getMessage();
+            //最后系统兜底处理异常
+            $message = ! config('app.debug') ? '系统出小差!' : $e->getMessage();
+            Log::error('application:' . $e->getMessage());
             return \response($message, 500, []);
         }
     }
@@ -298,14 +301,13 @@ class Application
      * @param string $path
      * @return false|string
      */
-    private
-    function findFile(string $path): bool|string
+    private function findFile(string $path): bool|string
     {
         $file = \realpath(public_path() . '/' . trim($path, '/'));
-        if (!$file) {
+        if (! $file) {
             return false;
         }
-        if (!str_starts_with($file, public_path())) {
+        if (! str_starts_with($file, public_path())) {
             return false;
         }
         if (false === \is_file($file)) {

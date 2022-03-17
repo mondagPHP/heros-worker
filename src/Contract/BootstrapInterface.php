@@ -13,8 +13,8 @@ interface BootstrapInterface
     /**
      * onWorkerStart
      *
-     * @param Worker $worker
+     * @param Worker|null $worker
      * @return void
      */
-    public static function start(Worker $worker):void;
+    public static function start(?Worker $worker):void;
 }

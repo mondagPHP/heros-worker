@@ -20,7 +20,7 @@ use Workerman\Worker;
  */
 class LaravelDB implements BootstrapInterface
 {
-    public static function start(Worker $worker): void
+    public static function start(?Worker $worker): void
     {
         if (! class_exists('\Illuminate\Database\Capsule\Manager')) {
             return;
@@ -42,8 +42,17 @@ class LaravelDB implements BootstrapInterface
             $dispatcher = $capsule->getEventDispatcher();
             if (! $dispatcher->hasListeners(QueryExecuted::class)) {
                 $dispatcher->listen(QueryExecuted::class, function ($query) {
-                    $sql = vsprintf(str_replace('?', "'%s'", $query->sql), $query->bindings) . " \t[" . $query->time . ' ms] ';
-                    Log::debug($sql);
+                    $location = collect(debug_backtrace())->filter(function ($trace) {
+                        return isset($trace['file']) && ! str_contains($trace['file'], 'vendor/');
+                    })->first();
+                    $bindings = implode(', ', $query->bindings);
+                    Log::debug('db.listen', [
+                        'Sql' => $query->sql,
+                        'Bindings' => $bindings,
+                        'Time' => $query->time,
+                        'File' => $location['file'],
+                        'Line' => $location['line']
+                    ]);
                 });
             }
         }

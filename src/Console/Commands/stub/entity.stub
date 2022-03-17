@@ -1,0 +1,22 @@
+<?php
+declare(strict_types=1);
+
+namespace {{namespace}};
+
+use Framework\Database\HeroModel;
+
+/**
+ * Class {{class}}
+ */
+class {{class}} extends HeroModel
+{
+    public $incrementing = true;
+
+    protected $table = '';
+
+    protected $connection = 'default';
+
+    protected $keyType = 'string';
+
+    protected $fillable = [];
+}

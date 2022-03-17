@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
-
+/**
+ * This file is part of monda-worker.
+ * @contact  mondagroup_php@163.com
+ */
 namespace Framework\Core;
 
 use Monda\Utils\Exception\NotFoundException;
@@ -22,8 +25,8 @@ class IOC implements ContainerInterface
      */
     public function get(string $id): mixed
     {
-        if (!isset($this->_instances[$id])) {
-            if (!class_exists($id)) {
+        if (! isset($this->_instances[$id])) {
+            if (! class_exists($id)) {
                 throw new NotFoundException("Class '$id' not found");
             }
             $this->_instances[$id] = new $id();
@@ -47,7 +50,7 @@ class IOC implements ContainerInterface
      */
     public function make(string $name, array $constructor = []): mixed
     {
-        if (!class_exists($name)) {
+        if (! class_exists($name)) {
             throw new NotFoundException("Class '$name' not found");
         }
         return new $name(... array_values($constructor));

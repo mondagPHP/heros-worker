@@ -25,7 +25,6 @@ class HttpRequest extends Request
     public static function init(Request $request): self
     {
         $httpRequest = new self($request);
-        //get、post to set
         $httpRequest->setParams($request->get() + $request->post());
         return $httpRequest;
     }

@@ -5,7 +5,6 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
-
 use Framework\Annotation\RequestMapping;
 use Framework\Annotation\Valid;
 use Framework\Annotation\VO;
@@ -26,7 +25,7 @@ return [
         if ('' === $path) {
             return $instance;
         }
-        if (!str_starts_with($path, '/')) {
+        if (! str_starts_with($path, '/')) {
             $path = '/' . $path;
         }
         $requestMethods = $requestMapping->method;
@@ -49,7 +48,7 @@ return [
                 /** @var Valid $methodValidInstance */
                 $methodValidInstance = $validAttribute->newInstance();
                 $methodVInstance = new $methodValidInstance->class;
-                if (!$methodVInstance instanceof Validate) {
+                if (! $methodVInstance instanceof Validate) {
                     continue;
                 }
                 $methodVInstance->valid($methodValidInstance->scene);
@@ -69,7 +68,7 @@ return [
                         }
                     } else {
                         $parameterClass = $reflectionParameter->getType()->getName();
-                        if (!class_exists($parameterClass)) {
+                        if (! class_exists($parameterClass)) {
                             throw new ClassNotFoundException("{$parameterClass} not found!");
                         }
                         $reflectionClass = new ReflectionClass($parameterClass);

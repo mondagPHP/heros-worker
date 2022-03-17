@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
-
 namespace Framework;
 
 use ErrorException;
@@ -151,7 +150,7 @@ class Application
             switch ($routeInfo[0]) {
                 case Dispatcher::NOT_FOUND:
                     $path = $this->findFile($httpRequest->path());
-                    if (!$path) {
+                    if (! $path) {
                         throw new FileNotFoundException("path not found:{$httpRequest->path()}");
                     }
                     if (str_contains($path, '/.')) {
@@ -192,7 +191,7 @@ class Application
     protected function notModifiedSince(Request $request, string $file): bool
     {
         $ifModifiedSince = $request->header('if-modified-since');
-        if ($ifModifiedSince === null || !($mtime = \filemtime($file))) {
+        if ($ifModifiedSince === null || ! ($mtime = \filemtime($file))) {
             return false;
         }
         return $ifModifiedSince === \gmdate('D, d M Y H:i:s', $mtime) . ' GMT';
@@ -244,11 +243,11 @@ class Application
         date_default_timezone_set($defaultTimezone);
         $serverConfig = config('server', []);
         $pidDir = dirname($serverConfig['pid_file']);
-        if (!file_exists($pidDir)) {
+        if (! file_exists($pidDir)) {
             FileUtil::makeFileDirs($pidDir);
         }
         $stdoutLogDir = dirname($serverConfig['stdout_file']);
-        if (!file_exists($stdoutLogDir)) {
+        if (! file_exists($stdoutLogDir)) {
             FileUtil::makeFileDirs($stdoutLogDir);
         }
         Worker::$pidFile = $serverConfig['pid_file'];
@@ -291,8 +290,8 @@ class Application
             return $exceptionHandler->render($request, $e);
         } catch (\Throwable $e) {
             //最后系统兜底处理异常
-            $message = !config('app.debug') ? "系统出小差!" : $e->getMessage();
-            Log::error("application:" . $e->getMessage());
+            $message = ! config('app.debug') ? '系统出小差!' : $e->getMessage();
+            Log::error('application:' . $e->getMessage());
             return \response($message, 500, []);
         }
     }
@@ -305,10 +304,10 @@ class Application
     private function findFile(string $path): bool|string
     {
         $file = \realpath(public_path() . '/' . trim($path, '/'));
-        if (!$file) {
+        if (! $file) {
             return false;
         }
-        if (!str_starts_with($file, public_path())) {
+        if (! str_starts_with($file, public_path())) {
             return false;
         }
         if (false === \is_file($file)) {

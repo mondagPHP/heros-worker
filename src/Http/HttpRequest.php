@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
-
 namespace Framework\Http;
 
 use Workerman\Protocols\Http\Request;
@@ -18,7 +17,6 @@ class HttpRequest extends Request
     private array $params;
 
     private array $injectObject = [];
-
 
     /**
      * @param Request $request
@@ -57,7 +55,6 @@ class HttpRequest extends Request
     {
         return $this->params[$name] ?? $default;
     }
-
 
     /**
      * @param object $object

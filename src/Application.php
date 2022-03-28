@@ -98,7 +98,7 @@ class Application
             }
         }
         $this->worker->onWorkerStart = [$this, 'onWorkerStart'];
-        worker_bind($this->worker, $this);
+        worker_bind($this->worker, $this,false);
     }
 
     /**

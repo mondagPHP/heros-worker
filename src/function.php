@@ -118,7 +118,7 @@ if (! function_exists('redirect')) {
  * @param $class
  */
 if (! function_exists('worker_bind')) {
-    function worker_bind($worker, $class)
+    function worker_bind($worker, $class, $toWorkerStart = true)
     {
         $callbackMap = [
             'onConnect',
@@ -134,6 +134,9 @@ if (! function_exists('worker_bind')) {
             if (method_exists($class, $name)) {
                 $worker->$name = [$class, $name];
             }
+        }
+        if ($toWorkerStart && method_exists($class, 'onWorkerStart')) {
+            call_user_func([$class, 'onWorkerStart'], $worker);
         }
     }
 }

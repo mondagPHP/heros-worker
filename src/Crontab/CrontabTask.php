@@ -10,6 +10,7 @@ namespace Framework\Crontab;
 use Framework\Component\StdoutLogger;
 use Framework\Contract\CronInterface;
 use Workerman\Connection\AsyncTcpConnection;
+use Workerman\Worker;
 
 /**
  * 采用异步通知消息来完成定时任务
@@ -22,9 +23,10 @@ class CrontabTask implements CronInterface
     protected static array $cronList = [];
 
     /**
+     * @param Worker|null $worker
      * @return void
      */
-    public function onWorkerStart(): void
+    public function onWorkerStart(?Worker $worker): void
     {
         foreach (self::$cronList ?? [] as $cron) {
             new Crontab($cron['rule'], static function () use ($cron) {

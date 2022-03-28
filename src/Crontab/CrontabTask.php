@@ -28,9 +28,9 @@ class CrontabTask implements CronInterface
      */
     public function onWorkerStart(?Worker $worker): void
     {
-        foreach (self::$cronList ?? [] as $cron) {
+        foreach (static::$cronList ?? [] as $cron) {
             new Crontab($cron['rule'], static function () use ($cron) {
-                self::delivery($cron['task'][0], $cron['task'][1], $cron['memo']);
+                static::delivery($cron['task'][0], $cron['task'][1], $cron['memo']);
             });
         }
     }
@@ -39,7 +39,7 @@ class CrontabTask implements CronInterface
      * 投递到异步进程.
      * @throws \Exception
      */
-    public static function delivery(string $clazz, string $method, string $memo): void
+    private static function delivery(string $clazz, string $method, string $memo): void
     {
         $taskConnection = new AsyncTcpConnection(config('app.async_worker'));
         $lock = new CrontabSingleLock("{$clazz}{$method}");

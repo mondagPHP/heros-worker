@@ -34,7 +34,7 @@ use Workerman\Worker;
  */
 class Application
 {
-    public const VERSION = '2.0.5';
+    public const VERSION = '2.0.6';
 
     /**
      * @var HttpRequest
@@ -97,6 +97,7 @@ class Application
                 $this->worker->{$property} = $this->config[$property];
             }
         }
+        $this->worker->onWorkerStart = [$this, 'onWorkerStart'];
         worker_bind($this->worker, $this);
     }
 

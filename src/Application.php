@@ -34,7 +34,7 @@ use Workerman\Worker;
  */
 class Application
 {
-    public const VERSION = '2.0.7';
+    public const VERSION = '2.0.9';
 
     /**
      * @var HttpRequest

@@ -77,7 +77,7 @@ class Application
      */
     public function run(): void
     {
-        $this->initApp();
+        $this->init();
         //增加默认值
         $this->config = config('server', [
             'listen' => 'http://0.0.0.0:8080',
@@ -226,7 +226,7 @@ class Application
         if (static::$_gracefulStopTimer === null) {
             static::$_gracefulStopTimer = Timer::add(random_int(1, 10), function () {
                 if (\count($this->worker->connections) === 0) {
-                    self::$handlerMappings = [];
+                    static::$handlerMappings = [];
                     Worker::stopAll();
                 }
             });
@@ -236,11 +236,11 @@ class Application
     /**
      * @return void
      */
-    private function initApp(): void
+    private function init(): void
     {
-        $defaultTimezone = \config('app.default_timezone', 'Asia/Shanghai');
         ini_set('session.gc_maxlifetime', (string)\config('session.gc_maxlifetime', '86400'));
         ini_set('session.cookie_lifetime', (string)\config('session.cookie_lifetime', '86400'));
+        $defaultTimezone = \config('app.default_timezone', 'Asia/Shanghai');
         date_default_timezone_set($defaultTimezone);
         $serverConfig = config('server', []);
         $pidDir = dirname($serverConfig['pid_file']);

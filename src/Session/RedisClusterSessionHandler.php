@@ -10,6 +10,9 @@ use Framework\Exception\HerosException;
 
 class RedisClusterSessionHandler extends RedisSessionHandler
 {
+    /**
+     * @throws \RedisClusterException
+     */
     public function __construct(array $config)
     {
         if (! extension_loaded('redis')) {
@@ -18,10 +21,10 @@ class RedisClusterSessionHandler extends RedisSessionHandler
         parent::__construct($config);
         $this->_maxLifeTime = (int)ini_get('session.gc_maxlifetime');
         $timeout = $config['timeout'] ?? 2;
-        $read_timeout = $config['read_timeout'] ?? $timeout;
+        $readTimeout = $config['read_timeout'] ?? $timeout;
         $persistent = $config['persistent'] ?? false;
         $auth = $config['auth'] ?? '';
-        $args = [null, $config['host'], $timeout, $read_timeout, $persistent];
+        $args = [null, $config['host'], $timeout, $readTimeout, $persistent];
         if ($auth) {
             $args[] = $auth;
         }

@@ -70,15 +70,16 @@ class Application
     /**
      * @var array 闭包mappings
      */
-    private static array $handlerMappings = [];
+    protected static array $handlerMappings = [];
 
     /**
      * @return void
+     * @noinspection PhpFieldAssignmentTypeMismatchInspection
      */
     public function run(): void
     {
         $this->init();
-        //增加默认值
+        //增加默认值,
         $this->config = config('server', [
             'listen' => 'http://0.0.0.0:8080',
             'context' => [],
@@ -98,7 +99,7 @@ class Application
             }
         }
         $this->worker->onWorkerStart = [$this, 'onWorkerStart'];
-        worker_bind($this->worker, $this,false);
+        worker_bind($this->worker, $this, false);
     }
 
     /**
@@ -143,8 +144,9 @@ class Application
             if (isset(static::$handlerMappings[$requestPath])) {
                 $vars = array_merge($request->get() + $request->post(), static::$handlerMappings[$requestPath]['params']);
                 $httpRequest->setParams($vars);
-                $response = self::handlerRequestResult(static::$handlerMappings[$requestPath]['handler']($httpRequest));
-                self::send($connection, $response, $request);
+                $cacheHandler = static::$handlerMappings[$requestPath]['handler'];
+                $response = static::handlerRequestResult($cacheHandler($httpRequest));
+                static::send($connection, $response, $request);
                 return;
             }
             $routeInfo = $this->dispatcher->dispatch($httpRequest->method(), $requestPath);
@@ -169,7 +171,7 @@ class Application
                     $vars = array_merge($request->get() + $request->post(), $routeInfo[2]);
                     $httpRequest->setParams($vars);
                     $handler = $routeInfo[1];
-                    $response = self::handlerRequestResult($handler($httpRequest));
+                    $response = static::handlerRequestResult($handler($httpRequest));
                     static::$handlerMappings[$requestPath] = [
                         'handler' => $routeInfo[1],
                         'params' => $routeInfo[2],
@@ -178,9 +180,9 @@ class Application
                 default:
                     throw new HerosException("fast route error.{$httpRequest->path()}!");
             }
-            self::send($connection, $response, $request);
+            static::send($connection, $response, $request);
         } catch (\Throwable $exception) {
-            static::send($connection, self::handlerRequestResult(static::exceptionResponse($exception, $httpRequest)), $request);
+            static::send($connection, static::handlerRequestResult(static::exceptionResponse($exception, $httpRequest)), $request);
         }
     }
 

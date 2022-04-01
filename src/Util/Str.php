@@ -16,13 +16,13 @@ class Str
 
     /**
      * 检查字符串中是否包含某些字符串
-     * @param string       $haystack
-     * @param string|array $needles
+     * @param string $haystack
+     * @param array $needles
      * @return bool
      */
-    public static function contains(string $haystack, $needles): bool
+    public static function contains(string $haystack, array $needles): bool
     {
-        foreach ((array) $needles as $needle) {
+        foreach ($needles as $needle) {
             if ('' != $needle && mb_strpos($haystack, $needle) !== false) {
                 return true;
             }
@@ -34,13 +34,13 @@ class Str
     /**
      * 检查字符串是否以某些字符串结尾
      *
-     * @param  string       $haystack
-     * @param  string|array $needles
+     * @param string $haystack
+     * @param array $needles
      * @return bool
      */
-    public static function endsWith(string $haystack, $needles): bool
+    public static function endsWith(string $haystack, array $needles): bool
     {
-        foreach ((array) $needles as $needle) {
+        foreach ($needles as $needle) {
             if ((string) $needle === static::substr($haystack, -static::length($needle))) {
                 return true;
             }
@@ -52,13 +52,13 @@ class Str
     /**
      * 检查字符串是否以某些字符串开头
      *
-     * @param  string       $haystack
-     * @param  string|array $needles
+     * @param string $haystack
+     * @param array $needles
      * @return bool
      */
-    public static function startsWith(string $haystack, $needles): bool
+    public static function startsWith(string $haystack, array $needles): bool
     {
-        foreach ((array) $needles as $needle) {
+        foreach ($needles as $needle) {
             if ('' != $needle && mb_strpos($haystack, $needle) === 0) {
                 return true;
             }

@@ -195,9 +195,9 @@ use Workerman\Timer;
 class Redis
 {
     /**
-     * @var RedisManager
+     * @var RedisManager|null
      */
-    protected static $_instance = null;
+    protected static ?RedisManager $_instance = null;
 
     /**
      * @param $name
@@ -221,8 +221,6 @@ class Redis
         return static::$_instance;
     }
 
-
-
     /**
      * @param string $name
      * @return Connection
@@ -231,8 +229,8 @@ class Redis
     {
         static $timers = [];
         $connection = static::instance()->connection($name);
-        if (!isset($timers[$name])) {
-            $timers[$name] = Timer::add(config("redis.{$name}.ping") ?? 55, function() use ($connection) {
+        if (! isset($timers[$name])) {
+            $timers[$name] = Timer::add(config("redis.{$name}.ping") ?? 55, function () use ($connection) {
                 $connection->get('ping');
             });
         }

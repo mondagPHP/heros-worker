@@ -21,7 +21,7 @@ class MiddleWareCollector
     {
         $config = config('middleware', []);
         ksort($config);
-        $this->middlewares = $config;
+        $this->middlewares = (array)$config;
     }
 
     /**

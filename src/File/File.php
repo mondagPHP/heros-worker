@@ -172,8 +172,6 @@ class File extends SplFileInfo
     {
         $originalName = str_replace('\\', '/', $name);
         $pos = strrpos($originalName, '/');
-        $originalName = false === $pos ? $originalName : substr($originalName, $pos + 1);
-
-        return $originalName;
+        return false === $pos ? $originalName : substr($originalName, $pos + 1);
     }
 }

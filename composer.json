@@ -12,6 +12,7 @@
         "ext-curl": "*",
         "ext-zlib": "*",
         "ext-fileinfo": "*",
+        "ext-pdo": "*",
         "mondagroup/heros-utils": "^1.0",
         "nikic/fast-route": "^1.3",
         "illuminate/redis": "^8.0",

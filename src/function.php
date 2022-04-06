@@ -250,3 +250,58 @@ if (! function_exists('check_port_bind_able')) {
         return true;
     }
 }
+
+/**
+ * Phar support.
+ * Compatible with the 'realpath' function in the phar file.
+ *
+ * @param string $file_path
+ * @return string
+ */
+if (! function_exists('get_real_path')) {
+    function get_real_path(string $filePath): string
+    {
+        if (str_starts_with($filePath, 'phar://')) {
+            return $filePath;
+        } else {
+            return realpath($filePath);
+        }
+    }
+}
+
+/**
+ * @return bool
+ */
+if (! function_exists('is_phar')) {
+    function is_phar(): bool
+    {
+        return class_exists(\Phar::class, false) && Phar::running();
+    }
+}
+
+/**
+ * @param mixed $key
+ * @param mixed $default
+ * @return mixed
+ */
+if (! function_exists('session')) {
+    function session(?string $key = null, $default = null)
+    {
+        $session = request()->session();
+        if (null === $key) {
+            return $session;
+        }
+        if (\strpos($key, '.')) {
+            $key_array = \explode('.', $key);
+            $value = $session->all();
+            foreach ($key_array as $index) {
+                if (!isset($value[$index])) {
+                    return $default;
+                }
+                $value = $value[$index];
+            }
+            return $value;
+        }
+        return $session->get($key, $default);
+    }
+}

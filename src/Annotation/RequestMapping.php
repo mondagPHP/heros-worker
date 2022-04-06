@@ -19,7 +19,7 @@ class RequestMapping
     public string $name;
 
     /**
-     * desc必填，保证代码可阅读
+     * desc必填
      * @param string $path
      * @param string $name
      * @param array $method

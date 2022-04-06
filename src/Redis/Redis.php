@@ -8,6 +8,7 @@ namespace Framework\Redis;
 
 use Illuminate\Redis\Connections\Connection;
 use Illuminate\Redis\RedisManager;
+use Workerman\Timer;
 
 /**
  * Class Redis
@@ -194,9 +195,9 @@ use Illuminate\Redis\RedisManager;
 class Redis
 {
     /**
-     * @var RedisManager
+     * @var RedisManager|null
      */
-    protected static $_instance = null;
+    protected static ?RedisManager $_instance = null;
 
     /**
      * @param $name
@@ -224,8 +225,15 @@ class Redis
      * @param string $name
      * @return Connection
      */
-    public static function connection(string $name = 'default'): Connection
+    public static function connection(string $name = 'default'):Connection
     {
-        return static::instance()->connection($name);
+        static $timers = [];
+        $connection = static::instance()->connection($name);
+        if (! isset($timers[$name])) {
+            $timers[$name] = Timer::add(config("redis.{$name}.ping") ?? 55, function () use ($connection) {
+                $connection->get('ping');
+            });
+        }
+        return $connection;
     }
 }

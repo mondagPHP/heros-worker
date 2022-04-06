@@ -6,7 +6,9 @@ declare(strict_types=1);
  */
 namespace Framework\Contract;
 
+use Workerman\Worker;
+
 interface CronInterface
 {
-    public function onWorkerStart(): void;
+    public function onWorkerStart(?Worker $worker): void;
 }

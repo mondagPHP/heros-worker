@@ -29,14 +29,14 @@ if (! function_exists('env_config')) {
 if (! function_exists('config_path')) {
     function config_path(): string
     {
-        return BASE_PATH . '/config';
+        return base_path() . '/config';
     }
 }
 
 if (! function_exists('app_path')) {
     function app_path(): string
     {
-        return BASE_PATH . '/app';
+        return base_path() . '/app';
     }
 }
 
@@ -46,14 +46,14 @@ if (! function_exists('app_path')) {
 if (! function_exists('runtime_path')) {
     function runtime_path(): string
     {
-        return BASE_PATH . '/runtime';
+        return base_path() . '/runtime';
     }
 }
 
 if (! function_exists('public_path')) {
     function public_path(): string
     {
-        return BASE_PATH . '/public';
+        return base_path() . '/public';
     }
 }
 
@@ -118,7 +118,7 @@ if (! function_exists('redirect')) {
  * @param $class
  */
 if (! function_exists('worker_bind')) {
-    function worker_bind($worker, $class)
+    function worker_bind($worker, $class, $toWorkerStart = true)
     {
         $callbackMap = [
             'onConnect',
@@ -135,7 +135,7 @@ if (! function_exists('worker_bind')) {
                 $worker->$name = [$class, $name];
             }
         }
-        if (method_exists($class, 'onWorkerStart')) {
+        if ($toWorkerStart && method_exists($class, 'onWorkerStart')) {
             call_user_func([$class, 'onWorkerStart'], $worker);
         }
     }
@@ -231,5 +231,22 @@ if (! function_exists('event')) {
     function event($event)
     {
         Event::dispatch($event);
+    }
+}
+
+/**
+ * 检查端口是否可以被绑定
+ * @author flynetcn
+ */
+if (! function_exists('check_port_bind_able')) {
+    function check_port_bind_able(string $host, int $port, &$errno = null, &$errstr = null): bool
+    {
+        $socket = @stream_socket_server("tcp://$host:$port", $errno, $errstr);
+        if (! $socket) {
+            return false;
+        }
+        fclose($socket);
+        unset($socket);
+        return true;
     }
 }

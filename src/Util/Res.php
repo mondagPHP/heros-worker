@@ -139,7 +139,7 @@ class Res implements JsonAble
     }
 
     /**
-     * @param $data
+     * @param array $data
      *
      * @return $this
      *               设置数据

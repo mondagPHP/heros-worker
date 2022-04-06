@@ -34,7 +34,7 @@ use Workerman\Worker;
  */
 class Application
 {
-    public const VERSION = '2.0.5';
+    public const VERSION = '2.0.10';
 
     /**
      * @var HttpRequest
@@ -70,15 +70,16 @@ class Application
     /**
      * @var array 闭包mappings
      */
-    private static array $handlerMappings = [];
+    protected static array $handlerMappings = [];
 
     /**
      * @return void
+     * @noinspection PhpFieldAssignmentTypeMismatchInspection
      */
     public function run(): void
     {
-        $this->initApp();
-        //增加默认值
+        $this->init();
+        //增加默认值,
         $this->config = config('server', [
             'listen' => 'http://0.0.0.0:8080',
             'context' => [],
@@ -97,7 +98,8 @@ class Application
                 $this->worker->{$property} = $this->config[$property];
             }
         }
-        worker_bind($this->worker, $this);
+        $this->worker->onWorkerStart = [$this, 'onWorkerStart'];
+        worker_bind($this->worker, $this, false);
     }
 
     /**
@@ -142,8 +144,9 @@ class Application
             if (isset(static::$handlerMappings[$requestPath])) {
                 $vars = array_merge($request->get() + $request->post(), static::$handlerMappings[$requestPath]['params']);
                 $httpRequest->setParams($vars);
-                $response = self::handlerRequestResult(static::$handlerMappings[$requestPath]['handler']($httpRequest));
-                self::send($connection, $response, $request);
+                $cacheHandler = static::$handlerMappings[$requestPath]['handler'];
+                $response = static::handlerRequestResult($cacheHandler($httpRequest));
+                static::send($connection, $response, $request);
                 return;
             }
             $routeInfo = $this->dispatcher->dispatch($httpRequest->method(), $requestPath);
@@ -168,7 +171,7 @@ class Application
                     $vars = array_merge($request->get() + $request->post(), $routeInfo[2]);
                     $httpRequest->setParams($vars);
                     $handler = $routeInfo[1];
-                    $response = self::handlerRequestResult($handler($httpRequest));
+                    $response = static::handlerRequestResult($handler($httpRequest));
                     static::$handlerMappings[$requestPath] = [
                         'handler' => $routeInfo[1],
                         'params' => $routeInfo[2],
@@ -177,9 +180,9 @@ class Application
                 default:
                     throw new HerosException("fast route error.{$httpRequest->path()}!");
             }
-            self::send($connection, $response, $request);
+            static::send($connection, $response, $request);
         } catch (\Throwable $exception) {
-            static::send($connection, self::handlerRequestResult(static::exceptionResponse($exception, $httpRequest)), $request);
+            static::send($connection, static::handlerRequestResult(static::exceptionResponse($exception, $httpRequest)), $request);
         }
     }
 
@@ -225,7 +228,7 @@ class Application
         if (static::$_gracefulStopTimer === null) {
             static::$_gracefulStopTimer = Timer::add(random_int(1, 10), function () {
                 if (\count($this->worker->connections) === 0) {
-                    self::$handlerMappings = [];
+                    static::$handlerMappings = [];
                     Worker::stopAll();
                 }
             });
@@ -235,11 +238,11 @@ class Application
     /**
      * @return void
      */
-    private function initApp(): void
+    private function init(): void
     {
-        $defaultTimezone = \config('app.default_timezone', 'Asia/Shanghai');
         ini_set('session.gc_maxlifetime', (string)\config('session.gc_maxlifetime', '86400'));
         ini_set('session.cookie_lifetime', (string)\config('session.cookie_lifetime', '86400'));
+        $defaultTimezone = \config('app.default_timezone', 'Asia/Shanghai');
         date_default_timezone_set($defaultTimezone);
         $serverConfig = config('server', []);
         $pidDir = dirname($serverConfig['pid_file']);
@@ -285,7 +288,11 @@ class Application
     {
         try {
             /** @var ExceptionHandler $exceptionHandler */
-            $exceptionHandler = Container::make(config('exception.handler', ExceptionHandler::class), [config('app.debug')]);
+            if (class_exists("App\Exception\Handler")) {
+                $exceptionHandler = Container::make("App\Exception\Handler", [config('app.debug')]);
+            } else {
+                $exceptionHandler = Container::make(ExceptionHandler::class, [config('app.debug')]);
+            }
             $exceptionHandler->report($e);
             return $exceptionHandler->render($request, $e);
         } catch (\Throwable $e) {

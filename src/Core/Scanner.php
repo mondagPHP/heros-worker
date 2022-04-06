@@ -24,7 +24,7 @@ class Scanner
         self::$annotationHandlers = self::initAnnotationHandlers();
         $scans = [
             dirname(__DIR__) . '/Component' => 'Framework\\Component',
-            BASE_PATH . '/app' => 'App\\',
+            base_path() . '/app' => 'App\\',
         ];
         foreach ($scans ?? [] as $scanDir => $scanRootNamespace) {
             self::scanBeans($scanDir, $scanRootNamespace); //扫描

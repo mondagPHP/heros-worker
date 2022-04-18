@@ -74,7 +74,6 @@ class Application
 
     /**
      * @return void
-     * @noinspection PhpFieldAssignmentTypeMismatchInspection
      */
     public function run(): void
     {

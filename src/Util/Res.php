@@ -62,14 +62,14 @@ class Res implements JsonAble
     {
         $array = [
             'code' => $this->code,
-            'success' => $this->success,
-            'message' => $this->message,
+            'succ' => $this->success,
+            'msg' => $this->message,
         ];
         //是否分页
         if ($this->isUsePage === 1) {
             $array['data']['result'] = $this->data ?? [];
             $array['data']['pager'] = [
-                'currentPage' => optional($this->pager)->currentPage,
+                'page' => optional($this->pager)->currentPage,
                 'pageSize' => $this->pager->pageSize,
                 'total' => $this->pager->total,
                 'totalPage' => 0 != $this->pager->pageSize ? ceil($this->pager->total / $this->pager->pageSize) : 0

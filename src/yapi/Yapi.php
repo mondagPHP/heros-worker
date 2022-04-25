@@ -10,8 +10,11 @@ namespace framework\yapi;
 class Yapi
 {
     private $config;
+
     private $scanPath = [];
+
     private $controllerMap;
+
     private $methodMap;
 
     private function __construct(string $module)

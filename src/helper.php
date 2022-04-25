@@ -271,7 +271,7 @@ if (! function_exists('request')) {
  * 获取控制器自动验证-vo对象闭包别名
  */
 if (! function_exists('getLoadVoClosureName')) {
-    function getLoadVoClosureName(string $voClass)
+    function getLoadVoClosureName(string $voClass): string
     {
         return $voClass . '.ClosureAliasName';
     }

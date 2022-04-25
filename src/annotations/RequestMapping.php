@@ -17,6 +17,8 @@ use Doctrine\Common\Annotations\Annotation\Target;
 class RequestMapping
 {
     public $value = '';
+
     public $method = [];
+
     public $msg = '';
 }

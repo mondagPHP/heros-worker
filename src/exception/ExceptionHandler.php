@@ -19,6 +19,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
      */
     public $ignoreReport = [
     ];
+
     /**
      * @var LoggerInterface
      */

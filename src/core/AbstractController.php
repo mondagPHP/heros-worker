@@ -15,6 +15,7 @@ use framework\util\Arr;
 abstract class AbstractController
 {
     protected $middlewares = [];
+
     /**
      * 注册initialize方法
      * Controller constructor.

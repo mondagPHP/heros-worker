@@ -15,5 +15,6 @@ namespace framework\annotations;
 class Validator
 {
     public $class = '';
+
     public $scene = '';
 }

@@ -13,7 +13,6 @@ use framework\App;
 use framework\boot\RouterCollector;
 use framework\bootstrap\Log;
 use framework\exception\ExceptionHandlerInterface;
-use framework\exception\HeroException;
 use framework\exception\RequestMethodException;
 use framework\exception\RouteNotFoundException;
 use framework\http\Request as HttpRequest;
@@ -41,6 +40,7 @@ class HttpServer
      * @var int
      */
     protected static $_gracefulStopTimer = null;
+
     /**
      * @var Worker
      */
@@ -139,6 +139,9 @@ class HttpServer
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function onMessage(TcpConnection $connection, Request $request)
     {
         static $requestCount = 0;
@@ -267,7 +270,7 @@ class HttpServer
         $file = \realpath(public_path() . '/' . trim($path, '/'));
         //避免web 遍历目录
         if (strpos($file, public_path()) !== 0) {
-           return false;
+            return false;
         }
         if (false === $file || false === \is_file($file)) {
             return false;

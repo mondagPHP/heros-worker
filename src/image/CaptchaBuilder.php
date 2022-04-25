@@ -34,32 +34,39 @@ class CaptchaBuilder implements CaptchaBuilderInterface
      * @var resource 验证码图片
      */
     protected $image;
+
     /**
      * @var string 验证码文字
      */
     protected $text;
+
     /**
      * @var string 随机字符
      */
     protected $characters = '0123456789';
+
     /**
      * @var int 图片宽度
      */
     protected $width = 150;
+
     /**
      * @var int 图片高度
      */
     protected $height = 40;
 
     private $fonts = [];
+
     /**
      * @var int 验证码字符的个数
      */
     private $number = 4;
+
     /**
      * @var int 字体大小
      */
     private $fontSize = 24;
+
     /**
      * @var string 验证码字体
      */
@@ -68,14 +75,17 @@ class CaptchaBuilder implements CaptchaBuilderInterface
     private $noiseLevel = 30;
 
     private $backColor;
+
     /**
      * @var bool 是否添加干扰线
      */
     private $isDrawLine = false;
+
     /**
      * @var bool 是否启用曲线
      */
     private $isDrawCurve = true;
+
     /**
      * @var bool 是否启用背景噪音
      */

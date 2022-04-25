@@ -17,9 +17,13 @@ use framework\command\exception\CommandException;
 trait MakeTraits
 {
     protected $rootPath = '';
+
     protected $filePath = '';
+
     protected $path = '';
+
     protected $className = '';
+
     protected $namespace = '';
 
     /**

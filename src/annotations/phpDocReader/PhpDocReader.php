@@ -37,6 +37,7 @@ class PhpDocReader
         'mixed' => 'mixed',
         'iterable' => 'iterable',
     ];
+
     /** @var UseStatementParser */
     private $parser;
 

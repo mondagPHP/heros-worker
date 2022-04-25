@@ -21,14 +21,18 @@ class AddPropertyVistor extends NodeVisitorAbstract
 {
     /** @var Field $primaryKeyField */
     private $primaryKeyField;
+
     private $addIncrementingFalse;
+
     private $addKeyTypeString;
+
     public function __construct(array $fields, array $stmts)
     {
         $this->fields = $fields;
         $this->stmts = $stmts;
         $this->check();
     }
+
     /**
      * @param Node $node
      * @return mixed
@@ -53,6 +57,7 @@ class AddPropertyVistor extends NodeVisitorAbstract
                 break;
         }
     }
+
     private function check()
     {
         /** @var Field $field */
@@ -61,7 +66,7 @@ class AddPropertyVistor extends NodeVisitorAbstract
                 $this->primaryKeyField = $field;
             }
         }
-        
+
         $nodeFinder = new NodeFinder();
 
         $this->addIncrementingFalse = ! $this->primaryKeyField->isAutoIncrement() && ! $nodeFinder->findFirst($this->stmts, function (Node $node) {

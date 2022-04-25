@@ -5,17 +5,10 @@
  * @contact  mondagroup_php@163.com
  *
  */
-/**
- * This file is part of monda-worker.
- *
- * @contact  mondagroup_php@163.com
- */
-
 namespace framework;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Exception;
-use framework\aop\ClassLoader;
 use ReflectionClass;
 use ReflectionException;
 
@@ -74,9 +67,6 @@ class App
         $reader = new AnnotationReader();
         foreach (get_declared_classes() ?? [] as $class) {
             if (strstr($class, $scanRootNamespace)) {
-                if (isset(ClassLoader::$classMap[$class])) {
-                    continue;
-                }
                 $refClass = new ReflectionClass($class);
                 //类注解
                 $classAnnotations = $reader->getClassAnnotations($refClass);

@@ -17,32 +17,46 @@ class Request
 {
     //全部参数
     private $params;
+
     //获得原始请求post包体
     private $rawBody;
+
     //获取header
     private $header;
+
     //获取cookie
     private $cookie;
+
     //获取特定上传文件 array
     private $files;
+
     //获取host
     private $host;
+
     //获取请求方法
     private $method;
+
     //获取请求uri
     private $uri;
+
     //获取请求路径
     private $path;
+
     //获取请求queryString
     private $queryString;
+
     //获取请求HTTP版本
     private $protocolVersion;
+
     //获取请求sessionId
     private $sessionId;
+
     //原生request对象
     /** @var WorkerRequest $workerRequest */
     private $workerRequest;
+
     private $ip;
+
     private $port;
 
     /** @var Session $session */

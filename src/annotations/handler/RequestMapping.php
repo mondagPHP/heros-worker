@@ -33,6 +33,10 @@ return [
         //$params uri参数
         //$extParams
         $routerDispatch = static function (Request $request, array $params, array $extParams = []) use ($method, $instance) {
+            //_initialize 初始化
+            if (method_exists($instance, '_initialize')) {
+                call_user_func([$instance, '_initialize']);
+            }
             $inputParams = [];
             $reflectionParameters = $method->getParameters();
             /** @var ReflectionParameter $reflectionParameter */

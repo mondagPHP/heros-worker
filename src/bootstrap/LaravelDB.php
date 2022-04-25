@@ -34,17 +34,17 @@ class LaravelDB implements Bootstrap
         }
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
-        if (config('app.app_debug', true)) {
-            //添加监听事件
-            $capsule->setEventDispatcher(new Dispatcher(new Container()));
-            /** @var Dispatcher $dispatcher */
-            $dispatcher = $capsule->getEventDispatcher();
-            if (! $dispatcher->hasListeners(QueryExecuted::class)) {
-                $dispatcher->listen(QueryExecuted::class, function ($query) {
-                    $sql = vsprintf(str_replace('?', "'%s'", $query->sql), $query->bindings) . " \t[" . $query->time . ' ms] ';
-                    Log::debug($sql);
-                });
-            }
-        }
+//        if (config('app.app_debug', true)) {
+//            //添加监听事件
+//            $capsule->setEventDispatcher(new Dispatcher(new Container()));
+//            /** @var Dispatcher $dispatcher */
+//            $dispatcher = $capsule->getEventDispatcher();
+//            if (! $dispatcher->hasListeners(QueryExecuted::class)) {
+//                $dispatcher->listen(QueryExecuted::class, function ($query) {
+//                    $sql = vsprintf(str_replace('?', "'%s'", $query->sql), $query->bindings) . " \t[" . $query->time . ' ms] ';
+//                    Log::debug($sql);
+//                });
+//            }
+//        }
     }
 }

@@ -305,3 +305,30 @@ if (! function_exists('session')) {
         return $session->get($key, $default);
     }
 }
+
+/**
+ * @param ReflectionClass $class
+ * @param string $attributeName
+ * @return bool
+ */
+if (! function_exists('searchForTopParent')) {
+    function searchForTopParent(ReflectionClass $class, string $attributeName)
+    {
+        $result = true;
+        $isAttribute = count($class->getAttributes($attributeName)) > 0;
+        if ($isAttribute) {
+            return $result;
+        }
+        while ($class->getParentClass() !== false) {
+            $parentClass = $class->getParentClass();
+            $parentAttribute = count($parentClass->getAttributes($attributeName)) > 0;
+            if ($parentAttribute) {
+                $result = true;
+                break;
+            }
+            $class = $class->getParentClass();
+            $result = false;
+        }
+        return $result;
+    }
+}

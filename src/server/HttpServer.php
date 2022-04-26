@@ -169,6 +169,11 @@ class HttpServer
                             self::send($connection, $httpResponse->body('<h1>403 forbidden</h1>')->status(403)->end(), $request);
                             return;
                         }
+                        //304
+                        if (self::notModifiedSince($request,$path)){
+                            self::send($connection, $httpResponse->status(304)->end(), $request);
+                            return;
+                        }
                         self::send($connection, $httpResponse->status(200)->file($path)->end(), $request);
                         return;
                     }
@@ -198,6 +203,22 @@ class HttpServer
             return;
         }
     }
+
+
+    /**
+     * @param Request $request
+     * @param string $file
+     * @return bool
+     */
+    protected static function notModifiedSince(Request $request, string $file): bool
+    {
+        $ifModifiedSince = $request->header('if-modified-since',null);
+        if ($ifModifiedSince === null || !($mtime = \filemtime($file))) {
+            return false;
+        }
+        return $ifModifiedSince === \gmdate('D, d M Y H:i:s', $mtime) . ' GMT';
+    }
+
 
     public static function request()
     {

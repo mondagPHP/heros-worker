@@ -72,7 +72,7 @@ return [
                             throw new ClassNotFoundException("{$parameterClass} not found!");
                         }
                         $reflectionClass = new ReflectionClass($parameterClass);
-                        $isVO = count($reflectionClass->getAttributes(VO::class)) > 0;
+                        $isVO = searchForTopParent($reflectionClass, VO::class);
                         if ($isVO) {
                             $vo = ModelTransformUtil::map2Model($parameterClass, $params);
                             $inputParams[] = $vo;

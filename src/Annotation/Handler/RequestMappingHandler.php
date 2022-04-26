@@ -102,6 +102,9 @@ return [
         /** @var MiddleWareCollector $middlewareCollector */
         $middlewareCollector = container(MiddleWareCollector::class);
         $middlewares = $middlewareCollector->get($path);
+        if (method_exists($instance, 'getMiddleware')) {
+            $middlewares = $instance->getMiddleware($method->getName(), $middlewares);
+        }
         $routerDispatch = container(PipeLine::class)->create()->setClasses($middlewares)->run($routerDispatch);
         foreach ($requestMethods ?? [] as $requestMethod) {
             $routerCollector->addRouter($requestMethod, $path, $routerDispatch);

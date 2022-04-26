@@ -14,7 +14,7 @@ use function FastRoute\simpleDispatcher;
 #[Component]
 class RouterCollector
 {
-    public array $routers = [];
+    private array $routers = [];
 
     public function addRouter(string $method, string $uri, callable $handler): void
     {

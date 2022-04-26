@@ -8,7 +8,7 @@ namespace Framework\Annotation;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_PARAMETER | Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_METHOD)]
 class Valid
 {
     public string $class;

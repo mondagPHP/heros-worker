@@ -20,7 +20,6 @@ use Framework\Exception\HerosException;
 use Framework\Exception\RequestMethodException;
 use Framework\Http\HttpRequest;
 use Framework\Http\HttpResponse;
-use Monda\Utils\File\FileUtil;
 use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Request;
 use Workerman\Protocols\Http\Response;
@@ -91,7 +90,7 @@ class Application
         if ($maxRequestCount > 0) {
             static::$_maxRequestCount = $maxRequestCount;
         }
-        $propertyMap = ['name', 'count', 'user', 'group', 'reusePort', 'transport'];
+        $propertyMap = ['name', 'count', 'user', 'group', 'reusePort', 'transport','protocol'];
         foreach ($propertyMap as $property) {
             if (isset($this->config[$property])) {
                 $this->worker->{$property} = $this->config[$property];
@@ -245,17 +244,28 @@ class Application
         date_default_timezone_set($defaultTimezone);
         $serverConfig = config('server', []);
         $pidDir = dirname($serverConfig['pid_file']);
-        if (! file_exists($pidDir)) {
-            FileUtil::makeFileDirs($pidDir);
+        if (! file_exists($pidDir) || ! is_dir($pidDir)) {
+            if (! mkdir($pidDir, 0777, true)) {
+                throw new \RuntimeException('Failed to create pidDir logs directory. Please check the permission.');
+            }
         }
         $stdoutLogDir = dirname($serverConfig['stdout_file']);
-        if (! file_exists($stdoutLogDir)) {
-            FileUtil::makeFileDirs($stdoutLogDir);
+        if (! file_exists($stdoutLogDir) || ! is_dir($stdoutLogDir)) {
+            if (! mkdir($stdoutLogDir, 0777, true)) {
+                throw new \RuntimeException('Failed to create runtime logs directory. Please check the permission.');
+            }
         }
+        //基本配置
         Worker::$pidFile = $serverConfig['pid_file'];
         Worker::$stdoutFile = $serverConfig['stdout_file'];
         Worker::$logFile = $serverConfig['log_file'];
         TcpConnection::$defaultMaxPackageSize = $config['max_package_size'] ?? 10 * 1024 * 1024;
+        if (property_exists(Worker::class, 'statusFile')) {
+            Worker::$statusFile = $serverConfig['status_file'] ?? '';
+        }
+        if (property_exists(Worker::class, 'stopTimeout')) {
+            Worker::$stopTimeout = $serverConfig['stop_timeout'] ?? 2;
+        }
     }
 
     /**

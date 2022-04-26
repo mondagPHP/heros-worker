@@ -263,9 +263,8 @@ if (! function_exists('get_real_path')) {
     {
         if (str_starts_with($filePath, 'phar://')) {
             return $filePath;
-        } else {
-            return realpath($filePath);
         }
+        return realpath($filePath);
     }
 }
 
@@ -295,7 +294,7 @@ if (! function_exists('session')) {
             $key_array = \explode('.', $key);
             $value = $session->all();
             foreach ($key_array as $index) {
-                if (!isset($value[$index])) {
+                if (! isset($value[$index])) {
                     return $default;
                 }
                 $value = $value[$index];

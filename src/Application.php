@@ -240,8 +240,6 @@ class Application
     {
         ini_set('session.gc_maxlifetime', (string)\config('session.gc_maxlifetime', '86400'));
         ini_set('session.cookie_lifetime', (string)\config('session.cookie_lifetime', '86400'));
-        $defaultTimezone = \config('app.default_timezone', 'Asia/Shanghai');
-        date_default_timezone_set($defaultTimezone);
         $serverConfig = config('server', []);
         $pidDir = dirname($serverConfig['pid_file']);
         if (! file_exists($pidDir) || ! is_dir($pidDir)) {

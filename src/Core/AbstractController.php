@@ -21,13 +21,13 @@ abstract class AbstractController
     }
 
     /**
-     * @param array|string $middlewares
+     * @param $middlewares
      * @param array $except
      * @param array $only
      * @return $this
      * date 2021/5/12
      */
-    public function middleware(array|string $middlewares, array $except = [], array $only = []): self
+    public function middleware($middlewares, array $except = [], array $only = []): self
     {
         $filter = function (array $arr) {
             $resArr = [];
@@ -45,9 +45,9 @@ abstract class AbstractController
             }
             return $resArr;
         };
-        $localExcept = $filter(static::pack($except['except'] ?? []));
-        $localOnly = $filter(static::pack($only['only'] ?? []));
-        $middlewares = static::pack($middlewares);
+        $localExcept = $filter(static::toArr($except['except'] ?? []));
+        $localOnly = $filter(static::toArr($only['only'] ?? []));
+        $middlewares = static::toArr($middlewares);
         foreach ($middlewares ?? [] as $middleware) {
             if (isset($this->middlewares[$middleware])) {
                 $this->middlewares[$middleware]['except'] = array_unique(array_merge($this->middlewares[$middleware]['except'], $localExcept));
@@ -100,7 +100,7 @@ abstract class AbstractController
      * @param $value
      * @return array
      */
-    private static function pack($value): array
+    private static function toArr($value): array
     {
         if (is_array($value)) {
             return $value;

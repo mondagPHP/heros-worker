@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace framework\Core;
+namespace Framework\Core;
 
 /**
  * 增加控制器控制是否登陆

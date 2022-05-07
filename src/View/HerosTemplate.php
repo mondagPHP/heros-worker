@@ -149,7 +149,7 @@ class HerosTemplate implements ViewInterface
     }
 
     /**
-     * 裁剪字符串，使用utf-8编码裁剪.
+     * 裁剪字符串，使用utf-8 编码裁剪.
      * @param string $str 要裁剪的字符串
      * @param int $length 字符串长度
      */
@@ -159,6 +159,17 @@ class HerosTemplate implements ViewInterface
             return $str;
         }
         return mb_substr($str, 0, $length, 'UTF-8') . '...';
+    }
+
+    /**
+     * 规则
+     * @param string $rule
+     * @param string $value
+     * @return void
+     */
+    public static function addRule(string $rule, string $value):void
+    {
+        static::$tempRules[$rule] = $value;
     }
 
     /**

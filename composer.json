@@ -43,5 +43,11 @@
     },
     "scripts": {
         "cs": "composer dump -o && php-cs-fixer fix $1"
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://mirrors.aliyun.com/composer"
+        }
     }
 }

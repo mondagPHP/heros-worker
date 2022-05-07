@@ -35,13 +35,13 @@ return [
         /** @var RouterCollector $routerCollector */
         $routerCollector = container(RouterCollector::class);
         $routerDispatch = static function (HttpRequest $request) use ($method, $instance) {
-            //_initialize 初始化
-            if (method_exists($instance, 'beforeAction')) {
-                call_user_func([$instance, 'beforeAction']);
-            }
             $params = $request->getParams();
             $request->pushInjectObject($request);
             $extParams = $request->getInjectObject();
+            //_initialize 初始化
+            if (method_exists($instance, '_initialize')) {
+                call_user_func([$instance, '_initialize'], $request);
+            }
             //验证器Vo
             $validAttributes = $method->getAttributes(Valid::class);
             foreach ($validAttributes ?? [] as $validAttribute) {

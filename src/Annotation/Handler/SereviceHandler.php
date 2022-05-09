@@ -7,6 +7,6 @@ declare(strict_types=1);
 use Framework\Annotation\Service;
 
 return [
-    Service::class => function ($instance, Service $self) {
+    Service::class => static function ($instance, Service $self) {
     },
 ];

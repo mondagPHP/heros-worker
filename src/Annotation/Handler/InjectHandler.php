@@ -8,7 +8,7 @@ declare(strict_types=1);
 use Framework\Annotation\Inject;
 
 return [
-    Inject::class => function (ReflectionProperty $property, mixed $instance, \ReflectionAttribute $self) {
+    Inject::class => static function (ReflectionProperty $property, mixed $instance, \ReflectionAttribute $self) {
         $clazz = $property->getType()->getName();
         if (class_exists($clazz)) {
             $resource = container($clazz);

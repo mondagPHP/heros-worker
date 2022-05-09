@@ -5,6 +5,7 @@ declare(strict_types=1);
  * This file is part of monda-worker.
  * @contact  mondagroup_php@163.com
  */
+use Framework\Annotation\Middlewares;
 use Framework\Annotation\RequestMapping;
 use Framework\Annotation\Valid;
 use Framework\Annotation\VO;
@@ -18,7 +19,7 @@ use Framework\Validate\Validate;
 use Monda\Utils\Util\ModelTransformUtil;
 
 return [
-    RequestMapping::class => function (ReflectionMethod $method, mixed $instance, ReflectionAttribute $self) {
+    RequestMapping::class => static function (ReflectionMethod $method, mixed $instance, ReflectionAttribute $self) {
         /** @var RequestMapping $requestMapping */
         $requestMapping = $self->newInstance();
         $path = $requestMapping->path;
@@ -94,16 +95,23 @@ return [
                 }
             }
             $return = $method->invokeArgs($instance, $inputParams);
-            if (method_exists($instance, 'afterAction')) {
-                call_user_func([$instance, 'afterAction']);
+            if (method_exists($instance, '_finish')) {
+                call_user_func([$instance, '_finish'], $request);
             }
             return $return;
         };
         /** @var MiddleWareCollector $middlewareCollector */
         $middlewareCollector = container(MiddleWareCollector::class);
         $middlewares = $middlewareCollector->get($path);
-        if (method_exists($instance, 'getMiddleware')) {
-            $middlewares = $instance->getMiddleware($method->getName(), $middlewares);
+        if (property_exists($instance, 'middlewares') && $instance->middlewares) {
+            $middlewares = array_merge($middlewares, $instance->middlewares);
+        }
+        //注解在控制器上
+        $clazzAttributes = (new ReflectionClass(get_class($instance)))->getAttributes(Middlewares::class);
+        foreach ($clazzAttributes ?? [] as $clazzAttribute) {
+            foreach ($clazzAttribute->getArguments() ?? [] as $annotationMiddlewares) {
+                $middlewares = array_merge($middlewares, $annotationMiddlewares);
+            }
         }
         $routerDispatch = container(PipeLine::class)->create()->setClasses($middlewares)->run($routerDispatch);
         foreach ($requestMethods ?? [] as $requestMethod) {

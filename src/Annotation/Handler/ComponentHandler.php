@@ -7,6 +7,6 @@ declare(strict_types=1);
 use Framework\Annotation\Component;
 
 return [
-    Component::class => function ($instance, Component $self) {
+    Component::class => static function ($instance, Component $self) {
     },
 ];

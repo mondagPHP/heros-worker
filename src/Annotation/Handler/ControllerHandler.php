@@ -7,6 +7,6 @@ declare(strict_types=1);
 use Framework\Annotation\Controller;
 
 return [
-    Controller::class => function ($instance, Controller $self) {
+    Controller::class => static function ($instance, Controller $self) {
     },
 ];

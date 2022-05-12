@@ -39,6 +39,7 @@ class Application
      * @var HttpRequest
      */
     public static HttpRequest $request;
+    public static TcpConnection $connection;
 
     /**
      * @var array $config
@@ -133,6 +134,7 @@ class Application
         static $requestCount = 0;
         $httpRequest = HttpRequest::init($request);
         static::$request = $httpRequest;
+        static::$connection = $connection;
         if (++$requestCount > static::$_maxRequestCount) {
             $this->tryToGracefulExit();
         }

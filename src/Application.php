@@ -25,6 +25,7 @@ use Workerman\Protocols\Http\Request;
 use Workerman\Protocols\Http\Response;
 use Workerman\Timer;
 use Workerman\Worker;
+use Workerman\Protocols\Http;
 
 /**
  * Class Application
@@ -33,7 +34,7 @@ use Workerman\Worker;
  */
 class Application
 {
-    public const VERSION = '2.0.11';
+    public const VERSION = '2.1.0';
 
     /**
      * @var HttpRequest
@@ -124,15 +125,15 @@ class Application
         }
         Scanner::begin();
         $this->dispatcher = container(RouterCollector::class)->getDispatcher();
+        Http::requestClass(HttpRequest::class, Request::class);
     }
 
     /**
      * @throws \Exception
      */
-    public function onMessage(TcpConnection $connection, Request $request): void
+    public function onMessage(TcpConnection $connection, HttpRequest $httpRequest): void
     {
         static $requestCount = 0;
-        $httpRequest = HttpRequest::init($request);
         static::$request = $httpRequest;
         static::$connection = $connection;
         if (++$requestCount > static::$_maxRequestCount) {
@@ -142,11 +143,10 @@ class Application
             $requestPath = $httpRequest->path();
             //做了一层缓存，加快响应
             if (isset(static::$handlerMappings[$requestPath])) {
-                $vars = array_merge($request->get() + $request->post(), static::$handlerMappings[$requestPath]['params']);
-                $httpRequest->setParams($vars);
+                $httpRequest->setRouterParams(static::$handlerMappings[$requestPath]['params']);
                 $cacheHandler = static::$handlerMappings[$requestPath]['handler'];
                 $response = static::handlerRequestResult($cacheHandler($httpRequest));
-                static::send($connection, $response, $request);
+                static::send($connection, $response, $httpRequest);
                 return;
             }
             $routeInfo = $this->dispatcher->dispatch($httpRequest->method(), $requestPath);
@@ -159,7 +159,7 @@ class Application
                     if (str_contains($path, '/.')) {
                         throw new HerosException('403 forbidden');
                     }
-                    if ($this->notModifiedSince($request, $path)) {
+                    if ($this->notModifiedSince($httpRequest, $path)) {
                         $response = \response('', 304);
                     } else {
                         $response = \response()->withFile($path);
@@ -168,8 +168,7 @@ class Application
                 case Dispatcher::METHOD_NOT_ALLOWED:
                     throw new RequestMethodException('request method not allow!');
                 case Dispatcher::FOUND:
-                    $vars = array_merge($request->get() + $request->post(), $routeInfo[2]);
-                    $httpRequest->setParams($vars);
+                    $httpRequest->setRouterParams($routeInfo[2]);
                     $handler = $routeInfo[1];
                     $response = static::handlerRequestResult($handler($httpRequest));
                     static::$handlerMappings[$requestPath] = [
@@ -180,9 +179,9 @@ class Application
                 default:
                     throw new HerosException("fast route error.{$httpRequest->path()}!");
             }
-            static::send($connection, $response, $request);
+            static::send($connection, $response, $httpRequest);
         } catch (\Throwable $exception) {
-            static::send($connection, static::handlerRequestResult(static::exceptionResponse($exception, $httpRequest)), $request);
+            static::send($connection, static::handlerRequestResult(static::exceptionResponse($exception, $httpRequest)), $httpRequest);
         }
     }
 
@@ -293,7 +292,7 @@ class Application
      * @param HttpRequest $request
      * @return mixed
      */
-    private static function exceptionResponse(\Throwable $e, HttpRequest $request): mixed
+    private static function exceptionResponse(\Throwable $e, Request $request): mixed
     {
         try {
             /** @var ExceptionHandler $exceptionHandler */

@@ -14,35 +14,32 @@ use Workerman\Protocols\Http\Request;
  */
 class HttpRequest extends Request
 {
-    private array $params;
+    private array $routerParams = [];
 
     private array $injectObject = [];
-
-    /**
-     * @param Request $request
-     * @return static
-     */
-    public static function init(Request $request): self
-    {
-        $httpRequest = new self($request);
-        $httpRequest->setParams($request->get() + $request->post());
-        return $httpRequest;
-    }
 
     /**
      * @return array
      */
     public function getParams(): array
     {
-        return $this->params;
+        return $this->get() + $this->post() + $this->routerParams;
     }
 
     /**
-     * @param array $params
+     * @return array
      */
-    public function setParams(array $params): void
+    public function getRouterParams(): array
     {
-        $this->params = $params;
+        return $this->routerParams;
+    }
+
+    /**
+     * @param array $routerParams
+     */
+    public function setRouterParams(array $routerParams): void
+    {
+        $this->routerParams = $routerParams;
     }
 
     /**

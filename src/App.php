@@ -38,6 +38,7 @@ class App
 
     /**
      * @param $dir
+     * @return array
      */
     private static function getAllBeansFiles($dir): array
     {
@@ -89,7 +90,7 @@ class App
      * 处理属性.
      * @param $instance
      * @param \ReflectionClass $reflectionClass
-     * @param \Doctrine\Common\Annotations\AnnotationReader $reader
+     * @param AnnotationReader $reader
      */
     private static function handlerPropertyAnnotations(&$instance, ReflectionClass $reflectionClass, AnnotationReader $reader)
     {
@@ -110,7 +111,7 @@ class App
      * 处理方法.
      * @param $instance
      * @param \ReflectionClass $reflectionClass
-     * @param \Doctrine\Common\Annotations\AnnotationReader $reader
+     * @param AnnotationReader $reader
      */
     private static function handlerMethodAnnotations(&$instance, ReflectionClass $reflectionClass, AnnotationReader $reader)
     {

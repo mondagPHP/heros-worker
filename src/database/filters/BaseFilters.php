@@ -24,6 +24,17 @@ class BaseFilters
     protected $builder;
 
     /**
+     * @var array
+     *
+     * Used to store the name and values for filters
+     * computed from fields and values in request parameters
+     * or added programmatically.
+     * The keys of this array corresponds to methods declared in
+     * a subclass of this class.
+     */
+    protected static $globals = [];
+
+    /**
      * Applies respective filter methods declared in the subclass
      * that correspond to fields in request query parameters.
      *
@@ -54,7 +65,11 @@ class BaseFilters
      */
     public function filters(): array
     {
-        return $this->request()->getParams();
+        $globalFilters = [];
+        foreach (static::$globals as $value) {
+            $globalFilters[$value] = '';
+        }
+        return array_merge($this->request()->getParams(), $globalFilters);
     }
 
     /**

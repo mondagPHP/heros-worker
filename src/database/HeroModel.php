@@ -7,6 +7,7 @@
  */
 namespace framework\database;
 
+use framework\database\filters\FilterableTrait;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -14,4 +15,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 abstract class HeroModel extends Model
 {
+    use FilterableTrait;
 }

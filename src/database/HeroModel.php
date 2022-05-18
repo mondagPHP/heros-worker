@@ -16,4 +16,6 @@ use Illuminate\Database\Eloquent\Model;
 abstract class HeroModel extends Model
 {
     use FilterableTrait;
+
+    protected $perPage = 10;
 }

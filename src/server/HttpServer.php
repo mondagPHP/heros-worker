@@ -170,7 +170,7 @@ class HttpServer
                             return;
                         }
                         //304
-                        if (self::notModifiedSince($request,$path)){
+                        if (self::notModifiedSince($request, $path)) {
                             self::send($connection, $httpResponse->status(304)->end(), $request);
                             return;
                         }
@@ -204,6 +204,10 @@ class HttpServer
         }
     }
 
+    public static function request()
+    {
+        return static::$_request;
+    }
 
     /**
      * @param Request $request
@@ -212,17 +216,11 @@ class HttpServer
      */
     protected static function notModifiedSince(Request $request, string $file): bool
     {
-        $ifModifiedSince = $request->header('if-modified-since',null);
-        if ($ifModifiedSince === null || !($mtime = \filemtime($file))) {
+        $ifModifiedSince = $request->header('if-modified-since', null);
+        if ($ifModifiedSince === null || ! ($mtime = \filemtime($file))) {
             return false;
         }
         return $ifModifiedSince === \gmdate('D, d M Y H:i:s', $mtime) . ' GMT';
-    }
-
-
-    public static function request()
-    {
-        return static::$_request;
     }
 
     /**

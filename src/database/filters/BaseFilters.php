@@ -5,7 +5,6 @@
  * @contact  mondagroup_php@163.com
  *
  */
-
 namespace framework\database\filters;
 
 use framework\http\Request;
@@ -17,7 +16,6 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class BaseFilters
 {
-
     /**
      * @var Builder
      */
@@ -46,7 +44,7 @@ class BaseFilters
         $this->builder = $builder;
         $filters = $this->filters();
         foreach ($filters as $name => $value) {
-            if (!method_exists($this, $name)) {
+            if (! method_exists($this, $name)) {
                 continue;
             }
             if (isset($value)) {

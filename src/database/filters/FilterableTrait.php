@@ -10,7 +10,7 @@ namespace framework\database\filters;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * @method static filter(string $filter)
+ * @method Builder filter(string $filter)
  */
 trait FilterableTrait
 {

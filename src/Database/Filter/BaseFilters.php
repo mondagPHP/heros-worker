@@ -1,11 +1,8 @@
 <?php
 /**
- * This file is part of monda-worker.
- *
- * @contact  mondagroup_php@163.com
- *
+ * This file is part of Heros-Worker.
+ * @contact  chenzf@pvc123.com
  */
-
 namespace Framework\Database\Filter;
 
 use Framework\Application;
@@ -45,14 +42,10 @@ class BaseFilters
         $this->builder = $builder;
         $filters = $this->filters();
         foreach ($filters as $name => $value) {
-            if (!method_exists($this, $name)) {
+            if (! method_exists($this, $name)) {
                 continue;
             }
-            if (isset($value)) {
-                $this->$name($value);
-            } else {
-                $this->$name();
-            }
+            $this->$name($value);
         }
         return $this->builder;
     }

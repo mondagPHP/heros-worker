@@ -42,7 +42,7 @@
         "ext-event": "For better performance. "
     },
     "scripts": {
-        "cs": "composer dump -o && php-cs-fixer fix $1"
+        "cs-fix": "php-cs-fixer fix $1"
     },
     "repositories": {
         "packagist": {

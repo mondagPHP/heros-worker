@@ -2,8 +2,8 @@
 /** @noinspection PhpMultipleClassDeclarationsInspection */
 declare(strict_types=1);
 /**
- * This file is part of monda-worker.
- * @contact  mondagroup_php@163.com
+ * This file is part of Heros-Worker.
+ * @contact  chenzf@pvc123.com
  */
 namespace Framework\Annotation;
 

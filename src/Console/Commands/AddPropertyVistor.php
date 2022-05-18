@@ -1,7 +1,7 @@
 <?php
 /**
- * This file is part of monda-worker.
- * @contact  mondagroup_php@163.com
+ * This file is part of Heros-Worker.
+ * @contact  chenzf@pvc123.com
  */
 namespace Framework\Console\Commands;
 

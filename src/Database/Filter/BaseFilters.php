@@ -31,7 +31,7 @@ class BaseFilters
      * The keys of this array corresponds to methods declared in
      * a subclass of this class.
      */
-    protected static array $globals = [];
+    protected array $globals = [];
 
     /**
      * Applies respective filter methods declared in the subclass
@@ -65,7 +65,7 @@ class BaseFilters
     public function filters(): array
     {
         $globalFilters = [];
-        foreach (static::$globals as $key => $value) {
+        foreach ($this->globals as $value) {
             $globalFilters[$value] = '';
         }
         return array_merge($this->request()->getParams(), $globalFilters);

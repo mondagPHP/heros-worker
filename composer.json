@@ -27,6 +27,7 @@
         "nikic/php-parser": "^4.10.4"
     },
     "require-dev": {
+        "roave/security-advisories": "dev-latest",
         "friendsofphp/php-cs-fixer": "^3.0",
         "phpunit/phpunit": "^8.5"
     },
@@ -37,6 +38,12 @@
         "files": [
             "./src/function.php"
         ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
     },
     "suggest": {
         "ext-event": "For better performance. "

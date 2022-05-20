@@ -94,7 +94,7 @@ class Str
             $str = substr($chars, 0, $length);
         } else {
             for ($i = 0; $i < $length; $i++) {
-                $str .= mb_substr($chars, floor(mt_rand(0, mb_strlen($chars, 'utf-8') - 1)), 1);
+                $str .= mb_substr($chars, floor(random_int(0, mb_strlen($chars, 'utf-8') - 1)), 1);
             }
         }
         return $str;

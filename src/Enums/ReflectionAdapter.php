@@ -4,6 +4,7 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Enums;
 
 use Framework\Annotation\Message;
@@ -26,7 +27,6 @@ class ReflectionAdapter implements AdapterInterface
                 $ret = new \ReflectionProperty($this->class, $key);
                 $reflectionAttributes = $ret->getAttributes(Message::class);
                 if ($reflectionAttributes) {
-                    /** @var \ReflectionAttribute $attribute */
                     $attribute = $reflectionAttributes[0];
                     $result[$val] = $attribute->newInstance()->value;
                 }

@@ -19,7 +19,7 @@ class Scanner
     /**
      * @throws \ReflectionException
      */
-    public static function begin()
+    public static function begin(): void
     {
         self::$annotationHandlers = self::initAnnotationHandlers();
         $scans = [
@@ -62,7 +62,7 @@ class Scanner
             require_once $file;
         }
         foreach (get_declared_classes() ?? [] as $class) {
-            if (strstr($class, $scanRootNamespace)) {
+            if (str_contains($class, $scanRootNamespace)) {
                 $refClass = new \ReflectionClass($class);
                 $classAnnotations = $refClass->getAttributes();
                 foreach ($classAnnotations ?? [] as $classAnnotation) {

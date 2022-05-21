@@ -11,18 +11,18 @@ use Symfony\Component\Console\Command\Command as Commands;
 
 class Command extends Application
 {
-    public function installInternalCommands()
+    public function installInternalCommands(): void
     {
         $this->installCommands(__DIR__ . '/Commands', 'Framework\Console\Commands');
     }
 
-    public function installCommands($path, $namespace = 'App\Command')
+    public function installCommands($path, $namespace = 'App\Command'): void
     {
         $dirIterator = new \RecursiveDirectoryIterator($path);
         $iterator = new \RecursiveIteratorIterator($dirIterator);
         /** @var \SplFileInfo $file */
         foreach ($iterator as $file) {
-            if ($file->getFilename() === '.' || $file->getFilename() == '..') {
+            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
                 continue;
             }
             $className = $namespace . '\\' . basename($file->getFilename(), '.php');

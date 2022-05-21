@@ -4,6 +4,7 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Component;
 
 use Framework\Annotation\Component;
@@ -12,12 +13,10 @@ use Framework\Middleware\PageMiddleware;
 #[Component]
 class MiddleWareCollector
 {
-    private array $middlewares = [];
-
     /**
      * MiddleWareCollector constructor.
      */
-    public function __construct()
+    public function __construct(private array $middlewares = [])
     {
         $config = config('middleware', []);
         ksort($config);

@@ -4,6 +4,7 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\File;
 
 use Framework\Exception\FileException;
@@ -18,11 +19,11 @@ class File extends SplFileInfo
      */
     protected array $hash = [];
 
-    protected $hashName;
+    protected string $hashName = '';
 
     public function __construct(string $path, bool $checkPath = true)
     {
-        if ($checkPath && ! is_file($path)) {
+        if ($checkPath && !is_file($path)) {
             throw new FileException(sprintf('The file "%s" does not exist', $path));
         }
 
@@ -37,7 +38,7 @@ class File extends SplFileInfo
      */
     public function hash(string $type = 'sha1'): string
     {
-        if (! isset($this->hash[$type])) {
+        if (!isset($this->hash[$type])) {
             $this->hash[$type] = hash_file($type, $this->getPathname());
         }
 
@@ -71,7 +72,7 @@ class File extends SplFileInfo
      */
     public function getMime(): string
     {
-        if (! extension_loaded('fileinfo')) {
+        if (!extension_loaded('fileinfo')) {
             throw new HerosException('fileinfo extension not install!');
         }
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -94,7 +95,7 @@ class File extends SplFileInfo
         });
         $renamed = rename($this->getPathname(), (string)$target);
         restore_error_handler();
-        if (! $renamed) {
+        if (!$renamed) {
             throw new FileException(sprintf('Could not move the file "%s" to "%s" (%s)', $this->getPathname(), $target, strip_tags($error)));
         }
 
@@ -120,7 +121,7 @@ class File extends SplFileInfo
      */
     public function hashName($rule = ''): string
     {
-        if (! $this->hashName) {
+        if (!$this->hashName) {
             if ($rule instanceof \Closure) {
                 $this->hashName = call_user_func_array($rule, [$this]);
             } else {
@@ -150,11 +151,11 @@ class File extends SplFileInfo
      */
     protected function getTargetFile(string $directory, string $name = null): self
     {
-        if (! is_dir($directory)) {
-            if (false === @mkdir($directory, 0777, true) && ! is_dir($directory)) {
+        if (!is_dir($directory)) {
+            if (false === @mkdir($directory, 0777, true) && !is_dir($directory)) {
                 throw new FileException(sprintf('Unable to create the "%s" directory', $directory));
             }
-        } elseif (! is_writable($directory)) {
+        } elseif (!is_writable($directory)) {
             throw new FileException(sprintf('Unable to write in the "%s" directory', $directory));
         }
 

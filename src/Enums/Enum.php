@@ -4,10 +4,12 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Enums;
 
 use Framework\Traits\InstanceTrait;
 use Illuminate\Support\Str;
+use JetBrains\PhpStorm\Pure;
 
 /**
  * @method static getMessage($code)
@@ -16,9 +18,9 @@ abstract class Enum
 {
     use InstanceTrait;
 
-    protected $_adapter;
+    protected AdapterInterface $_adapter;
 
-    public function __construct()
+    #[Pure] public function __construct()
     {
         $this->_adapter = new ReflectionAdapter(static::class);
     }
@@ -30,22 +32,22 @@ abstract class Enum
      */
     public function __call($name, $arguments)
     {
-        if (! Str::startsWith($name, 'get')) {
+        if (!Str::startsWith($name, 'get')) {
             throw new EnumException('The function is not defined!');
         }
-        if (! isset($arguments) || count($arguments) === 0) {
+        if (!isset($arguments) || count($arguments) === 0) {
             throw new EnumException('The Code is required');
         }
         $code = $arguments[0];
         $name = strtolower(substr($name, 3));
         if (isset($this->$name)) {
-            return isset($this->$name[$code]) ? $this->$name[$code] : '';
+            return $this->$name[$code] ?? '';
         }
         $ref = new \ReflectionClass(static::class);
         $properties = $ref->getDefaultProperties();
         $arr = $this->_adapter->getAnnotationsByName($name, $properties);
         $this->$name = $arr;
-        return isset($this->$name[$code]) ? $this->$name[$code] : '';
+        return $this->$name[$code] ?? '';
     }
 
     /**

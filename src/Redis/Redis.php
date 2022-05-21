@@ -4,6 +4,7 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Redis;
 
 use Illuminate\Redis\Connections\Connection;
@@ -195,9 +196,9 @@ use Workerman\Timer;
 class Redis
 {
     /**
-     * @var RedisManager|null
+     * @var RedisManager
      */
-    protected static ?RedisManager $_instance = null;
+    protected static RedisManager $_instance;
 
     /**
      * @param $name
@@ -210,11 +211,11 @@ class Redis
     }
 
     /**
-     * @return RedisManager|null
+     * @return RedisManager
      */
-    public static function instance(): ?RedisManager
+    public static function instance(): RedisManager
     {
-        if (! static::$_instance) {
+        if (!isset(static::$_instance)) {
             $config = config('redis');
             static::$_instance = new RedisManager(null, 'phpredis', $config);
         }
@@ -225,12 +226,12 @@ class Redis
      * @param string $name
      * @return Connection
      */
-    public static function connection(string $name = 'default'):Connection
+    public static function connection(string $name = 'default'): Connection
     {
         static $timers = [];
         $connection = static::instance()->connection($name);
-        if (! isset($timers[$name])) {
-            $timers[$name] = Timer::add(config("redis.{$name}.ping") ?? 55, function () use ($connection) {
+        if (!isset($timers[$name])) {
+            $timers[$name] = Timer::add(config("redis.{$name}.ping") ?? 55, static function () use ($connection) {
                 $connection->get('ping');
             });
         }

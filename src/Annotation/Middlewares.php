@@ -4,6 +4,7 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Annotation;
 
 use Attribute;
@@ -11,10 +12,7 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS)]
 class Middlewares
 {
-    public array $class;
-
-    public function __construct(array $class)
+    public function __construct(public array $class = [])
     {
-        $this->class = $class;
     }
 }

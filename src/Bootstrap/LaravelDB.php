@@ -22,7 +22,7 @@ class LaravelDB implements BootstrapInterface
 {
     public static function start(?Worker $worker): void
     {
-        if (! class_exists('\Illuminate\Database\Capsule\Manager')) {
+        if (! class_exists(Capsule::class)) {
             return;
         }
         $capsule = new Capsule();
@@ -30,7 +30,7 @@ class LaravelDB implements BootstrapInterface
         foreach ($configs ?? [] as $name => $config) {
             $capsule->addConnection($config, $name);
         }
-        if (class_exists('\Illuminate\Events\Dispatcher')) {
+        if (class_exists(Dispatcher::class)) {
             $capsule->setEventDispatcher(new Dispatcher(new Container()));
         }
         $capsule->setAsGlobal();

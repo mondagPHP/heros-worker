@@ -54,12 +54,14 @@ class HerosTemplate implements ViewInterface
 
         /*
          * {run}标签： 执行php表达式
+         * {saleEcho}标签： isset后判断输出模板
          * {expr}标签：输出php表达式
          * {url}标签：输出格式化的url
          * {date}标签：根据时间戳输出格式化日期
          * {cut}标签：裁剪字指定长度的字符串,注意截取的格式是UTF-8,多余的字符会用...表示
          */
         '/{run\s+(.*?)}/i' => '<?php ${1} ?>',
+        '/{saleEcho\s+(.*?)}/i' => '<?php if(isset(${1})) echo ${1} ?>',
         '/{expr\s+(.*?)}/i' => '<?php echo ${1} ?>',
         '/{date\s+(.*?)(\s+(.*?))?}/i' => '<?php echo \Framework\View\HerosTemplate::getDate(${1}, "${2}") ?>',
         '/{cut\s+(.*?)(\s+(.*?))?}/i' => '<?php echo \Framework\View\HerosTemplate::cutString("${1}", "${2}") ?>',

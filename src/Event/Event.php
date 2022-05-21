@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
-
 namespace Framework\Event;
 
 use Illuminate\Container\Container;
@@ -38,12 +37,12 @@ class Event
      */
     public static function instance(): Dispatcher
     {
-        if (!isset(static::$instance)) {
+        if (! isset(static::$instance)) {
             static::$instance = new Dispatcher((new Container));
             $eventsList = config('events');
-            if (isset($eventsList['listener']) && !empty($eventsList['listener'])) {
+            if (isset($eventsList['listener']) && ! empty($eventsList['listener'])) {
                 foreach ($eventsList['listener'] as $event => $listener) {
-                    if (!is_array($listener)) {
+                    if (! is_array($listener)) {
                         continue;
                     }
                     foreach ($listener as $l) {

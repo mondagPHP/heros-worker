@@ -5,7 +5,6 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
-
 namespace Framework\Annotation;
 
 use Attribute;
@@ -13,7 +12,6 @@ use Attribute;
 #[Attribute(Attribute::TARGET_METHOD)]
 class RequestMapping
 {
-
     /**
      * desc必填
      * @param string $path

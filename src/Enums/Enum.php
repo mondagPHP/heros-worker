@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
-
 namespace Framework\Enums;
 
 use Framework\Traits\InstanceTrait;
@@ -20,10 +19,11 @@ abstract class Enum
 
     protected AdapterInterface $_adapter;
 
-    #[Pure] public function __construct()
-    {
-        $this->_adapter = new ReflectionAdapter(static::class);
-    }
+    #[Pure]
+ public function __construct()
+ {
+     $this->_adapter = new ReflectionAdapter(static::class);
+ }
 
     /**
      * @param $name
@@ -32,10 +32,10 @@ abstract class Enum
      */
     public function __call($name, $arguments)
     {
-        if (!Str::startsWith($name, 'get')) {
+        if (! Str::startsWith($name, 'get')) {
             throw new EnumException('The function is not defined!');
         }
-        if (!isset($arguments) || count($arguments) === 0) {
+        if (! isset($arguments) || count($arguments) === 0) {
             throw new EnumException('The Code is required');
         }
         $code = $arguments[0];

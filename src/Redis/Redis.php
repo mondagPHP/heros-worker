@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
-
 namespace Framework\Redis;
 
 use Illuminate\Redis\Connections\Connection;
@@ -215,7 +214,7 @@ class Redis
      */
     public static function instance(): RedisManager
     {
-        if (!isset(static::$_instance)) {
+        if (! isset(static::$_instance)) {
             $config = config('redis');
             static::$_instance = new RedisManager(null, 'phpredis', $config);
         }
@@ -230,7 +229,7 @@ class Redis
     {
         static $timers = [];
         $connection = static::instance()->connection($name);
-        if (!isset($timers[$name])) {
+        if (! isset($timers[$name])) {
             $timers[$name] = Timer::add(config("redis.{$name}.ping") ?? 55, static function () use ($connection) {
                 $connection->get('ping');
             });

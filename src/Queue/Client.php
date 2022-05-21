@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
-
 namespace Framework\Queue;
 
 use Workerman\RedisQueue\Client as RedisClient;
@@ -36,9 +35,9 @@ class Client
      */
     public static function connection(string $name = 'default'): RedisClient
     {
-        if (!isset(static::$_connections[$name])) {
+        if (! isset(static::$_connections[$name])) {
             $config = config('redis_queue', []);
-            if (!isset($config[$name])) {
+            if (! isset($config[$name])) {
                 throw new \RuntimeException("RedisQueue connection {$name} not found");
             }
             $host = $config[$name]['host'];

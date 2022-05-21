@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
-
 namespace Framework\Cache;
 
 use Framework\Redis\Redis;
@@ -42,7 +41,7 @@ class Cache
      */
     public static function instance(): Psr16Cache
     {
-        if (!isset(static::$_instance)) {
+        if (! isset(static::$_instance)) {
             $adapter = new RedisAdapter(Redis::connection()->client());
             static::$_instance = new Psr16Cache($adapter);
         }

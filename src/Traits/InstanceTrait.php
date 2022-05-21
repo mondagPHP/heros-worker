@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
-
 namespace Framework\Traits;
 
 trait InstanceTrait
@@ -15,10 +14,10 @@ trait InstanceTrait
 
     public static function getInstance(?string $key = null, bool $refresh = false)
     {
-        if (!isset($key)) {
+        if (! isset($key)) {
             $key = static::class;
         }
-        if (!$refresh && isset(static::$_instances[$key]) && static::$_instances[$key] instanceof static) {
+        if (! $refresh && isset(static::$_instances[$key]) && static::$_instances[$key] instanceof static) {
             return static::$_instances[$key];
         }
         $client = new static();

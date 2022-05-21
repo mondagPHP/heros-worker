@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
-
 namespace Framework\Queue;
 
 use Framework\Core\Log;
@@ -44,7 +43,7 @@ class Consumer
                 $ext = $file->getExtension();
                 if ('php' === $ext) {
                     $class = '\\' . ucfirst(str_replace('/', '\\', substr(substr($file->getPath(), strlen(BASE_PATH)), 1))) . '\\' . substr($file->getFilename(), 0, -4);
-                    if (!class_exists($class)) {
+                    if (! class_exists($class)) {
                         Log::error("{$class} not exist!");
                         continue;
                     }

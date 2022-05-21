@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
-
 namespace Framework\Core;
 
 /**
@@ -33,7 +32,7 @@ class Container
      */
     public static function instance(): IOC
     {
-        if (!isset(static::$_instance)) {
+        if (! isset(static::$_instance)) {
             static::$_instance = new IOC();
         }
         return static::$_instance;

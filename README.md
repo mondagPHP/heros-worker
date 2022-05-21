@@ -1,5 +1,10 @@
 #### 注意，这个项目框架内核代码，只能作为依赖，不能直接运行。
 
+项目愿景
+====
+打造一个真正简单使用与超高性能的共存的完美框架，真正为`PHP`敏捷开发的框架，此为 `Heros-Worker` 及其团队成员的初衷，我们将持续投入并为此付出努力，也欢迎你加入我们参与开源建设。
+
+
 为什么要造这个轮子？
 ====
 
@@ -66,5 +71,5 @@ GitHub: [https://github.com/mondagPHP/heros-worker](https://github.com/mondagPHP
 然后在 app 根目录下运行
 
 ```bash
-composer require 'mondagroup/herosworker:*@dev'
+composer require 'mondagroup/heros-worker:*@dev'
 ```

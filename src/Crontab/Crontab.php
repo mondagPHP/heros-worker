@@ -32,7 +32,7 @@ class Crontab
     /**
      * @var array
      */
-    protected static $_instances = [];
+    protected static array $_instances = [];
 
     /**
      * Crontab constructor.

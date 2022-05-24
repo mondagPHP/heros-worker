@@ -55,7 +55,7 @@ class Scanner
      * @param string $scanRootNamespace
      * @throws \ReflectionException
      */
-    private static function scanBeans(string $scanDir, string $scanRootNamespace)
+    private static function scanBeans(string $scanDir, string $scanRootNamespace): void
     {
         $files = self::getAllBeansFiles($scanDir);
         foreach ($files ?? [] as $file) {

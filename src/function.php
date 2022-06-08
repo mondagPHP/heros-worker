@@ -304,29 +304,27 @@ if (! function_exists('session')) {
     }
 }
 
+
 /**
  * @param ReflectionClass $class
  * @param string $attributeName
  * @return bool
  */
-if (! function_exists('searchForTopParent')) {
-    function searchForTopParent(ReflectionClass $class, string $attributeName)
+if (!function_exists('searchForTopParent')) {
+    function searchForTopParent(ReflectionClass $class, string $attributeName): bool
     {
-        $result = true;
-        $isAttribute = count($class->getAttributes($attributeName)) > 0;
-        if ($isAttribute) {
-            return $result;
+        //当前有就可以马上停止
+        if (count($class->getAttributes($attributeName)) > 0) {
+            return true;
         }
+        //找父类
         while ($class->getParentClass() !== false) {
             $parentClass = $class->getParentClass();
-            $parentAttribute = count($parentClass->getAttributes($attributeName)) > 0;
-            if ($parentAttribute) {
-                $result = true;
-                break;
+            if (count($parentClass->getAttributes($attributeName)) > 0) {
+                return true;
             }
             $class = $class->getParentClass();
-            $result = false;
         }
-        return $result;
+        return false;
     }
 }

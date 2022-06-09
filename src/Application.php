@@ -88,7 +88,7 @@ class Application
             'max_request' => -1,
         ]);
         $this->worker = new Worker($this->config['listen'], $this->config['context']);
-        $this->worker->reloadable = $this->config['reloadable'] ?? true;
+        $this->worker->reloadable = $this->config['reloadable'] ?: true;
         $maxRequestCount = (int)$this->config['max_request'];
         if ($maxRequestCount > 0) {
             static::$_maxRequestCount = $maxRequestCount;
@@ -126,7 +126,7 @@ class Application
         }
         Scanner::begin();
         $this->dispatcher = container(RouterCollector::class)->getDispatcher();
-        Http::requestClass(HttpRequest::class, Request::class);
+        Http::requestClass(HttpRequest::class);
     }
 
     /**
@@ -259,7 +259,7 @@ class Application
         Worker::$pidFile = $serverConfig['pid_file'];
         Worker::$stdoutFile = $serverConfig['stdout_file'];
         Worker::$logFile = $serverConfig['log_file'];
-        TcpConnection::$defaultMaxPackageSize = $config['max_package_size'] ?? 10 * 1024 * 1024;
+        TcpConnection::$defaultMaxPackageSize = $serverConfig['max_package_size'] ?? 10 * 1024 * 1024;
         if (property_exists(Worker::class, 'statusFile')) {
             Worker::$statusFile = $serverConfig['status_file'] ?? '';
         }

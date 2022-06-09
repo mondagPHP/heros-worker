@@ -19,11 +19,10 @@ abstract class Enum
 
     protected AdapterInterface $_adapter;
 
-    #[Pure]
- public function __construct()
- {
-     $this->_adapter = new ReflectionAdapter(static::class);
- }
+     public function __construct()
+     {
+         $this->_adapter = new ReflectionAdapter(static::class);
+     }
 
     /**
      * @param $name

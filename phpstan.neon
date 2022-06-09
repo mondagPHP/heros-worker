@@ -1,0 +1,7 @@
+parameters:
+  inferPrivatePropertyTypeFromConstructor: true
+  treatPhpDocTypesAsCertain: true
+  reportUnmatchedIgnoredErrors: false
+  ignoreErrors:
+  - '#Unsafe usage of new static\(\).#'
+  - '#Constant BASE_PATH not found.#'

@@ -105,7 +105,7 @@ if (! function_exists('redirect')) {
     function redirect(string $location, int $status = 302, array $headers = []): HttpResponse
     {
         $response = response('', $status, ['Location' => $location]);
-        foreach ($headers ?? [] as $name => $value) {
+        foreach ($headers as $name => $value) {
             $response->header($name, $value);
         }
         return $response;
@@ -304,12 +304,6 @@ if (! function_exists('session')) {
     }
 }
 
-
-/**
- * @param ReflectionClass $class
- * @param string $attributeName
- * @return bool
- */
 if (!function_exists('searchForTopParent')) {
     function searchForTopParent(ReflectionClass $class, string $attributeName): bool
     {

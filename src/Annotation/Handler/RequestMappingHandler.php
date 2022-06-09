@@ -44,7 +44,7 @@ return [
             }
             //验证器Vo
             $validAttributes = $method->getAttributes(Valid::class);
-            foreach ($validAttributes ?? [] as $validAttribute) {
+            foreach ($validAttributes  as $validAttribute) {
                 /** @var Valid $methodValidInstance */
                 $methodValidInstance = $validAttribute->newInstance();
                 $methodVInstance = new $methodValidInstance->class;
@@ -55,8 +55,7 @@ return [
             }
             $inputParams = [];
             $reflectionParameters = $method->getParameters();
-            /** @var ReflectionParameter $reflectionParameter */
-            foreach ($reflectionParameters ?? [] as $reflectionParameter) {
+            foreach ($reflectionParameters  as $reflectionParameter) {
                 if (isset($params[$reflectionParameter->getName()])) {
                     $inputParams[] = $params[$reflectionParameter->getName()];
                 } else {
@@ -78,7 +77,7 @@ return [
                             $inputParams[] = $vo;
                         } else {
                             $extFun = function () use ($reflectionClass, $extParams) {
-                                foreach ($extParams ?? [] as $extParam) {
+                                foreach ($extParams  as $extParam) {
                                     if (null !== $reflectionClass && $reflectionClass->isInstance($extParam)) {
                                         return $extParam;
                                     }
@@ -107,13 +106,13 @@ return [
         }
         //注解在控制器上
         $clazzAttributes = (new ReflectionClass(get_class($instance)))->getAttributes(Middlewares::class);
-        foreach ($clazzAttributes ?? [] as $clazzAttribute) {
-            foreach ($clazzAttribute->getArguments() ?? [] as $annotationMiddlewares) {
+        foreach ($clazzAttributes as $clazzAttribute) {
+            foreach ($clazzAttribute->getArguments()  as $annotationMiddlewares) {
                 $middlewares = array_merge($middlewares, $annotationMiddlewares);
             }
         }
         $routerDispatch = container(PipeLine::class)->create()->setClasses($middlewares)->run($routerDispatch);
-        foreach ($requestMethods ?? [] as $requestMethod) {
+        foreach ($requestMethods as $requestMethod) {
             $routerCollector->addRouter($requestMethod, $path, $routerDispatch);
         }
         return $instance;

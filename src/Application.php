@@ -240,8 +240,6 @@ class Application
      */
     protected function init(): void
     {
-        ini_set('session.gc_maxlifetime', (string)\config('session.gc_maxlifetime', '86400'));
-        ini_set('session.cookie_lifetime', (string)\config('session.cookie_lifetime', '86400'));
         $serverConfig = config('server', []);
         $pidDir = dirname($serverConfig['pid_file']);
         if (! file_exists($pidDir) || ! is_dir($pidDir)) {

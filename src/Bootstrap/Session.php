@@ -21,7 +21,7 @@ class Session implements BootstrapInterface
     {
         $config = config('session');
         Http::sessionName($config['session_name']);
-        SessionBase::handlerClass($config['handler'], $config['config'][$config['type']]);
+        SessionBase::handlerClass($config['handler'], $config['config'][$config['handler']]);
         $map = [
             'auto_update_timestamp' => 'autoUpdateTimestamp',
             'cookie_lifetime' => 'cookieLifetime',

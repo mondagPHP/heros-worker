@@ -36,7 +36,6 @@ class LaravelDB implements BootstrapInterface
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
         if (config('app.debug', true)) {
-            //添加监听事件
             $capsule->setEventDispatcher(new Dispatcher(new Container()));
             /** @var Dispatcher $dispatcher */
             $dispatcher = $capsule->getEventDispatcher();

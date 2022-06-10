@@ -23,7 +23,7 @@ class HttpRequest extends Request
      */
     public function getParams(): array
     {
-        return $this->get() + $this->post() + $this->routerParams;
+        return array_merge($this->get(), $this->post(), $this->routerParams);
     }
 
     /**

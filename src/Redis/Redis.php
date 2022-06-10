@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
@@ -9,6 +8,7 @@ namespace Framework\Redis;
 use Illuminate\Redis\Connections\Connection;
 use Illuminate\Redis\RedisManager;
 use Workerman\Timer;
+use Workerman\Worker;
 
 /**
  * Class Redis
@@ -30,7 +30,7 @@ use Workerman\Timer;
  * @method static array getMultiple(array $keys)
  * @method static bool mSet($pairs)
  * @method static bool mSetNx($pairs)
- * @method static bool set($key, $value)
+ * @method static bool set($key, $value, $expireResolution = null, $expireTTL = null, $flag = null)
  * @method static bool setBit($key, $offset, $value)
  * @method static bool setEx($key, $ttl, $value)
  * @method static bool pSetEx($key, $ttl, $value)
@@ -173,8 +173,8 @@ use Workerman\Timer;
  * @method static mixed watch($keys)
  * @method static mixed unwatch($keys)
  * Scripting methods
- * @method static mixed eval($script, $numkeys, $keyOrArg1 = null, $keyOrArgN = null)
- * @method static mixed evalSha($sha, $args = [], $numKeys = 0)
+ * @method mixed eval($script, $numkeys, $keyOrArg1 = null, $keyOrArgN = null)
+ * @method static mixed evalSha($scriptSha, $numkeys, ...$arguments)
  * @method static mixed script($command, ...$scripts)
  * @method static mixed client(...$args)
  * @method static null|string getLastError()
@@ -195,6 +195,25 @@ use Workerman\Timer;
 class Redis
 {
     /**
+     * need to install phpredis extension
+     */
+    const PHPREDIS_CLIENT = 'phpredis';
+
+    /**
+     * need to install the 'predis/predis' packgage.
+     * cmd: composer install predis/predis
+     */
+    const PREDIS_CLIENT = 'predis';
+
+    /**
+     * Support client collection
+     */
+    public static array $_allowClient = [
+        self::PHPREDIS_CLIENT,
+        self::PREDIS_CLIENT
+    ];
+
+    /**
      * @var RedisManager
      */
     protected static RedisManager $_instance;
@@ -206,7 +225,7 @@ class Redis
      */
     public static function __callStatic($name, $arguments)
     {
-        return static::instance()->connection('default')->{$name}(... $arguments);
+        return static::connection('default')->{$name}(... $arguments);
     }
 
     /**
@@ -214,9 +233,13 @@ class Redis
      */
     public static function instance(): RedisManager
     {
-        if (! isset(static::$_instance)) {
+        if (! static::$_instance) {
             $config = config('redis');
-            static::$_instance = new RedisManager(null, 'phpredis', $config);
+            $client = $config['client'] ?? self::PHPREDIS_CLIENT;
+            if (! in_array($client, static::$_allowClient)) {
+                $client = self::PHPREDIS_CLIENT;
+            }
+            static::$_instance = new RedisManager('', $client, $config);
         }
         return static::$_instance;
     }
@@ -230,9 +253,11 @@ class Redis
         static $timers = [];
         $connection = static::instance()->connection($name);
         if (! isset($timers[$name])) {
-            $timers[$name] = Timer::add(config("redis.{$name}.ping") ?? 55, static function () use ($connection) {
-                $connection->get('ping');
-            });
+            if (Worker::getAllWorkers()) {
+                $timers[$name] = Timer::add(55, function () use ($connection) {
+                    $connection->get('ping');
+                });
+            }
         }
         return $connection;
     }

@@ -15,7 +15,7 @@ namespace Framework\Core;
  */
 class Container
 {
-    private static IOC $_instance;
+    protected static IOC $_instance;
 
     /**
      * @param $name

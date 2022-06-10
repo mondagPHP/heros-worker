@@ -238,7 +238,7 @@ class Application
     /**
      * @return void
      */
-    private function init(): void
+    protected function init(): void
     {
         ini_set('session.gc_maxlifetime', (string)\config('session.gc_maxlifetime', '86400'));
         ini_set('session.cookie_lifetime', (string)\config('session.cookie_lifetime', '86400'));
@@ -272,7 +272,7 @@ class Application
      * @param mixed $responseObj
      * @return Response|HttpResponse
      */
-    private static function handlerRequestResult(mixed $responseObj): Response|HttpResponse
+    protected static function handlerRequestResult(mixed $responseObj): Response|HttpResponse
     {
         if ($responseObj instanceof Response) {
             $response = $responseObj;
@@ -293,7 +293,7 @@ class Application
      * @param HttpRequest $request
      * @return mixed
      */
-    private static function exceptionResponse(\Throwable $e, Request $request): mixed
+    protected static function exceptionResponse(\Throwable $e, Request $request): mixed
     {
         try {
             /** @var ExceptionHandler $exceptionHandler */
@@ -317,7 +317,7 @@ class Application
      * @param string $path
      * @return false|string
      */
-    private function findFile(string $path): bool|string
+    protected function findFile(string $path): bool|string
     {
         $file = \realpath(public_path() . '/' . trim($path, '/'));
         if (! $file) {

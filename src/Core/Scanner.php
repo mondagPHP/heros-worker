@@ -4,7 +4,6 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
-
 namespace Framework\Core;
 
 /**
@@ -41,7 +40,7 @@ class Scanner
     {
         $ret = [];
         $files = glob($dir . '/*');
-        if ($files){
+        if ($files) {
             foreach ($files as $file) {
                 if (is_dir($file)) {
                     $ret = array_merge($ret, self::getAllBeansFiles($file));
@@ -69,7 +68,7 @@ class Scanner
                 $refClass = new \ReflectionClass($class);
                 $classAnnotations = $refClass->getAttributes();
                 foreach ($classAnnotations  as $classAnnotation) {
-                    if (!isset(self::$annotationHandlers[($classAnnotation->getName())])) {
+                    if (! isset(self::$annotationHandlers[($classAnnotation->getName())])) {
                         continue;
                     }
                     $instance = Container::get($class);
@@ -87,7 +86,7 @@ class Scanner
     {
         $handlers = [];
         $annotationHandlerFiles = glob(dirname(__DIR__) . '/Annotation/Handler/*.php');
-        if ($annotationHandlerFiles){
+        if ($annotationHandlerFiles) {
             foreach ($annotationHandlerFiles  as $annotationHandlerFile) {
                 $handlers = array_merge($handlers, (array)require_once $annotationHandlerFile);
             }
@@ -106,7 +105,7 @@ class Scanner
         foreach ($properties as $property) {
             $propAnnotations = $property->getAttributes();
             foreach ($propAnnotations as $propAnnotation) {
-                if (!isset(self::$annotationHandlers[$propAnnotation->getName()])) {
+                if (! isset(self::$annotationHandlers[$propAnnotation->getName()])) {
                     continue;
                 }
                 $handler = self::$annotationHandlers[$propAnnotation->getName()];
@@ -126,7 +125,7 @@ class Scanner
         foreach ($methods as $method) {
             $reflectionAttributes = $method->getAttributes();
             foreach ($reflectionAttributes as $reflectionAttribute) {
-                if (!isset(self::$annotationHandlers[$reflectionAttribute->getName()])) {
+                if (! isset(self::$annotationHandlers[$reflectionAttribute->getName()])) {
                     continue;
                 }
                 $handler = self::$annotationHandlers[$reflectionAttribute->getName()];

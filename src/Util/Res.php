@@ -108,12 +108,12 @@ class Res implements JsonAble
 
     /**
      * @param int $total
-     * @param $data
+     * @param array $data
      * @param array $extra
      * @return self
      *                      分页
      */
-    public static function pager(int $total, $data, array $extra = []): self
+    public static function pager(int $total, array $data, array $extra = []): self
     {
         $pageParameterConfig = config('request.pageParameter', 'page');
         $pageSizeParameterConfig = config('request.pageSizeParameter', 'pageSize');

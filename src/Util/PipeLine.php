@@ -13,13 +13,22 @@ use Closure;
  */
 class PipeLine
 {
-    //所有要执行的类
+    /**
+     * 所有要执行的类
+     * @var array
+     */
     protected array $classes = [];
 
-    //类的方法名称
+    /**
+     * 类的方法名称
+     * @var string
+     */
     protected string $handleMethod = 'process';
 
-    //需要创建新对象
+    /**
+     * 需要创建新对象
+     * @return $this
+     */
     public function create(): self
     {
         return clone $this;

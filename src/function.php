@@ -7,10 +7,13 @@ declare(strict_types=1);
 use Framework\Application;
 use Framework\Contract\BootstrapInterface;
 use Framework\Core\Container;
+use Framework\Database\HeroModel;
 use Framework\Event\Event;
 use Framework\Http\HttpRequest;
 use Framework\Http\HttpResponse;
 use Framework\View\HerosTemplate;
+use Illuminate\Support\Arr;
+use Monda\Utils\String\StringUtil;
 use Monda\Utils\Util\Config;
 
 //env_config
@@ -304,7 +307,7 @@ if (! function_exists('session')) {
     }
 }
 
-if (!function_exists('searchForTopParent')) {
+if (! function_exists('searchForTopParent')) {
     function searchForTopParent(ReflectionClass $class, string $attributeName): bool
     {
         //当前有就可以马上停止
@@ -320,5 +323,34 @@ if (!function_exists('searchForTopParent')) {
             $class = $class->getParentClass();
         }
         return false;
+    }
+}
+
+
+/**
+ * notice:注意修改，数据存在的数据会直接覆盖
+ * @param HeroModel $clazz 模型类
+ * @param array $arr 自动进行转化
+ * @return bool
+ */
+if (!function_exists('quickCreateOrUpdate')) {
+    /** @noinspection PhpUndefinedMethodInspection */
+    function quickCreateOrUpdate(string $clazz, array $arr): bool
+    {
+        $fillArr = [];
+        foreach ($arr ?? [] as $key => $value) {
+            $fillArr[StringUtil::hump2Underline($key)] = $value;
+        }
+        if (!$fillArr) {
+            return false;
+        }
+        if (isset($fillArr['id'])) {
+            $updateArr = Arr::only($fillArr, (new $clazz())->getFillable());
+            unset($updateArr['id']);
+            $result = (bool)$clazz::query()->where('id', $fillArr['id'])->update($updateArr);
+        } else {
+            $result = (bool)$clazz::query()->create($fillArr);
+        }
+        return $result;
     }
 }

@@ -8,7 +8,6 @@ namespace Framework\Enums;
 
 use Framework\Traits\InstanceTrait;
 use Illuminate\Support\Str;
-use JetBrains\PhpStorm\Pure;
 
 /**
  * @method static getMessage($code)
@@ -19,10 +18,10 @@ abstract class Enum
 
     protected AdapterInterface $_adapter;
 
-     public function __construct()
-     {
-         $this->_adapter = new ReflectionAdapter(static::class);
-     }
+    public function __construct()
+    {
+        $this->_adapter = new ReflectionAdapter(static::class);
+    }
 
     /**
      * @param $name

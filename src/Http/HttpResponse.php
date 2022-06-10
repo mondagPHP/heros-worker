@@ -24,6 +24,6 @@ class HttpResponse extends Response
         array  $headers = [],
         string $body = ''
     ): static {
-        return new self($status, $headers, $body);
+        return new static($status, $headers, $body);
     }
 }

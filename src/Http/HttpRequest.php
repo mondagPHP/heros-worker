@@ -49,7 +49,7 @@ class HttpRequest extends Request
      */
     public function getParameter(string $name, $default = null): mixed
     {
-        return $this->params[$name] ?? $default;
+        return $this->getParams()[$name] ?? $default;
     }
 
     /**
@@ -66,6 +66,6 @@ class HttpRequest extends Request
      */
     public function getInjectObject(): array
     {
-        return array_values($this->injectObject);
+        return $this->injectObject;
     }
 }

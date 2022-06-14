@@ -7,10 +7,10 @@ declare(strict_types=1);
 namespace Framework\Enums;
 
 use Framework\Traits\InstanceTrait;
-use Illuminate\Support\Str;
 
 /**
  * @method static getMessage($code)
+ * @method static array getMappings()
  */
 abstract class Enum
 {
@@ -27,25 +27,15 @@ abstract class Enum
      * @param $name
      * @param $arguments
      * @return string
+     * @throws \ReflectionException
      */
     public function __call($name, $arguments)
     {
-        if (! Str::startsWith($name, 'get')) {
-            throw new EnumException('The function is not defined!');
+        $method = $name . 'Call';
+        if (! method_exists($this, $method)) {
+            throw new \RuntimeException('method not exist!');
         }
-        if (! isset($arguments) || count($arguments) === 0) {
-            throw new EnumException('The Code is required');
-        }
-        $code = $arguments[0];
-        $name = strtolower(substr($name, 3));
-        if (isset($this->$name)) {
-            return $this->$name[$code] ?? '';
-        }
-        $ref = new \ReflectionClass(static::class);
-        $properties = $ref->getDefaultProperties();
-        $arr = $this->_adapter->getAnnotationsByName($name, $properties);
-        $this->$name = $arr;
-        return $this->$name[$code] ?? '';
+        return $this->{$method}($arguments);
     }
 
     /**
@@ -56,5 +46,32 @@ abstract class Enum
     public static function __callStatic($method, $arguments)
     {
         return static::getInstance()->$method(...$arguments);
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    private function getMessageCall($arguments)
+    {
+        if (! isset($arguments) || count($arguments) === 0) {
+            throw new EnumException('The Code is required');
+        }
+        $code = $arguments[0];
+        $ref = new \ReflectionClass(static::class);
+        $properties = $ref->getDefaultProperties();
+        $arr = $this->_adapter->getAnnotationsByName($properties);
+        return $arr[$code] ?? '';
+    }
+
+    /**
+     * @param $arguments
+     * @return array
+     * @throws \ReflectionException
+     */
+    private function getMappingsCall($arguments): array
+    {
+        $ref = new \ReflectionClass(static::class);
+        $properties = $ref->getDefaultProperties();
+        return $this->_adapter->getAnnotationsByName($properties);
     }
 }

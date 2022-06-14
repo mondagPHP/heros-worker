@@ -11,14 +11,17 @@ use Illuminate\Support\Str;
 
 class ReflectionAdapter implements AdapterInterface
 {
-    protected $class = '';
+    protected string $class = '';
 
     public function __construct($class)
     {
         $this->class = $class;
     }
 
-    public function getAnnotationsByName($name, $properties)
+    /**
+     * @throws \ReflectionException
+     */
+    public function getAnnotationsByName($properties): array
     {
         $result = [];
         foreach ($properties as $key => $val) {

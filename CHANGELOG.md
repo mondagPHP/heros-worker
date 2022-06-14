@@ -1,7 +1,10 @@
 # CHANGELOG
 
-## [v2.1.17] 2022.06.10
+##[v2.1.18] 2022.06.15
+- 修复`HttpRequest`的`getParameter`获取参数失效。
+- `Enum` 增加 `getMappings` 方法
 
+## [v2.1.17] 2022.06.10
 - Redis 支持 `phpredis`,`predis`不同驱动
 - Session如下参数
 ```shell
@@ -20,5 +23,4 @@
 - 修复Vo的继承的问题。
 
 ## [v2.1.15] 2022.05.26
-
 - Redis增加心跳,解决云Redis服务器自动断开链接的问题。

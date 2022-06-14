@@ -326,14 +326,13 @@ if (! function_exists('searchForTopParent')) {
     }
 }
 
-
 /**
  * notice:注意修改，数据存在的数据会直接覆盖
  * @param HeroModel $clazz 模型类
  * @param array $arr 自动进行转化
  * @return bool
  */
-if (!function_exists('quickCreateOrUpdate')) {
+if (! function_exists('quickCreateOrUpdate')) {
     /** @noinspection PhpUndefinedMethodInspection */
     function quickCreateOrUpdate(string $clazz, array $arr): bool
     {
@@ -341,7 +340,7 @@ if (!function_exists('quickCreateOrUpdate')) {
         foreach ($arr ?? [] as $key => $value) {
             $fillArr[StringUtil::hump2Underline($key)] = $value;
         }
-        if (!$fillArr) {
+        if (! $fillArr) {
             return false;
         }
         if (isset($fillArr['id'])) {

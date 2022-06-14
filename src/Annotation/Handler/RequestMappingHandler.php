@@ -37,7 +37,7 @@ return [
         $routerDispatch = static function (HttpRequest $request) use ($method, $instance) {
             $params = $request->getParams();
             $request->pushInjectObject($request);
-            $extParams = $request->getInjectObject();
+            $extParams = array_values($request->getInjectObject());
             //_initialize 初始化
             if (method_exists($instance, '_initialize')) {
                 call_user_func([$instance, '_initialize'], $request);

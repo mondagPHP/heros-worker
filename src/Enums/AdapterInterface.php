@@ -10,5 +10,5 @@ interface AdapterInterface
 {
     public function __construct($class);
 
-    public function getAnnotationsByName($name, $properties);
+    public function getAnnotationsByName($properties);
 }

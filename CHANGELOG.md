@@ -1,5 +1,8 @@
 # CHANGELOG
 
+##[v2.1.20] 2022.06.20
+- 增加`event`事件
+
 ##[v2.1.18] 2022.06.15
 - 修复`HttpRequest`的`getParameter`获取参数失效。
 - `Enum` 增加 `getMappings` 方法

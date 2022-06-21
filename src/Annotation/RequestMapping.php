@@ -1,5 +1,4 @@
 <?php
-/** @noinspection PhpMultipleClassDeclarationsInspection */
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
@@ -17,8 +16,9 @@ class RequestMapping
      * @param string $path
      * @param string $name
      * @param array $method
+     * @param string $slug
      */
-    public function __construct(public string $path, public string $name, public array $method = ['GET'])
+    public function __construct(public string $path, public string $name, public array $method = ['GET'], public string $slug = '')
     {
     }
 }

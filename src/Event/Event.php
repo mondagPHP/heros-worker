@@ -1,56 +1,103 @@
 <?php
-declare(strict_types=1);
-/**
- * This file is part of Heros-Worker.
- * @contact  chenzf@pvc123.com
- */
+
 namespace Framework\Event;
 
-use Illuminate\Container\Container;
-use Illuminate\Events\Dispatcher;
+use Framework\Core\Log;
 
-/**
- *  class Event
- * @package support
- *  Strings methods
- * @method static Dispatcher dispatch($event)
- */
 class Event
 {
     /**
-     * @var Dispatcher
+     * @var array
      */
-    protected static Dispatcher $instance;
+    protected static array $eventMap = [];
 
     /**
-     * @param $name
-     * @param $arguments
-     * @return mixed
+     * @var array
      */
-    public static function __callStatic($name, $arguments)
+    protected static array $prefixEventMap = [];
+
+    /**
+     * @var int
+     */
+    protected static int $id = 0;
+
+    /**
+     * @param $eventName
+     * @param callable $callback
+     * @return int
+     */
+    public static function on($eventName, callable $callback): int
     {
-        return self::instance()->{$name}(... $arguments);
+        $is_prefix_name = $eventName[strlen($eventName) - 1] === '*';
+        if ($is_prefix_name) {
+            static::$prefixEventMap[substr($eventName, 0, -1)][++static::$id] = $callback;
+        } else {
+            static::$eventMap[$eventName][++static::$id] = $callback;
+        }
+        return static::$id;
     }
 
     /**
-     * @return Dispatcher
+     * @param $eventName
+     * @param int $id
+     * @return int
      */
-    public static function instance(): Dispatcher
+    public static function off($eventName, int $id): int
     {
-        if (! isset(static::$instance)) {
-            static::$instance = new Dispatcher((new Container));
-            $eventsList = config('events');
-            if (isset($eventsList['listener']) && ! empty($eventsList['listener'])) {
-                foreach ($eventsList['listener'] as $event => $listener) {
-                    if (! is_array($listener)) {
-                        continue;
-                    }
-                    foreach ($listener as $l) {
-                        static::$instance->listen($event, $l);
-                    }
-                }
+        if (isset(static::$eventMap[$eventName][$id])) {
+            unset(static::$eventMap[$eventName][$id]);
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * @param $eventName
+     * @param $data
+     * @return int
+     */
+    public static function emit($eventName, $data): int
+    {
+        $successCount = 0;
+        $callbacks = static::$eventMap[$eventName] ?? [];
+        foreach (static::$prefixEventMap as $name => $callback_items) {
+            if (str_starts_with($eventName, $name)) {
+                $callbacks = array_merge($callbacks, $callback_items);
             }
         }
-        return static::$instance;
+        ksort($callbacks);
+        foreach ($callbacks as $callback) {
+            try {
+                $ret = $callback($data, $eventName);
+                $successCount++;
+            } catch (\Throwable $e) {
+                Log::error($e->getMessage());
+                continue;
+            }
+            if ($ret === false) {
+                return $successCount;
+            }
+        }
+        return $successCount;
+    }
+
+    /**
+     * @return array
+     */
+    public static function list(): array
+    {
+        $callbacks = [];
+        foreach (static::$eventMap as $eventName => $callback_items) {
+            foreach ($callback_items as $id => $callback_item) {
+                $callbacks[$id] = [$eventName, $callback_item];
+            }
+        }
+        foreach (static::$prefixEventMap as $eventName => $callback_items) {
+            foreach ($callback_items as $id => $callback_item) {
+                $callbacks[$id] = [$eventName . '*', $callback_item];
+            }
+        }
+        ksort($callbacks);
+        return $callbacks;
     }
 }

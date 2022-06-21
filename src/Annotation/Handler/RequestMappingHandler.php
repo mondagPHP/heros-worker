@@ -35,7 +35,6 @@ return [
         }
 
         $slug = $requestMapping->slug;
-
         /** @var RouterCollector $routerCollector */
         $routerCollector = container(RouterCollector::class);
         $routerDispatch = static function (HttpRequest $request) use ($method, $instance, $slug) {

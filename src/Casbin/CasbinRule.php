@@ -1,10 +1,12 @@
 <?php
 
 declare (strict_types=1);
+
 namespace Framework\Casbin;
 
 use Carbon\Carbon;
 use Framework\Database\HeroModel;
+
 /**
  * Class CasbinRule
  * @property int $id
@@ -23,5 +25,5 @@ class CasbinRule extends HeroModel
     protected $table = 'casbin_rule';
 
     /** @var array $fillable */
-    protected $fillable = ['id', 'ptype', 'v0', 'v1', 'v2', 'v3', 'v4', 'v5', 'created_at', 'updated_at'];
+    protected $fillable = ['id', 'ptype', 'v0', 'v1', 'v2', 'v3', 'v4', 'v5'];
 }

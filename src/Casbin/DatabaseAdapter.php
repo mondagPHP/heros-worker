@@ -17,7 +17,7 @@ class DatabaseAdapter implements Adapter, FilteredAdapter, BatchAdapter, Updatab
 {
     use AdapterHelper;
 
-    protected $filtered = false;
+    protected bool $filtered = false;
 
     public function __construct()
     {
@@ -64,7 +64,7 @@ class DatabaseAdapter implements Adapter, FilteredAdapter, BatchAdapter, Updatab
         return array_slice($rule, 0, $i + 1);
     }
 
-    public static function newAdapter()
+    public static function newAdapter(): static
     {
         return new static();
     }

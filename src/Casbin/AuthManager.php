@@ -17,7 +17,7 @@ class AuthManager
 
     public static string $defaultAct = 'defaultAct';
 
-    protected static ?Enforcer $enforcer = null;
+    protected static Enforcer $enforcer;
 
     protected static string $user = '';
 
@@ -29,8 +29,8 @@ class AuthManager
      */
     public static function enforcer(): Enforcer
     {
-        if (! self::$enforcer) {
-            self::$enforcer = new Enforcer(__DIR__ . '/config/rabc_model.conf', new DatabaseAdapter());
+        if (!isset(self::$enforcer)) {
+            self::$enforcer = new Enforcer(__DIR__ . '/config/rbac_model.conf', new DatabaseAdapter());
             self::$enable = config('app.' . self::AUTH_ENABLE_KEY, false);
         }
         return self::$enforcer;
@@ -54,12 +54,11 @@ class AuthManager
      */
     public static function checkAuth(string $slug, string $act = 'defaultAct'): void
     {
-        if (empty($slug)) {
-            return;
-        }
-        $enforcer = self::enforcer();
-        if (self::$enable && $enforcer->enforce(self::$user, $slug, $act) === false) {
-            throw new NoAuthException('no permission');
+        if ($slug) {
+            $enforcer = self::enforcer();
+            if (self::$enable && $enforcer->enforce(self::$user, $slug, $act) === false) {
+                throw new NoAuthException('no permission');
+            }
         }
     }
 }

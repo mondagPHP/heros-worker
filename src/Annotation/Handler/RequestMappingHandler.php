@@ -8,6 +8,7 @@ use Framework\Annotation\Middlewares;
 use Framework\Annotation\RequestMapping;
 use Framework\Annotation\Valid;
 use Framework\Annotation\VO;
+use Framework\Casbin\AuthManager;
 use Framework\Component\MiddleWareCollector;
 use Framework\Component\RouterCollector;
 use Framework\Core\Container;
@@ -32,9 +33,19 @@ return [
         foreach ($requestMethods as &$itemRequestMethod) {
             $itemRequestMethod = strtoupper($itemRequestMethod);
         }
+
+        $slug = $requestMapping->slug;
+        if (empty($slug)) {
+            $slug = $path;
+        }
+
         /** @var RouterCollector $routerCollector */
         $routerCollector = container(RouterCollector::class);
-        $routerDispatch = static function (HttpRequest $request) use ($method, $instance) {
+        $routerDispatch = static function (HttpRequest $request) use ($method, $instance, $slug) {
+
+            //验证用户slug权限
+            AuthManager::checkAuth($slug);
+
             $params = $request->getParams();
             $request->pushInjectObject($request);
             $extParams = array_values($request->getInjectObject());

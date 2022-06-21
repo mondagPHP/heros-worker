@@ -35,9 +35,6 @@ return [
         }
 
         $slug = $requestMapping->slug;
-        if (empty($slug)) {
-            $slug = $path;
-        }
 
         /** @var RouterCollector $routerCollector */
         $routerCollector = container(RouterCollector::class);

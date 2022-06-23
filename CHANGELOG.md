@@ -1,5 +1,8 @@
 # CHANGELOG
 
+##[v2.1.22] 2022.06.23
+- HttpRequest上传文件支持UploadFile
+
 ##[v2.1.21] 2022.06.21
 - 增加`casbin`权限扩展
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
  * This file is part of Heros-Worker.
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Http;
 
 use Workerman\Protocols\Http\Request;
@@ -67,5 +68,59 @@ class HttpRequest extends Request
     public function getInjectObject(): array
     {
         return $this->injectObject;
+    }
+
+    /**
+     * @param string|null $name
+     * @return null|UploadFile[]|UploadFile
+     */
+    public function file($name = null): array|UploadFile|null
+    {
+        $files = parent::file($name);
+        if (null === $files) {
+            return $name === null ? [] : null;
+        }
+        if ($name !== null) {
+            if (\is_array(\current($files))) {
+                return $this->parseFiles($files);
+            }
+            return $this->parseFile($files);
+        }
+        $uploadFiles = [];
+        foreach ($files as $name => $file) {
+            if (\is_array(\current($file))) {
+                $uploadFiles[$name] = $this->parseFiles($file);
+            } else {
+                $uploadFiles[$name] = $this->parseFile($file);
+            }
+        }
+        return $uploadFiles;
+    }
+
+    /**
+     * @param $file
+     * @return UploadFile
+     */
+    protected function parseFile($file): UploadFile
+    {
+        return new UploadFile($file['tmp_name'], $file['name'], $file['type'], $file['error']);
+    }
+
+
+    /**
+     * @param array $files
+     * @return array
+     */
+    protected function parseFiles(array $files): array
+    {
+        $uploadFiles = [];
+        foreach ($files as $key => $file) {
+            if (\is_array(\current($file))) {
+                $uploadFiles[$key] = $this->parseFiles($file);
+            } else {
+                $uploadFiles[$key] = $this->parseFile($file);
+            }
+        }
+        return $uploadFiles;
     }
 }

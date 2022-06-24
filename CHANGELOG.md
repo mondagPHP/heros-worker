@@ -1,6 +1,6 @@
 # CHANGELOG
 
-##[v2.1.23] 2022.06.24
+## [v2.1.23] 2022.06.24
 - `HttpRequest`支持以下方法
   - getRemoteIp()
   - getRemotePort()
@@ -14,16 +14,16 @@
   - only()
   - except()
 
-##[v2.1.22] 2022.06.23
+## [v2.1.22] 2022.06.23
 - HttpRequest上传文件支持UploadFile
 
-##[v2.1.21] 2022.06.21
+## [v2.1.21] 2022.06.21
 - 增加`casbin`权限扩展
 
-##[v2.1.20] 2022.06.20
+## [v2.1.20] 2022.06.20
 - 增加`event`事件
 
-##[v2.1.18] 2022.06.15
+## [v2.1.18] 2022.06.15
 - 修复`HttpRequest`的`getParameter`获取参数失效。
 - `Enum` 增加 `getMappings` 方法
 

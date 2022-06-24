@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * This file is part of Heros-Worker.
+ * @contact  chenzf@pvc123.com
+ */
 namespace Framework\Http;
 
 use Framework\File\SplFile;
@@ -75,5 +78,4 @@ class UploadFile extends SplFile
     {
         return $this->_uploadErrorCode === UPLOAD_ERR_OK;
     }
-
 }

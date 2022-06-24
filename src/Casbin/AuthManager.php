@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
-
+/**
+ * This file is part of Heros-Worker.
+ * @contact  chenzf@pvc123.com
+ */
 namespace Framework\Casbin;
 
 use Casbin\Enforcer;
@@ -29,7 +32,7 @@ class AuthManager
      */
     public static function enforcer(): Enforcer
     {
-        if (!isset(self::$enforcer)) {
+        if (! isset(self::$enforcer)) {
             self::$enforcer = new Enforcer(__DIR__ . '/config/rbac_model.conf', new DatabaseAdapter());
             self::$enable = config('app.' . self::AUTH_ENABLE_KEY, false);
         }

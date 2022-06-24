@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * This file is part of Heros-Worker.
+ * @contact  chenzf@pvc123.com
+ */
 namespace Framework\Console\Commands;
 
 use Framework\Event\Event;
@@ -11,6 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class EventListCommand extends Command
 {
     protected static $defaultName = 'event:list';
+
     protected static $defaultDescription = 'Show event list';
 
     /**
@@ -18,7 +22,6 @@ class EventListCommand extends Command
      */
     protected function configure()
     {
-
     }
 
     /**
@@ -46,5 +49,4 @@ class EventListCommand extends Command
         $table->render();
         return self::SUCCESS;
     }
-
 }

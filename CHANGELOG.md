@@ -1,5 +1,19 @@
 # CHANGELOG
 
+##[v2.1.23] 2022.06.24
+- `HttpRequest`支持以下方法
+  - getRemoteIp()
+  - getRemotePort()
+  - getLocalIp()
+  - getLocalPort()
+  - getRealIp()
+  - url()
+  - fullUrl()
+  - isAjax()
+  - isPjax()
+  - only()
+  - except()
+
 ##[v2.1.22] 2022.06.23
 - HttpRequest上传文件支持UploadFile
 

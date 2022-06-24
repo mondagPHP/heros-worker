@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * This file is part of Heros-Worker.
+ * @contact  chenzf@pvc123.com
+ */
 namespace Framework\Event;
 
 use Framework\Core\Log;

@@ -79,7 +79,7 @@ class HerosTemplate implements ViewInterface
          * 导入模板
          * require|include
          */
-        '/{(require|include)\s{1,}([0-9a-z_\.\:]{1,})\s*}/i' => '<?php include \Framework\View\HerosTemplate::getIncludePath(\'${2}\')?>',
+        '/{(require|include)\s{1,}([0-9a-z_\.\]{1,})\s*}/i' => '<?php include \Framework\View\HerosTemplate::getIncludePath(\'${2}\')?>',
 
         // 引入静态资源 css file,javascript file
         '/{(res):([a-z]{1,})\s+([^\}]+)\s*}/i' => '<?php echo \Framework\View\HerosTemplate::importResource(\'${2}\', "${3}")?>',

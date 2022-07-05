@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## [v2.1.25] 2022.07.05
+- 增加JWT的生成生成Token
+
 ## [v2.1.23] 2022.06.24
 - `HttpRequest`支持以下方法
   - getRemoteIp()

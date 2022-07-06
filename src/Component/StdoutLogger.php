@@ -12,6 +12,9 @@ use Psr\Log\LogLevel;
 use function sprintf;
 use function str_replace;
 
+/**
+ * 只能用于web端
+ */
 #[Component]
 class StdoutLogger implements StdoutLoggerInterface
 {

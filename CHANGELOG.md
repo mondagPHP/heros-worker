@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## [v2.1.26] 2022.07.06
+- 增加Locker
+    ```php
+  $lock = Locker::lock("hello", 200);
+  if (!$lock->acquire()) {
+     throw new \Exception('操作太频繁，请稍后再试');
+  }
+  try {
+      xxxx
+  } catch (\Exception $exception) {
+    Log::error($exception->getMessage());
+  } finally {
+      $lock->release();
+  }
+    ```
+- 修复Redis实例化的异常
+
+
+
 ## [v2.1.25] 2022.07.05
 - 增加JWT的生成生成Token
 

@@ -234,13 +234,13 @@ class Redis
      */
     public static function instance(): RedisManager
     {
-        if (! static::$_instance) {
+        if (! isset(static::$_instance)) {
             $config = config('redis');
             $client = $config['client'] ?? self::PHPREDIS_CLIENT;
             if (! in_array($client, static::$_allowClient)) {
                 $client = self::PHPREDIS_CLIENT;
             }
-            static::$_instance = new RedisManager('', $client, $config);
+            static::$_instance = new RedisManager(null, $client, $config);
         }
         return static::$_instance;
     }
@@ -252,6 +252,7 @@ class Redis
     public static function connection(string $name = 'default'): Connection
     {
         static $timers = [];
+
         $connection = static::instance()->connection($name);
         if (! isset($timers[$name])) {
             $timers[$name] = Worker::getAllWorkers() ? Timer::add(55, function () use ($connection) {

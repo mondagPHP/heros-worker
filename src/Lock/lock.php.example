@@ -1,0 +1,10 @@
+<?php
+
+return [
+    'storage' => 'file',  // file/redis， 建议使用 redis，file 不支持 ttl
+    'default_config' => [
+        'ttl' => 300, // 默认锁超时时间
+        'auto_release' => true, // 是否自动释放，建议设置为 true
+        'prefix' => 'lock_', // 锁前缀
+    ],
+];

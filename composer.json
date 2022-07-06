@@ -26,6 +26,7 @@
         "symfony/cache": "^6.0",
         "firebase/php-jwt": "^6.1",
         "nikic/php-parser": "^4.10.4",
+        "symfony/lock": "^6.0",
         "casbin/casbin": "^3.20"
     },
     "require-dev": {

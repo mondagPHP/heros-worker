@@ -1,8 +1,10 @@
 <?php
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Console\Commands;
 
 use Carbon\Carbon;
@@ -15,11 +17,10 @@ use PhpParser\NodeVisitorAbstract;
 
 /**
  * Class ClassVisitor
- * @package framework\database\command\makeEntity
  */
 class ClassVisitor extends NodeVisitorAbstract
 {
-    /** @var Field $primaryKeyField */
+    /** @var Field */
     private $primaryKeyField;
 
     private $fields;
@@ -41,7 +42,7 @@ class ClassVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * @param Node $node
+     * @param  Node  $node
      * @return mixed
      */
     public function leaveNode(Node $node)
@@ -79,6 +80,7 @@ class ClassVisitor extends NodeVisitorAbstract
                 if ($usbNode instanceof Node\Expr\Array_) {
                     $usbNode->setAttribute('kind', Node\Expr\Array_::KIND_SHORT);
                 }
+
                 return $newNode;
             case $node instanceof Node\Expr\Array_:
                 break;
@@ -99,11 +101,12 @@ class ClassVisitor extends NodeVisitorAbstract
                 }
                 break;
         }
+
         return null;
     }
 
     /**
-     * @param Node $node
+     * @param  Node  $node
      */
     private function replaceComment(Node $node): void
     {
@@ -124,7 +127,7 @@ class ClassVisitor extends NodeVisitorAbstract
                     continue;
                 }
                 if ($startCus) {
-                    $cusComment[] = $line . "\n";
+                    $cusComment[] = $line."\n";
                 }
             }
         }
@@ -135,7 +138,7 @@ class ClassVisitor extends NodeVisitorAbstract
             }
         }
         foreach ($this->newCommentText as $key => $value) {
-            $this->newCommentText[$key] = ' ' . $value;
+            $this->newCommentText[$key] = ' '.$value;
         }
         $newCommentTxt = sprintf("/**\n%s */", implode('', $this->newCommentText));
         $node->setDocComment(new Doc($newCommentTxt));

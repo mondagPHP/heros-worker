@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Enums;
 
 use Framework\Traits\InstanceTrait;
@@ -27,14 +30,16 @@ abstract class Enum
      * @param $name
      * @param $arguments
      * @return string
+     *
      * @throws \ReflectionException
      */
     public function __call($name, $arguments)
     {
-        $method = $name . 'Call';
+        $method = $name.'Call';
         if (! method_exists($this, $method)) {
             throw new \RuntimeException('method not exist!');
         }
+
         return $this->{$method}($arguments);
     }
 
@@ -60,18 +65,21 @@ abstract class Enum
         $ref = new \ReflectionClass(static::class);
         $properties = $ref->getDefaultProperties();
         $arr = $this->_adapter->getAnnotationsByName($properties);
+
         return $arr[$code] ?? '';
     }
 
     /**
      * @param $arguments
      * @return array
+     *
      * @throws \ReflectionException
      */
     private function getMappingsCall($arguments): array
     {
         $ref = new \ReflectionClass(static::class);
         $properties = $ref->getDefaultProperties();
+
         return $this->_adapter->getAnnotationsByName($properties);
     }
 }

@@ -1,10 +1,13 @@
 <?php
+
 /** @noinspection PhpMultipleClassDeclarationsInspection */
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Console\Commands;
 
 use Framework\Database\HeroDB;
@@ -53,28 +56,30 @@ class MakeEntityCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param  InputInterface  $input
+     * @param  OutputInterface  $output
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->entityDir = BASE_PATH . '/app/Entity';
+        $this->entityDir = base_path().'/app/Entity';
         $this->table = $input->getOption('table');
         $this->connect = $input->getOption('connect');
         $this->path = $input->getOption('path');
         $this->prefix = $input->getOption('prefix');
         if ($this->path) {
-            $this->namespace = $this->namespace . '\\' . ucwords($this->path);
+            $this->namespace = $this->namespace.'\\'.ucwords($this->path);
         }
         $this->pdo = HeroDB::connection($this->connect)->getPdo();
         $this->generateEntity();
+
         return self::SUCCESS;
     }
 
     /**
      * 根据stub创建文件
-     * @param \Closure $closure 返回code
+     *
+     * @param  \Closure  $closure 返回code
      */
     protected function newByStub(\Closure $closure): void
     {
@@ -87,12 +92,14 @@ class MakeEntityCommand extends Command
 
     protected function getFile(): string
     {
-        FileUtil::makeFileDirs($this->entityDir . '/' . $this->path);
-        return $this->entityDir . '/' . $this->path . '/' . sprintf('%s.php', $this->className);
+        FileUtil::makeFileDirs($this->entityDir.'/'.$this->path);
+
+        return $this->entityDir.'/'.$this->path.'/'.sprintf('%s.php', $this->className);
     }
 
     /**
      * 是否存在class
+     *
      * @return bool
      */
     protected function existClass(): bool
@@ -105,7 +112,7 @@ class MakeEntityCommand extends Command
      */
     protected function getFullClassName(): string
     {
-        return $this->namespace . '\\' . $this->className;
+        return $this->namespace.'\\'.$this->className;
     }
 
     /**
@@ -135,7 +142,7 @@ class MakeEntityCommand extends Command
             $this->newFileFromStub();
         }
         $fields = [];
-        $columns = $this->pdo->query('SHOW FULL FIELDS FROM ' . $this->table)->fetchAll(\PDO::FETCH_ASSOC);
+        $columns = $this->pdo->query('SHOW FULL FIELDS FROM '.$this->table)->fetchAll(\PDO::FETCH_ASSOC);
         foreach ($columns as $column) {
             $fields[] = new Field($column);
         }
@@ -144,7 +151,8 @@ class MakeEntityCommand extends Command
 
     /**
      * 更新文件代码
-     * @param array $fields
+     *
+     * @param  array  $fields
      */
     private function updateFile(array $fields): void
     {
@@ -167,8 +175,9 @@ class MakeEntityCommand extends Command
     private function newFileFromStub(): void
     {
         $this->newByStub(function () {
-            $stubFile = __DIR__ . '/stub/entity.stub';
+            $stubFile = __DIR__.'/stub/entity.stub';
             $code = file_get_contents($stubFile);
+
             return str_replace(['{{namespace}}', '{{class}}'], [$this->namespace, $this->className], $code);
         });
     }
@@ -181,7 +190,7 @@ class MakeEntityCommand extends Command
         $className = $this->tableClassMap[$this->table] ?? null;
         $this->className = $className ?: str_replace('_', '', ucwords(str_replace($this->prefix ?? '', '', $this->table), '_'));
         if ($this->iskeyWords($this->className)) {
-            $this->className = $this->className . '_';
+            $this->className = $this->className.'_';
         }
     }
 
@@ -191,16 +200,17 @@ class MakeEntityCommand extends Command
     private function getTableSql(): string
     {
         if (! empty($this->prefix)) {
-            return 'SHOW TABLES like \'' . $this->prefix . '%\'';
+            return 'SHOW TABLES like \''.$this->prefix.'%\'';
         }
+
         return 'SHOW TABLES';
     }
 
     /**
      * 关键字检测
      *
-     * @param string $name
-     * @return boolean
+     * @param  string  $name
+     * @return bool
      */
     private function isKeyWords(string $name): bool
     {
@@ -212,12 +222,13 @@ class MakeEntityCommand extends Command
             'include', 'include_once', 'instanceof', 'insteadof', 'interface', 'isset', 'list', 'match',
             'namespace', 'new', 'or', 'print', 'private', 'protected', 'public', 'require', 'require_once',
             'return', 'static', 'switch', 'throw', 'trait', 'try', 'unset', 'use', 'var',
-            'while', 'xor', 'yield', 'yield', 'from', '__class__', '__dir__', '__file__', '__function__' . '__line__' .
-            '__method__', '__namespace__', '__trait__'
+            'while', 'xor', 'yield', 'yield', 'from', '__class__', '__dir__', '__file__', '__function__'.'__line__'.
+            '__method__', '__namespace__', '__trait__',
         ];
         if (in_array(strtolower($name), $keys)) {
             return true;
         }
+
         return false;
     }
 }

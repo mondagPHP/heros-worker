@@ -1,8 +1,10 @@
 <?php
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Console\Commands;
 
 use PhpParser\Builder\Property;
@@ -30,7 +32,7 @@ class AddPropertyVistor extends NodeVisitorAbstract
     }
 
     /**
-     * @param Node $node
+     * @param  Node  $node
      * @return void
      */
     public function leaveNode(Node $node)
@@ -45,7 +47,7 @@ class AddPropertyVistor extends NodeVisitorAbstract
             case $node instanceof Class_:
                 if ($this->addIncrementingFalse) {
                     array_unshift($node->stmts, $makePropertyNode('incrementing', false));
-                    # code...
+                    // code...
                 }
                 if ($this->addKeyTypeString) {
                     array_unshift($node->stmts, $makePropertyNode('keyType', 'string'));

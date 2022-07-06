@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Database;
 
 use Illuminate\Database\Capsule\Manager;
@@ -11,7 +14,7 @@ use Illuminate\Database\Connection;
 
 /**
  * Class Db
- * @package support
+ *
  * @method static array select(string $query, $bindings = [], $useReadPdo = true)
  * @method static int insert(string $query, $bindings = [])
  * @method static int update(string $query, $bindings = [])

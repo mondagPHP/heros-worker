@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Component;
 
 use Framework\Annotation\Component;
@@ -20,6 +23,7 @@ class StdoutLogger implements StdoutLoggerInterface
 {
     /**
      * array
+     *
      * @var string[]
      */
     private array $logLevel;
@@ -105,8 +109,8 @@ class StdoutLogger implements StdoutLoggerInterface
         $search = array_map(static function ($key) {
             return sprintf('{%s}', $key);
         }, $keys);
-        $message = str_replace($search, $context, $this->getMessage((string)$message, $level));
-        $this->stdout(date('Y-m-d H:i:s') . ' ' . $message);
+        $message = str_replace($search, $context, $this->getMessage((string) $message, $level));
+        $this->stdout(date('Y-m-d H:i:s').' '.$message);
     }
 
     /**
@@ -121,16 +125,17 @@ class StdoutLogger implements StdoutLoggerInterface
             default => "\033[32;5;1m[%s]\033[0m",
         };
         $template = sprintf($color, strtoupper($level));
-        return sprintf($template . ' %s', $message);
+
+        return sprintf($template.' %s', $message);
     }
 
     /**
-     * @param string $c
+     * @param  string  $c
      */
     private function stdout(string $c): void
     {
         if (is_resource(STDOUT)) {
-            fwrite(STDOUT, $c . PHP_EOL);
+            fwrite(STDOUT, $c.PHP_EOL);
         }
     }
 }

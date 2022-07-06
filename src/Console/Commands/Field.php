@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Console\Commands;
 
 class Field
@@ -68,6 +71,7 @@ class Field
                 if (in_array($this->name(), ['created_at', 'updated_at'])) {
                     return 'Carbon';
                 }
+
                 return 'string';
 
             case 'int':
@@ -80,7 +84,7 @@ class Field
     }
 
     /**
-     * @param array $fieldInfos
+     * @param  array  $fieldInfos
      */
     private function init(array $fieldInfos): void
     {

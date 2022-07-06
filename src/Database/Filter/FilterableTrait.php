@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Database\Filter;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -16,8 +19,8 @@ trait FilterableTrait
     /**
      * Applies filters to the scoped query
      *
-     * @param Builder $query
-     * @param string $filterClazz
+     * @param  Builder  $query
+     * @param  string  $filterClazz
      * @return Builder
      */
     public function scopeFilter(Builder $query, string $filterClazz): Builder
@@ -26,6 +29,7 @@ trait FilterableTrait
         if (! $filters instanceof BaseFilters) {
             throw new \RuntimeException('filters must extends BaseFilter');
         }
+
         return $filters->apply($query);
     }
 }

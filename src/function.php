@@ -1,7 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
 use Framework\Application;
@@ -21,6 +23,7 @@ if (! function_exists('env_config')) {
     function env_config(string $key, $default = null)
     {
         global $env;
+
         return $env->get($key, $default);
     }
 }
@@ -31,14 +34,14 @@ if (! function_exists('env_config')) {
 if (! function_exists('config_path')) {
     function config_path(): string
     {
-        return base_path() . '/config';
+        return base_path().'/config';
     }
 }
 
 if (! function_exists('app_path')) {
     function app_path(): string
     {
-        return base_path() . '/app';
+        return base_path().'/app';
     }
 }
 
@@ -48,14 +51,14 @@ if (! function_exists('app_path')) {
 if (! function_exists('runtime_path')) {
     function runtime_path(): string
     {
-        return base_path() . '/runtime';
+        return base_path().'/runtime';
     }
 }
 
 if (! function_exists('public_path')) {
     function public_path(): string
     {
-        return base_path() . '/public';
+        return base_path().'/public';
     }
 }
 
@@ -87,8 +90,8 @@ if (! function_exists('container')) {
 }
 
 /**
- * @param array $data
- * @param int $options
+ * @param  array  $data
+ * @param  int  $options
  * @return HttpResponse
  */
 if (! function_exists('json')) {
@@ -100,8 +103,8 @@ if (! function_exists('json')) {
 
 /**
  * @param $location
- * @param int $status
- * @param array $headers
+ * @param  int  $status
+ * @param  array  $headers
  * @return HttpResponse
  */
 if (! function_exists('redirect')) {
@@ -111,6 +114,7 @@ if (! function_exists('redirect')) {
         foreach ($headers as $name => $value) {
             $response->header($name, $value);
         }
+
         return $response;
     }
 }
@@ -130,7 +134,7 @@ if (! function_exists('worker_bind')) {
             'onBufferFull',
             'onBufferDrain',
             'onWorkerStop',
-            'onWebSocketConnect'
+            'onWebSocketConnect',
         ];
         foreach ($callbackMap as $name) {
             if (method_exists($class, $name)) {
@@ -158,6 +162,7 @@ if (! function_exists('response')) {
         foreach ($headers ?? [] as $name => $value) {
             $response->header($name, $value);
         }
+
         return $response;
     }
 }
@@ -216,6 +221,7 @@ if (! function_exists('worker_start')) {
             if (isset($config['handler'])) {
                 if (! class_exists($config['handler'])) {
                     echo "process error: class {$config['handler']} not exists\r\n";
+
                     return;
                 }
                 $instance = Container::make($config['handler'], $config['constructor'] ?? []);
@@ -226,18 +232,8 @@ if (! function_exists('worker_start')) {
 }
 
 /**
- * 事件
- * @param $event
- */
-if (! function_exists('event')) {
-    function event($event)
-    {
-        Event::dispatch($event);
-    }
-}
-
-/**
  * 检查端口是否可以被绑定
+ *
  * @author flynetcn
  */
 if (! function_exists('check_port_bind_able')) {
@@ -249,6 +245,7 @@ if (! function_exists('check_port_bind_able')) {
         }
         fclose($socket);
         unset($socket);
+
         return true;
     }
 }
@@ -257,7 +254,7 @@ if (! function_exists('check_port_bind_able')) {
  * Phar support.
  * Compatible with the 'realpath' function in the phar file.
  *
- * @param string $file_path
+ * @param  string  $file_path
  * @return string
  */
 if (! function_exists('get_real_path')) {
@@ -266,6 +263,7 @@ if (! function_exists('get_real_path')) {
         if (str_starts_with($filePath, 'phar://')) {
             return $filePath;
         }
+
         return realpath($filePath);
     }
 }
@@ -281,8 +279,8 @@ if (! function_exists('is_phar')) {
 }
 
 /**
- * @param mixed $key
- * @param mixed $default
+ * @param  mixed  $key
+ * @param  mixed  $default
  * @return mixed
  */
 if (! function_exists('session')) {
@@ -301,8 +299,10 @@ if (! function_exists('session')) {
                 }
                 $value = $value[$index];
             }
+
             return $value;
         }
+
         return $session->get($key, $default);
     }
 }
@@ -322,14 +322,16 @@ if (! function_exists('searchForTopParent')) {
             }
             $class = $class->getParentClass();
         }
+
         return false;
     }
 }
 
 /**
  * notice:注意修改，数据存在的数据会直接覆盖
- * @param HeroModel $clazz 模型类
- * @param array $arr 自动进行转化
+ *
+ * @param  HeroModel  $clazz 模型类
+ * @param  array  $arr 自动进行转化
  * @return bool
  */
 if (! function_exists('quickCreateOrUpdate')) {
@@ -346,10 +348,11 @@ if (! function_exists('quickCreateOrUpdate')) {
         if (isset($fillArr['id'])) {
             $updateArr = Arr::only($fillArr, (new $clazz())->getFillable());
             unset($updateArr['id']);
-            $result = (bool)$clazz::query()->where('id', $fillArr['id'])->update($updateArr);
+            $result = (bool) $clazz::query()->where('id', $fillArr['id'])->update($updateArr);
         } else {
-            $result = (bool)$clazz::query()->create($fillArr);
+            $result = (bool) $clazz::query()->create($fillArr);
         }
+
         return $result;
     }
 }

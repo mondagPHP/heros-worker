@@ -1,8 +1,10 @@
 <?php
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Redis;
 
 use Illuminate\Events\Dispatcher;
@@ -13,9 +15,7 @@ use Workerman\Worker;
 
 /**
  * Class Redis
- * @package support
  *
- * Strings methods
  * @method static int append($key, $value)
  * @method static int bitCount($key)
  * @method static int decr($key, $value = 1)
@@ -211,7 +211,7 @@ class Redis
      */
     public static array $_allowClient = [
         self::PHPREDIS_CLIENT,
-        self::PREDIS_CLIENT
+        self::PREDIS_CLIENT,
     ];
 
     /**
@@ -226,7 +226,7 @@ class Redis
      */
     public static function __callStatic($name, $arguments)
     {
-        return static::connection('default')->{$name}(... $arguments);
+        return static::connection('default')->{$name}(...$arguments);
     }
 
     /**
@@ -242,11 +242,12 @@ class Redis
             }
             static::$_instance = new RedisManager(null, $client, $config);
         }
+
         return static::$_instance;
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      * @return Connection
      */
     public static function connection(string $name = 'default'): Connection
@@ -262,6 +263,7 @@ class Redis
                 $connection->setEventDispatcher(new Dispatcher());
             }
         }
+
         return $connection;
     }
 }

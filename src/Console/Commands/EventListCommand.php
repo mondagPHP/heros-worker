@@ -1,8 +1,10 @@
 <?php
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Console\Commands;
 
 use Framework\Event\Event;
@@ -25,8 +27,8 @@ class EventListCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param  InputInterface  $input
+     * @param  OutputInterface  $output
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -47,6 +49,7 @@ class EventListCommand extends Command
         $table->setHeaders($headers);
         $table->setRows($rows);
         $table->render();
+
         return self::SUCCESS;
     }
 }

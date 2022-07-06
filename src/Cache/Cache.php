@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Cache;
 
 use Framework\Redis\Redis;
@@ -12,7 +15,7 @@ use Symfony\Component\Cache\Psr16Cache;
 
 /**
  * Class Cache
- * @package Framework\Cache
+ *
  * @method static mixed get($key, $default = null)
  * @method static bool set($key, $value, $ttl = null)
  * @method static bool delete($key)
@@ -22,7 +25,7 @@ use Symfony\Component\Cache\Psr16Cache;
 class Cache
 {
     /**
-     * @var Psr16Cache $_instance
+     * @var Psr16Cache
      */
     protected static Psr16Cache $_instance;
 
@@ -33,7 +36,7 @@ class Cache
      */
     public static function __callStatic($name, $arguments)
     {
-        return static::instance()->{$name}(... $arguments);
+        return static::instance()->{$name}(...$arguments);
     }
 
     /**
@@ -45,6 +48,7 @@ class Cache
             $adapter = new RedisAdapter(Redis::connection()->client());
             static::$_instance = new Psr16Cache($adapter);
         }
+
         return static::$_instance;
     }
 }

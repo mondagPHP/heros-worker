@@ -1,7 +1,9 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
 use Framework\Annotation\Middlewares;
@@ -27,7 +29,7 @@ return [
             return $instance;
         }
         if (! str_starts_with($path, '/')) {
-            $path = '/' . $path;
+            $path = '/'.$path;
         }
         $requestMethods = $requestMapping->method;
         foreach ($requestMethods as &$itemRequestMethod) {
@@ -92,6 +94,7 @@ return [
                                 if (class_exists($reflectionClass->getName()) && Container::has($reflectionClass->getName())) {
                                     return Container::get($reflectionClass->getName());
                                 }
+
                                 return false;
                             };
                             $inputParams[] = $extFun();
@@ -103,6 +106,7 @@ return [
             if (method_exists($instance, '_finish')) {
                 call_user_func([$instance, '_finish'], $request);
             }
+
             return $return;
         };
         /** @var MiddleWareCollector $middlewareCollector */
@@ -122,6 +126,7 @@ return [
         foreach ($requestMethods as $requestMethod) {
             $routerCollector->addRouter($requestMethod, $path, $routerDispatch);
         }
+
         return $instance;
     },
 ];

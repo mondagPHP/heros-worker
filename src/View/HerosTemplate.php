@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\View;
 
 use Framework\Contract\ViewInterface;
@@ -23,6 +26,7 @@ class HerosTemplate implements ViewInterface
 
     /**
      * 模板编译规则.
+     *
      * @var array
      */
     private static array $tempRules = [
@@ -87,6 +91,7 @@ class HerosTemplate implements ViewInterface
 
     /**
      * 静态资源模板
+     *
      * @var array
      */
     private static array $resTemplate = [
@@ -96,8 +101,8 @@ class HerosTemplate implements ViewInterface
     ];
 
     /**
-     * @param string $name
-     * @param null $value
+     * @param  string  $name
+     * @param  null  $value
      */
     public static function assign(string $name, $value = null)
     {
@@ -106,7 +111,7 @@ class HerosTemplate implements ViewInterface
 
     /**
      * @param $template
-     * @param array $vars
+     * @param  array  $vars
      * @return string
      */
     public static function render($template, array $vars = []): string
@@ -117,28 +122,32 @@ class HerosTemplate implements ViewInterface
     /**
      * 获取include路径
      * 如果没有申明应用则默认以当前的应用为相对路径.
-     * @param string $tempPath 被包含的模板路径
+     *
+     * @param  string  $tempPath 被包含的模板路径
      */
     public static function getIncludePath(string $tempPath): string
     {
         $viewPath = config('view.view_path');
         $viewCachePath = config('view.cache_path');
-        $filename = str_replace('.', '/', $tempPath) . '.' . \config('view.view_suffix', 'html');   //模板文件名称
-        $tempFile = $viewPath . $filename;
-        $compileFile = $viewCachePath . $filename . '.php';
+        $filename = str_replace('.', '/', $tempPath).'.'.\config('view.view_suffix', 'html');   //模板文件名称
+        $tempFile = $viewPath.$filename;
+        $compileFile = $viewCachePath.$filename.'.php';
         static::compileTemplate($tempFile, $compileFile);
+
         return $compileFile;
     }
 
     /**
      * 引进静态资源如css，js.
-     * @param string $type 资源类别
-     * @param string $path 资源路径
+     *
+     * @param  string  $type 资源类别
+     * @param  string  $path 资源路径
      */
     public static function importResource(string $type, string $path): string
     {
-        $src = '/' . $path;
+        $src = '/'.$path;
         $template = self::$resTemplate[$type];
+
         return str_replace('{url}', $src, $template);
     }
 
@@ -152,30 +161,33 @@ class HerosTemplate implements ViewInterface
 
     /**
      * 裁剪字符串，使用utf-8 编码裁剪.
-     * @param string $str 要裁剪的字符串
-     * @param int $length 字符串长度
+     *
+     * @param  string  $str 要裁剪的字符串
+     * @param  int  $length 字符串长度
      */
     public static function cutString(string $str, int $length): string
     {
         if (mb_strlen($str, 'UTF-8') <= $length) {
             return $str;
         }
-        return mb_substr($str, 0, $length, 'UTF-8') . '...';
+
+        return mb_substr($str, 0, $length, 'UTF-8').'...';
     }
 
     /**
      * 规则
-     * @param string $rule
-     * @param string $value
+     *
+     * @param  string  $rule
+     * @param  string  $value
      * @return void
      */
-    public static function addRule(string $rule, string $value):void
+    public static function addRule(string $rule, string $value): void
     {
         static::$tempRules[$rule] = $value;
     }
 
     /**
-     * @param string $tempFile
+     * @param  string  $tempFile
      * @param $vars
      * @return string
      */
@@ -183,25 +195,27 @@ class HerosTemplate implements ViewInterface
     {
         static $viewSuffix;
         $viewSuffix = $viewSuffix ?: \config('view.view_suffix', 'html');
-        $tempFile .= '.' . $viewSuffix;
-        $compileFile = $tempFile . '.php';
+        $tempFile .= '.'.$viewSuffix;
+        $compileFile = $tempFile.'.php';
         $viewPath = config('view.view_path');
         $viewCachePath = config('view.cache_path');
-        if (! file_exists($viewPath . $tempFile)) {
-            throw new HeroException('要编译的模板[' . $viewPath . $tempFile . '] 不存在！');
+        if (! file_exists($viewPath.$tempFile)) {
+            throw new HeroException('要编译的模板['.$viewPath.$tempFile.'] 不存在！');
         }
-        static::compileTemplate($viewPath . $tempFile, $viewCachePath . $compileFile);
-        $executedHtml = static::getExecutedHtml($viewCachePath . $compileFile, $vars);
+        static::compileTemplate($viewPath.$tempFile, $viewCachePath.$compileFile);
+        $executedHtml = static::getExecutedHtml($viewCachePath.$compileFile, $vars);
         if (! $executedHtml) {
             throw new HerosException('getExecutedHtml 异常!');
         }
+
         return $executedHtml;
     }
 
     /**
      * 获取页面执行后的代码
-     * @param string $compileTemplate
-     * @param array $vars
+     *
+     * @param  string  $compileTemplate
+     * @param  array  $vars
      * @return false|string
      */
     private static function getExecutedHtml(string $compileTemplate, array $vars): bool|string
@@ -215,13 +229,16 @@ class HerosTemplate implements ViewInterface
             echo $e;
         }
         static::$_vars = [];
+
         return \ob_get_clean();
     }
 
     /**
      * 编译模板
-     * @param string $tempFile 模板文件路径
-     * @param string $compileFile 编译文件路径
+     *
+     * @param  string  $tempFile 模板文件路径
+     * @param  string  $compileFile 编译文件路径
+     *
      * @throws HeroException
      */
     private static function compileTemplate(string $tempFile, string $compileFile): void
@@ -232,7 +249,7 @@ class HerosTemplate implements ViewInterface
             //获取模板文件
             $content = @file_get_contents($tempFile);
             if (false == $content) {
-                throw new HeroException('加载模板文件 {' . $tempFile . '} 失败！请在相应的目录建立模板文件。');
+                throw new HeroException('加载模板文件 {'.$tempFile.'} 失败！请在相应的目录建立模板文件。');
             }
             //替换模板
             $content = preg_replace(array_keys(self::$tempRules), self::$tempRules, $content);

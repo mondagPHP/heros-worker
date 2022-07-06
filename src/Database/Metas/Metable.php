@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Database\Metas;
 
 trait Metable
@@ -63,15 +66,17 @@ trait Metable
      *
      * @param string $key
      * @param mixed $value
+     * @return mixed
      */
-    public function addMeta(string $key, $value)
+    public function addMeta(string $key, mixed $value): mixed
     {
-        if (! $this->meta()->where('key', $key)->count()) {
+        if (!$this->meta()->where('key', $key)->count()) {
             return $this->meta()->create([
                 'key' => $key,
                 'value' => $value,
             ]);
         }
+        return false;
     }
 
     /**
@@ -94,6 +99,7 @@ trait Metable
 
     /**
      * Add or update meta if it already exists.
+     *
      * @param string $key
      * @param mixed $value
      * @return object|bool

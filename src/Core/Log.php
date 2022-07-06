@@ -1,16 +1,18 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Core;
 
 use Monolog\Logger;
 
 /**
  * Class Redis
- * @package support
  *
  * @method static void log($level, $message, array $context = [])
  * @method static void debug($message, array $context = [])
@@ -36,11 +38,11 @@ class Log
      */
     public static function __callStatic($name, $arguments)
     {
-        return static::channel('default')->{$name}(... $arguments);
+        return static::channel('default')->{$name}(...$arguments);
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      * @return Logger
      */
     public static function channel(string $name = 'default'): Logger
@@ -50,15 +52,16 @@ class Log
             foreach ($configs as $channel => $config) {
                 $logger = static::$_instance[$channel] = new Logger($channel);
                 foreach ($config['handlers'] as $handler_config) {
-                    $handler = new $handler_config['class'](... \array_values($handler_config['constructor']));
+                    $handler = new $handler_config['class'](...\array_values($handler_config['constructor']));
                     if (isset($handler_config['formatter'])) {
-                        $formatter = new $handler_config['formatter']['class'](... \array_values($handler_config['formatter']['constructor']));
+                        $formatter = new $handler_config['formatter']['class'](...\array_values($handler_config['formatter']['constructor']));
                         $handler->setFormatter($formatter);
                     }
                     $logger->pushHandler($handler);
                 }
             }
         }
+
         return static::$_instance[$name];
     }
 }

@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Http;
 
 use Framework\Application;
@@ -11,7 +14,6 @@ use Workerman\Protocols\Http\Request;
 
 /**
  * Class Request
- * @package Framework\Http
  */
 class HttpRequest extends Request
 {
@@ -36,7 +38,7 @@ class HttpRequest extends Request
     }
 
     /**
-     * @param array $routerParams
+     * @param  array  $routerParams
      */
     public function setRouterParams(array $routerParams): void
     {
@@ -44,8 +46,8 @@ class HttpRequest extends Request
     }
 
     /**
-     * @param string $name
-     * @param null $default
+     * @param  string  $name
+     * @param  null  $default
      * @return mixed
      */
     public function getParameter(string $name, $default = null): mixed
@@ -54,7 +56,7 @@ class HttpRequest extends Request
     }
 
     /**
-     * @param object $object
+     * @param  object  $object
      * @return void
      */
     public function pushInjectObject(object $object)
@@ -71,7 +73,7 @@ class HttpRequest extends Request
     }
 
     /**
-     * @param string|null $name
+     * @param  string|null  $name
      * @return null|UploadFile[]|UploadFile
      */
     public function file($name = null): array|UploadFile|null
@@ -84,6 +86,7 @@ class HttpRequest extends Request
             if (\is_array(\current($files))) {
                 return $this->parseFiles($files);
             }
+
             return $this->parseFile($files);
         }
         $uploadFiles = [];
@@ -94,6 +97,7 @@ class HttpRequest extends Request
                 $uploadFiles[$name] = $this->parseFile($file);
             }
         }
+
         return $uploadFiles;
     }
 
@@ -130,7 +134,7 @@ class HttpRequest extends Request
     }
 
     /**
-     * @param bool $safeMode
+     * @param  bool  $safeMode
      * @return string
      */
     public function getRealIp(bool $safeMode = true): string
@@ -139,6 +143,7 @@ class HttpRequest extends Request
         if ($safeMode && ! static::isIntranetIp($remoteIp)) {
             return $remoteIp;
         }
+
         return $this->header('client-ip', $this->header(
             'x-forwarded-for',
             $this->header('x-real-ip', $this->header(
@@ -153,7 +158,7 @@ class HttpRequest extends Request
      */
     public function url(): string
     {
-        return '//' . $this->host() . $this->path();
+        return '//'.$this->host().$this->path();
     }
 
     /**
@@ -161,7 +166,7 @@ class HttpRequest extends Request
      */
     public function fullUrl(): string
     {
-        return '//' . $this->host() . $this->uri();
+        return '//'.$this->host().$this->uri();
     }
 
     /**
@@ -177,11 +182,11 @@ class HttpRequest extends Request
      */
     public function isPjax(): bool
     {
-        return (bool)$this->header('X-PJAX');
+        return (bool) $this->header('X-PJAX');
     }
 
     /**
-     * @param string $ip
+     * @param  string  $ip
      * @return bool
      */
     public static function isIntranetIp(string $ip): bool
@@ -215,11 +220,12 @@ class HttpRequest extends Request
                 return true;
             }
         }
+
         return false;
     }
 
     /**
-     * @param array $keys
+     * @param  array  $keys
      * @return array
      */
     public function only(array $keys): array
@@ -231,11 +237,12 @@ class HttpRequest extends Request
                 $result[$key] = $all[$key];
             }
         }
+
         return $result;
     }
 
     /**
-     * @param array $keys
+     * @param  array  $keys
      * @return array
      */
     public function except(array $keys): array
@@ -244,6 +251,7 @@ class HttpRequest extends Request
         foreach ($keys as $key) {
             unset($all[$key]);
         }
+
         return $all;
     }
 
@@ -257,7 +265,7 @@ class HttpRequest extends Request
     }
 
     /**
-     * @param array $files
+     * @param  array  $files
      * @return array
      */
     protected function parseFiles(array $files): array
@@ -270,6 +278,7 @@ class HttpRequest extends Request
                 $uploadFiles[$key] = $this->parseFile($file);
             }
         }
+
         return $uploadFiles;
     }
 }

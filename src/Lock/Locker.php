@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Framework\Lock;
@@ -8,11 +9,6 @@ use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\LockInterface;
 use Symfony\Component\Lock\Store\FlockStore;
 use Symfony\Component\Lock\Store\RedisStore;
-
-
-/**
-
-*/
 
 /**
  * @method static LockInterface lock(string $key, ?float $ttl = null, ?bool $autoRelease = null, ?string $prefix = null)
@@ -28,10 +24,11 @@ class Locker
 
     /**
      * 创建锁
-     * @param string $key
-     * @param float|null $ttl 锁超时时间
-     * @param bool|null $autoRelease 是否自动释放锁
-     * @param string|null $prefix 锁前缀
+     *
+     * @param  string  $key
+     * @param  float|null  $ttl 锁超时时间
+     * @param  bool|null  $autoRelease 是否自动释放锁
+     * @param  string|null  $prefix 锁前缀
      * @return LockInterface
      */
     protected static function createLock(string $key, ?float $ttl = null, ?bool $autoRelease = null, ?string $prefix = null): LockInterface
@@ -40,28 +37,29 @@ class Locker
         $ttl = $ttl !== null ? $ttl : ($config['ttl'] ?? 300);
         $autoRelease = $autoRelease !== null ? $autoRelease : ($config['auto_release'] ?? true);
         $prefix = $prefix !== null ? $prefix : ($config['prefix'] ?? 'lock_');
-        return static::getLockFactory()->createLock($prefix . $key, $ttl, $autoRelease);
-    }
 
+        return static::getLockFactory()->createLock($prefix.$key, $ttl, $autoRelease);
+    }
 
     /**
      * @return LockFactory
      */
     protected static function getLockFactory(): LockFactory
     {
-        if (!isset(static::$factory)) {
+        if (! isset(static::$factory)) {
             $storage = config('lock.storage');
             if ($storage === 'file') {
-                $lockPath = runtime_path() . '/lock';
+                $lockPath = runtime_path().'/lock';
                 $storageInstance = new FlockStore($lockPath);
             } elseif ($storage === 'redis') {
                 $redis = Redis::connection('default')->client();
                 $storageInstance = new RedisStore($redis);
             } else {
-                throw new \RuntimeException("lock driver not support!");
+                throw new \RuntimeException('lock driver not support!');
             }
             static::$factory = new LockFactory($storageInstance);
         }
+
         return static::$factory;
     }
 }

@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Core;
 
 /**
@@ -23,8 +26,8 @@ class Scanner
     {
         self::$annotationHandlers = self::initAnnotationHandlers();
         $scans = [
-            dirname(__DIR__) . '/Component' => 'Framework\\Component',
-            base_path() . '/app' => 'App\\',
+            dirname(__DIR__).'/Component' => 'Framework\\Component',
+            base_path().'/app' => 'App\\',
         ];
         foreach ($scans as $scanDir => $scanRootNamespace) {
             self::scanBeans($scanDir, $scanRootNamespace); //扫描
@@ -33,13 +36,14 @@ class Scanner
 
     /**
      * 扫描PHP文件
-     * @param string $dir
+     *
+     * @param  string  $dir
      * @return array
      */
     private static function getAllBeansFiles(string $dir): array
     {
         $ret = [];
-        $files = glob($dir . '/*');
+        $files = glob($dir.'/*');
         if ($files) {
             foreach ($files as $file) {
                 if (is_dir($file)) {
@@ -49,12 +53,14 @@ class Scanner
                 }
             }
         }
+
         return $ret;
     }
 
     /**
-     * @param string $scanDir
-     * @param string $scanRootNamespace
+     * @param  string  $scanDir
+     * @param  string  $scanRootNamespace
+     *
      * @throws \ReflectionException
      */
     private static function scanBeans(string $scanDir, string $scanRootNamespace): void
@@ -85,19 +91,21 @@ class Scanner
     private static function initAnnotationHandlers(): array
     {
         $handlers = [];
-        $annotationHandlerFiles = glob(dirname(__DIR__) . '/Annotation/Handler/*.php');
+        $annotationHandlerFiles = glob(dirname(__DIR__).'/Annotation/Handler/*.php');
         if ($annotationHandlerFiles) {
             foreach ($annotationHandlerFiles  as $annotationHandlerFile) {
-                $handlers = array_merge($handlers, (array)require_once $annotationHandlerFile);
+                $handlers = array_merge($handlers, (array) require_once $annotationHandlerFile);
             }
         }
+
         return $handlers;
     }
 
     /**
      * 收集属性
-     * @param mixed $instance
-     * @param \ReflectionClass $reflectionClass
+     *
+     * @param  mixed  $instance
+     * @param  \ReflectionClass  $reflectionClass
      */
     private static function handlerPropertyAnnotations(mixed $instance, \ReflectionClass $reflectionClass): void
     {
@@ -116,8 +124,9 @@ class Scanner
 
     /**
      * 收集方法
-     * @param mixed $instance
-     * @param \ReflectionClass $reflectionClass
+     *
+     * @param  mixed  $instance
+     * @param  \ReflectionClass  $reflectionClass
      */
     private static function handlerMethodAnnotations(mixed $instance, \ReflectionClass $reflectionClass): void
     {

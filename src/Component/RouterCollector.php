@@ -1,15 +1,18 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Component;
 
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
-use Framework\Annotation\Component;
 use function FastRoute\simpleDispatcher;
+use Framework\Annotation\Component;
 
 #[Component]
 class RouterCollector
@@ -18,7 +21,7 @@ class RouterCollector
 
     public function addRouter(string $method, string $uri, callable $handler): void
     {
-        $this->routers[] = ['method' => $method, 'uri' => $uri, 'handler' => $handler,];
+        $this->routers[] = ['method' => $method, 'uri' => $uri, 'handler' => $handler];
     }
 
     /**

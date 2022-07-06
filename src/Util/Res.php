@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Util;
 
 use Framework\Application;
@@ -12,7 +15,6 @@ use Monda\Utils\String\StringUtil;
 
 /**
  * Class Result
- * @package Framework\Util
  */
 class Res implements JsonAble
 {
@@ -72,7 +74,7 @@ class Res implements JsonAble
                 'page' => optional($this->pager)->currentPage,
                 'pageSize' => $this->pager->pageSize,
                 'total' => $this->pager->total,
-                'totalPage' => 0 != $this->pager->pageSize ? ceil($this->pager->total / $this->pager->pageSize) : 0
+                'totalPage' => 0 != $this->pager->pageSize ? ceil($this->pager->total / $this->pager->pageSize) : 0,
             ];
         }
         if (isset($this->data) && $this->isUsePage !== 1) {
@@ -81,6 +83,7 @@ class Res implements JsonAble
         if (! empty($this->extra)) {
             $array['extra'] = $this->extra;
         }
+
         return StringUtil::jsonEncode($array);
     }
 
@@ -92,6 +95,7 @@ class Res implements JsonAble
     {
         $result = new self();
         $result->isSuccess(true)->code(ResultCode::SUCCESS['code'])->message(ResultCode::SUCCESS['message']);
+
         return $result;
     }
 
@@ -103,13 +107,14 @@ class Res implements JsonAble
     {
         $result = new self();
         $result->isSuccess(false)->code(ResultCode::ERROR['code'])->message(ResultCode::ERROR['message']);
+
         return $result;
     }
 
     /**
-     * @param int $total
-     * @param array $data
-     * @param array $extra
+     * @param  int  $total
+     * @param  array  $data
+     * @param  array  $extra
      * @return self
      *                      分页
      */
@@ -117,8 +122,8 @@ class Res implements JsonAble
     {
         $pageParameterConfig = config('request.pageParameter', 'page');
         $pageSizeParameterConfig = config('request.pageSizeParameter', 'pageSize');
-        $page = (int)Application::$request->get($pageParameterConfig, 1);
-        $pageSize = (int)Application::$request->get($pageSizeParameterConfig, 10);
+        $page = (int) Application::$request->get($pageParameterConfig, 1);
+        $pageSize = (int) Application::$request->get($pageSizeParameterConfig, 10);
         $result = new self();
         $result->isSuccess(true)->code(ResultCode::SUCCESS['code'])->message(ResultCode::SUCCESS['message'])->data($data)->extra($extra)->setPager(new Pager($page, $pageSize, $total));
 
@@ -126,8 +131,7 @@ class Res implements JsonAble
     }
 
     /**
-     * @param bool $success
-     *
+     * @param  bool  $success
      * @return $this
      *               设置success
      */
@@ -139,8 +143,7 @@ class Res implements JsonAble
     }
 
     /**
-     * @param array $data
-     *
+     * @param  array  $data
      * @return $this
      *               设置数据
      */
@@ -152,8 +155,7 @@ class Res implements JsonAble
     }
 
     /**
-     * @param string $message
-     *
+     * @param  string  $message
      * @return $this
      *               设置信息
      */
@@ -172,30 +174,31 @@ class Res implements JsonAble
     {
         $this->pager = $pager;
         $this->isUsePage = 1;
+
         return $this;
     }
 
     /**
-     * @param string $code
-     *
+     * @param  string  $code
      * @return $this
      *               设置状态码
      */
     public function code(string $code): self
     {
         $this->code = $code;
+
         return $this;
     }
 
     /**
      * @param $extra
-     *
      * @return $this
      *               设置额外数据
      */
     public function extra($extra): self
     {
         $this->extra = $extra;
+
         return $this;
     }
 }

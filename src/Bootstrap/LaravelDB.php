@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Bootstrap;
 
 use Framework\Contract\BootstrapInterface;
@@ -16,7 +19,6 @@ use Workerman\Worker;
 
 /**
  * Class LaravelDB
- * @package Framework\Bootstrap
  */
 class LaravelDB implements BootstrapInterface
 {
@@ -50,7 +52,7 @@ class LaravelDB implements BootstrapInterface
                         'Bindings' => $bindings,
                         'Time' => $query->time,
                         'File' => $location['file'],
-                        'Line' => $location['line']
+                        'Line' => $location['line'],
                     ]);
                 });
             }

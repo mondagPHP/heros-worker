@@ -3,8 +3,10 @@
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Crontab;
 
 use Monda\Utils\File\FileUtil;
@@ -18,12 +20,12 @@ class CrontabSingleLock
 
     public function __construct(string $key)
     {
-        $lockDir = runtime_path() . '/lock/';
+        $lockDir = runtime_path().'/lock/';
         $bool = FileUtil::makeFileDirs($lockDir);
         if ($bool === false) {
             throw new \RuntimeException("create path ({$lockDir}) error!!!");
         }
-        $this->fileHandler = fopen($lockDir . md5($key) . '.lock', 'wb');
+        $this->fileHandler = fopen($lockDir.md5($key).'.lock', 'wb');
     }
 
     /**

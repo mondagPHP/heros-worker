@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Core;
 
 use Monda\Utils\Exception\NotFoundException;
@@ -20,7 +23,7 @@ class IOC implements ContainerInterface
     private array $_instances = [];
 
     /**
-     * @param string $id
+     * @param  string  $id
      * @return mixed
      */
     public function get(string $id): mixed
@@ -31,11 +34,12 @@ class IOC implements ContainerInterface
             }
             $this->_instances[$id] = new $id();
         }
+
         return $this->_instances[$id];
     }
 
     /**
-     * @param string $id
+     * @param  string  $id
      * @return bool
      */
     public function has(string $id): bool
@@ -44,8 +48,8 @@ class IOC implements ContainerInterface
     }
 
     /**
-     * @param string $name
-     * @param array $constructor
+     * @param  string  $name
+     * @param  array  $constructor
      * @return mixed
      */
     public function make(string $name, array $constructor = []): mixed
@@ -53,6 +57,7 @@ class IOC implements ContainerInterface
         if (! class_exists($name)) {
             throw new NotFoundException("Class '$name' not found");
         }
-        return new $name(... array_values($constructor));
+
+        return new $name(...array_values($constructor));
     }
 }

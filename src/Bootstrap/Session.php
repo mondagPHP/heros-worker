@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Bootstrap;
 
 use Framework\Contract\BootstrapInterface;
@@ -13,7 +16,6 @@ use Workerman\Worker;
 
 /**
  * Class Session
- * @package Framework\Bootstrap
  */
 class Session implements BootstrapInterface
 {

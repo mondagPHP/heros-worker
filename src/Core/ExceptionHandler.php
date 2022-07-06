@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Core;
 
 use Framework\Contract\ExceptionHandlerInterface;
@@ -28,7 +31,8 @@ class ExceptionHandler implements ExceptionHandlerInterface
 
     /**
      * ExceptionHandler constructor.
-     * @param bool $debug
+     *
+     * @param  bool  $debug
      */
     public function __construct(bool $debug)
     {
@@ -40,17 +44,19 @@ class ExceptionHandler implements ExceptionHandlerInterface
         if ($this->shouldntReport($e)) {
             return;
         }
-        Log::error($e->getMessage(), ['exception' => (string)$e]);
+        Log::error($e->getMessage(), ['exception' => (string) $e]);
     }
 
     public function render(HttpRequest $request, Throwable $e): mixed
     {
-        $error = $this->debug ? nl2br((string)$e) : 'Server internal error';
+        $error = $this->debug ? nl2br((string) $e) : 'Server internal error';
+
         return \response($error, 500);
     }
 
     /**
      * 检查是否在dontReport数组中
+     *
      * @param $e
      * @return bool
      */
@@ -61,6 +67,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
                 return true;
             }
         }
+
         return false;
     }
 }

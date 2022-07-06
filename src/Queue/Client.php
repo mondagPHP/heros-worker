@@ -1,15 +1,19 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Queue;
 
 use Workerman\RedisQueue\Client as RedisClient;
 
 /**
  * Class Client.
+ *
  * @method static void send(string $queue, array $data, int $delay = 0)
  */
 class Client
@@ -30,7 +34,7 @@ class Client
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      * @return RedisClient
      */
     public static function connection(string $name = 'default'): RedisClient
@@ -45,6 +49,7 @@ class Client
             $client = new RedisClient($host, $options);
             static::$_connections[$name] = $client;
         }
+
         return static::$_connections[$name];
     }
 }

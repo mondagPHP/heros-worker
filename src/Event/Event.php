@@ -1,8 +1,10 @@
 <?php
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Event;
 
 use Framework\Core\Log;
@@ -26,7 +28,7 @@ class Event
 
     /**
      * @param $eventName
-     * @param callable $callback
+     * @param  callable  $callback
      * @return int
      */
     public static function on($eventName, callable $callback): int
@@ -37,20 +39,23 @@ class Event
         } else {
             static::$eventMap[$eventName][++static::$id] = $callback;
         }
+
         return static::$id;
     }
 
     /**
      * @param $eventName
-     * @param int $id
+     * @param  int  $id
      * @return int
      */
     public static function off($eventName, int $id): int
     {
         if (isset(static::$eventMap[$eventName][$id])) {
             unset(static::$eventMap[$eventName][$id]);
+
             return 1;
         }
+
         return 0;
     }
 
@@ -81,6 +86,7 @@ class Event
                 return $successCount;
             }
         }
+
         return $successCount;
     }
 
@@ -97,10 +103,11 @@ class Event
         }
         foreach (static::$prefixEventMap as $eventName => $callback_items) {
             foreach ($callback_items as $id => $callback_item) {
-                $callbacks[$id] = [$eventName . '*', $callback_item];
+                $callbacks[$id] = [$eventName.'*', $callback_item];
             }
         }
         ksort($callbacks);
+
         return $callbacks;
     }
 }

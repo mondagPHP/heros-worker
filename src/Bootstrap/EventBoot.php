@@ -1,8 +1,10 @@
 <?php
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Bootstrap;
 
 use Framework\Contract\BootstrapInterface;
@@ -30,6 +32,7 @@ class EventBoot implements BootstrapInterface
                 $callback = [\container($callback[0]), $callback[1]];
             }
         }
+
         return $callback;
     }
 
@@ -48,7 +51,7 @@ class EventBoot implements BootstrapInterface
                 continue;
             }
             if (! is_array($callbacks)) {
-                $msg = "Events: $eventName => " . var_export($callbacks, true) . " is not callable\n";
+                $msg = "Events: $eventName => ".var_export($callbacks, true)." is not callable\n";
                 echo $msg;
                 Log::error($msg);
                 continue;
@@ -60,7 +63,7 @@ class EventBoot implements BootstrapInterface
                     Event::on($eventName, $callback);
                     continue;
                 }
-                $msg = "Events: $eventName => " . var_export($callback, true) . " is not callable\n";
+                $msg = "Events: $eventName => ".var_export($callback, true)." is not callable\n";
                 echo $msg;
                 Log::error($msg);
             }

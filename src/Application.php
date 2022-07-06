@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework;
 
 use ErrorException;
@@ -29,8 +32,6 @@ use Workerman\Worker;
 
 /**
  * Class Application
- * @package Framework
- * 入口
  */
 class Application
 {
@@ -44,12 +45,12 @@ class Application
     public static TcpConnection $connection;
 
     /**
-     * @var array $config
+     * @var array
      */
     protected array $config;
 
     /**
-     * @var Worker $worker
+     * @var Worker
      */
     protected Worker $worker;
 
@@ -60,6 +61,7 @@ class Application
 
     /**
      * 请求次数
+     *
      * @var int
      */
     protected static int $_maxRequestCount = 10000;
@@ -89,11 +91,11 @@ class Application
         ]);
         $this->worker = new Worker($this->config['listen'], $this->config['context']);
         $this->worker->reloadable = $this->config['reloadable'] ?: true;
-        $maxRequestCount = (int)$this->config['max_request'];
+        $maxRequestCount = (int) $this->config['max_request'];
         if ($maxRequestCount > 0) {
             static::$_maxRequestCount = $maxRequestCount;
         }
-        $propertyMap = ['name', 'count', 'user', 'group', 'reusePort', 'transport','protocol'];
+        $propertyMap = ['name', 'count', 'user', 'group', 'reusePort', 'transport', 'protocol'];
         foreach ($propertyMap as $property) {
             if (isset($this->config[$property])) {
                 $this->worker->{$property} = $this->config[$property];
@@ -148,6 +150,7 @@ class Application
                 $cacheHandler = static::$handlerMappings[$requestPath]['handler'];
                 $response = static::handlerRequestResult($cacheHandler($httpRequest));
                 static::send($connection, $response, $httpRequest);
+
                 return;
             }
             $routeInfo = $this->dispatcher->dispatch($httpRequest->method(), $requestPath);
@@ -187,8 +190,8 @@ class Application
     }
 
     /**
-     * @param Request $request
-     * @param string $file
+     * @param  Request  $request
+     * @param  string  $file
      * @return bool
      */
     protected function notModifiedSince(Request $request, string $file): bool
@@ -197,14 +200,16 @@ class Application
         if ($ifModifiedSince === null || ! ($mtime = \filemtime($file))) {
             return false;
         }
-        return $ifModifiedSince === \gmdate('D, d M Y H:i:s', $mtime) . ' GMT';
+
+        return $ifModifiedSince === \gmdate('D, d M Y H:i:s', $mtime).' GMT';
     }
 
     /**
      * 返回给前端
-     * @param TcpConnection $connection
+     *
+     * @param  TcpConnection  $connection
      * @param $response
-     * @param Request $request
+     * @param  Request  $request
      * @return void
      */
     protected static function send(TcpConnection $connection, $response, Request $request)
@@ -214,6 +219,7 @@ class Application
             || $keepAlive === 'keep-alive' || $keepAlive === 'Keep-Alive'
         ) {
             $connection->send($response);
+
             return;
         }
         $connection->close($response);
@@ -221,6 +227,7 @@ class Application
 
     /**
      * 定时器关闭，防止马上触发stopALL导致无法访问
+     *
      * @throws \Exception
      */
     protected function tryToGracefulExit(): void
@@ -267,7 +274,7 @@ class Application
     }
 
     /**
-     * @param mixed $responseObj
+     * @param  mixed  $responseObj
      * @return Response|HttpResponse
      */
     protected static function handlerRequestResult(mixed $responseObj): Response|HttpResponse
@@ -283,12 +290,13 @@ class Application
                 $response = \response($responseObj);
             }
         }
+
         return $response;
     }
 
     /**
-     * @param \Throwable $e
-     * @param HttpRequest $request
+     * @param  \Throwable  $e
+     * @param  HttpRequest  $request
      * @return mixed
      */
     protected static function exceptionResponse(\Throwable $e, Request $request): mixed
@@ -301,23 +309,26 @@ class Application
                 $exceptionHandler = Container::make(ExceptionHandler::class, [config('app.debug')]);
             }
             $exceptionHandler->report($e);
+
             return $exceptionHandler->render($request, $e);
         } catch (\Throwable $e) {
             //最后系统兜底处理异常
             $message = ! config('app.debug') ? '系统出小差!' : $e->getMessage();
-            Log::error('application:' . $e->getMessage());
+            Log::error('application:'.$e->getMessage());
+
             return \response($message, 500, []);
         }
     }
 
     /**
      * 静态资源文件.
-     * @param string $path
+     *
+     * @param  string  $path
      * @return false|string
      */
     protected function findFile(string $path): bool|string
     {
-        $file = \realpath(public_path() . '/' . trim($path, '/'));
+        $file = \realpath(public_path().'/'.trim($path, '/'));
         if (! $file) {
             return false;
         }
@@ -327,6 +338,7 @@ class Application
         if (false === \is_file($file)) {
             return false;
         }
+
         return $file;
     }
 }

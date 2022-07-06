@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Util;
 
 use Closure;
@@ -15,18 +18,21 @@ class PipeLine
 {
     /**
      * 所有要执行的类
+     *
      * @var array
      */
     protected array $classes = [];
 
     /**
      * 类的方法名称
+     *
      * @var string
      */
     protected string $handleMethod = 'process';
 
     /**
      * 需要创建新对象
+     *
      * @return $this
      */
     public function create(): self
@@ -41,6 +47,7 @@ class PipeLine
     public function setHandleMethod($method): self
     {
         $this->handleMethod = $method;
+
         return $this;
     }
 
@@ -51,6 +58,7 @@ class PipeLine
     public function setClasses($classes): self
     {
         $this->classes = $classes;
+
         return $this;
     }
 

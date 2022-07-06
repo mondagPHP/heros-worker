@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Console;
 
 use Symfony\Component\Console\Application;
@@ -13,7 +16,7 @@ class Command extends Application
 {
     public function installInternalCommands(): void
     {
-        $this->installCommands(__DIR__ . '/Commands', 'Framework\Console\Commands');
+        $this->installCommands(__DIR__.'/Commands', 'Framework\Console\Commands');
     }
 
     public function installCommands($path, $namespace = 'App\Command'): void
@@ -25,7 +28,7 @@ class Command extends Application
             if ($file->getFilename() === '.' || $file->getFilename() === '..') {
                 continue;
             }
-            $className = $namespace . '\\' . basename($file->getFilename(), '.php');
+            $className = $namespace.'\\'.basename($file->getFilename(), '.php');
             if (! is_a($className, Commands::class, true)) {
                 continue;
             }

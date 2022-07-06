@@ -1,8 +1,10 @@
 <?php
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Http;
 
 use Framework\File\SplFile;
@@ -26,10 +28,11 @@ class UploadFile extends SplFile
 
     /**
      * UploadFile constructor.
-     * @param string $fileName
-     * @param string $uploadName
-     * @param string $uploadMimeType
-     * @param int $uploadErrorCode
+     *
+     * @param  string  $fileName
+     * @param  string  $uploadName
+     * @param  string  $uploadMimeType
+     * @param  int  $uploadErrorCode
      */
     public function __construct(string $fileName, string $uploadName, string $uploadMimeType, int $uploadErrorCode)
     {

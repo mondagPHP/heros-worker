@@ -3,8 +3,10 @@
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Crontab;
 
 use Framework\Component\StdoutLogger;
@@ -23,7 +25,7 @@ class CrontabTask implements CronInterface
     protected static array $cronList = [];
 
     /**
-     * @param Worker|null $worker
+     * @param  Worker|null  $worker
      * @return void
      */
     public function onWorkerStart(?Worker $worker): void
@@ -37,6 +39,7 @@ class CrontabTask implements CronInterface
 
     /**
      * 投递到异步进程.
+     *
      * @throws \Exception
      */
     private static function delivery(string $clazz, string $method, string $memo): void

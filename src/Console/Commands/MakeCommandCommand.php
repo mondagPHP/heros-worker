@@ -1,10 +1,13 @@
 <?php
+
 /** @noinspection PhpMultipleClassDeclarationsInspection */
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Console\Commands;
 
 use Symfony\Component\Console\Command\Command;
@@ -27,8 +30,8 @@ class MakeCommandCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param  InputInterface  $input
+     * @param  OutputInterface  $output
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -40,7 +43,7 @@ class MakeCommandCommand extends Command
             $file = "app/Command/$name.php";
             $namespace = 'App\Command';
         } else {
-            $path = 'app/' . substr($name, 0, $pos) . '/Command';
+            $path = 'app/'.substr($name, 0, $pos).'/Command';
             $name = $this->getClassName(substr($name, $pos + 1));
             $file = "$path/$name.php";
             $namespace = str_replace('/', '\\', $path);
@@ -54,7 +57,7 @@ class MakeCommandCommand extends Command
     {
         return preg_replace_callback('/:([a-zA-Z])/', function ($matches) {
             return strtoupper($matches[1]);
-        }, ucfirst($name)) . 'Command';
+        }, ucfirst($name)).'Command';
     }
 
     /**

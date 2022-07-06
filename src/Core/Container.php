@@ -1,14 +1,17 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Core;
 
 /**
  * Class Container
- * @package support
+ *
  * @method static mixed get($name)
  * @method static mixed make($name, array $parameters)
  * @method static bool has($name)
@@ -24,7 +27,7 @@ class Container
      */
     public static function __callStatic($name, $arguments)
     {
-        return static::instance()->{$name}(... $arguments);
+        return static::instance()->{$name}(...$arguments);
     }
 
     /**
@@ -35,6 +38,7 @@ class Container
         if (! isset(static::$_instance)) {
             static::$_instance = new IOC();
         }
+
         return static::$_instance;
     }
 }

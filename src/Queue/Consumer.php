@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Queue;
 
 use Framework\Core\Log;
@@ -35,14 +38,14 @@ class Consumer
         if (file_exists($this->consumerDir)) {
             $dirIterator = new \RecursiveDirectoryIterator($this->consumerDir);
             $iterator = new \RecursiveIteratorIterator($dirIterator);
-            /**  @var \SplFileInfo $file */
+            /** @var \SplFileInfo $file */
             foreach ($iterator as $file) {
                 if ($file->isDir()) {
                     continue;
                 }
                 $ext = $file->getExtension();
                 if ('php' === $ext) {
-                    $class = '\\' . ucfirst(str_replace('/', '\\', substr(substr($file->getPath(), strlen(BASE_PATH)), 1))) . '\\' . substr($file->getFilename(), 0, -4);
+                    $class = '\\'.ucfirst(str_replace('/', '\\', substr(substr($file->getPath(), strlen(base_path())), 1))).'\\'.substr($file->getFilename(), 0, -4);
                     if (! class_exists($class)) {
                         Log::error("{$class} not exist!");
                         continue;

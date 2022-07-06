@@ -1,8 +1,10 @@
 <?php
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Crontab;
 
 use Workerman\Lib\Timer;
@@ -36,9 +38,10 @@ class Crontab
 
     /**
      * Crontab constructor.
+     *
      * @param $rule
      * @param $callback
-     * @param null $name
+     * @param  null  $name
      */
     public function __construct($rule, $callback, $name = null)
     {
@@ -111,6 +114,7 @@ class Crontab
             return false;
         }
         unset(static::$_instances[$id]);
+
         return true;
     }
 
@@ -120,6 +124,7 @@ class Crontab
     protected static function createId()
     {
         static $id = 0;
+
         return ++$id;
     }
 

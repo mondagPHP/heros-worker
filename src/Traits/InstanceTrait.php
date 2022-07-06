@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Traits;
 
 trait InstanceTrait
@@ -22,11 +25,13 @@ trait InstanceTrait
         }
         $client = new static();
         $client->instanceKey = $key;
+
         return static::$_instances[$key] = $client;
     }
 
     /**
      * @desc   回收单例对象
+     *
      * @author limx
      */
     public function flushInstance(): void

@@ -1,8 +1,10 @@
 <?php
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Crontab;
 
 class Parser
@@ -10,7 +12,7 @@ class Parser
     /**
      *  Finds next execution time(stamp) parsin crontab syntax.
      *
-     * @param string $crontab_string :
+     * @param  string  $crontab_string :
      *                               0    1    2    3    4    5
      *                               *    *    *    *    *    *
      *                               -    -    -    -    -    -
@@ -21,15 +23,15 @@ class Parser
      *                               |    |    +--------- hour (0 - 23)
      *                               |    +----------- min (0 - 59)
      *                               +------------- sec (0-59)
-     *
-     * @param null|int $start_time
-     *@throws \InvalidArgumentException
+     * @param  null|int  $start_time
      * @return int[]
+     *
+     *@throws \InvalidArgumentException
      */
     public function parse(string $crontab_string, $start_time = null): array
     {
         if (! $this->isValid($crontab_string)) {
-            throw new \InvalidArgumentException('Invalid cron string: ' . $crontab_string);
+            throw new \InvalidArgumentException('Invalid cron string: '.$crontab_string);
         }
         $start_time = $start_time ? $start_time : time();
         $date = $this->parseDate($crontab_string);
@@ -43,8 +45,10 @@ class Parser
             foreach ($date['second'] as $second) {
                 $result[] = $start_time + $second;
             }
+
             return $result;
         }
+
         return [];
     }
 
@@ -55,6 +59,7 @@ class Parser
                 return false;
             }
         }
+
         return true;
     }
 
@@ -68,7 +73,7 @@ class Parser
         }
         $result = [];
         if ('*' === $string) {
-            for ($i = $start; $i <= $max; ++$i) {
+            for ($i = $start; $i <= $max; $i++) {
                 $result[] = $i;
             }
         } elseif (false !== strpos($string, ',')) {
@@ -94,6 +99,7 @@ class Parser
         } elseif ($this->between((int) $string, $min > $start ? $min : $start, $max)) {
             $result[] = (int) $string;
         }
+
         return $result;
     }
 
@@ -127,6 +133,7 @@ class Parser
                 'week' => $this->parseSegment($cron[4], 0, 6),
             ];
         }
+
         return $date;
     }
 }

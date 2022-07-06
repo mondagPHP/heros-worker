@@ -1,8 +1,10 @@
 <?php
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Database\Filter;
 
 use Framework\Application;
@@ -34,7 +36,7 @@ class BaseFilters
      * Applies respective filter methods declared in the subclass
      * that correspond to fields in request query parameters.
      *
-     * @param Builder $builder
+     * @param  Builder  $builder
      * @return Builder
      */
     public function apply(Builder $builder): Builder
@@ -47,6 +49,7 @@ class BaseFilters
             }
             $this->$name($value);
         }
+
         return $this->builder;
     }
 
@@ -61,6 +64,7 @@ class BaseFilters
         foreach ($this->globals as $value) {
             $globalFilters[$value] = '';
         }
+
         return array_merge($this->request()->getParams(), $globalFilters);
     }
 

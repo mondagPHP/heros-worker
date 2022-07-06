@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\File;
 
 use Framework\Exception\FileException;
@@ -14,6 +17,7 @@ class File extends SplFileInfo
 {
     /**
      * 文件hash规则
+     *
      * @var array
      */
     protected array $hash = [];
@@ -31,8 +35,8 @@ class File extends SplFileInfo
 
     /**
      * 获取文件的哈希散列值
-     * @access public
-     * @param string $type
+     *
+     * @param  string  $type
      * @return string
      */
     public function hash(string $type = 'sha1'): string
@@ -46,7 +50,7 @@ class File extends SplFileInfo
 
     /**
      * 获取文件的MD5值
-     * @access public
+     *
      * @return string
      */
     public function md5(): string
@@ -56,7 +60,7 @@ class File extends SplFileInfo
 
     /**
      * 获取文件的SHA1值
-     * @access public
+     *
      * @return string
      */
     public function sha1(): string
@@ -66,7 +70,7 @@ class File extends SplFileInfo
 
     /**
      * 获取文件类型信息
-     * @access public
+     *
      * @return string
      */
     public function getMime(): string
@@ -75,14 +79,15 @@ class File extends SplFileInfo
             throw new HerosException('fileinfo extension not install!');
         }
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
+
         return finfo_file($finfo, $this->getPathname());
     }
 
     /**
      * 移动文件
-     * @access public
-     * @param string $directory 保存路径
-     * @param string|null $name 保存的文件名
+     *
+     * @param  string  $directory 保存路径
+     * @param  string|null  $name 保存的文件名
      * @return self
      */
     public function move(string $directory, string $name = null): self
@@ -92,19 +97,20 @@ class File extends SplFileInfo
         set_error_handler(function ($type, $msg) use (&$error) {
             $error = $msg;
         });
-        $renamed = rename($this->getPathname(), (string)$target);
+        $renamed = rename($this->getPathname(), (string) $target);
         restore_error_handler();
         if (! $renamed) {
             throw new FileException(sprintf('Could not move the file "%s" to "%s" (%s)', $this->getPathname(), $target, strip_tags($error)));
         }
 
-        @chmod((string)$target, 0666 & ~umask());
+        @chmod((string) $target, 0666 & ~umask());
 
         return $target;
     }
 
     /**
      * 文件扩展名
+     *
      * @return string
      */
     public function extension(): string
@@ -114,8 +120,8 @@ class File extends SplFileInfo
 
     /**
      * 自动生成文件名
-     * @access public
-     * @param string|\Closure $rule
+     *
+     * @param  string|\Closure  $rule
      * @return string
      */
     public function hashName($rule = ''): string
@@ -127,25 +133,26 @@ class File extends SplFileInfo
                 switch (true) {
                     case in_array($rule, hash_algos()):
                         $hash = $this->hash($rule);
-                        $this->hashName = substr($hash, 0, 2) . DIRECTORY_SEPARATOR . substr($hash, 2);
+                        $this->hashName = substr($hash, 0, 2).DIRECTORY_SEPARATOR.substr($hash, 2);
                         break;
                     case is_callable($rule):
                         $this->hashName = call_user_func($rule);
                         break;
                     default:
-                        $this->hashName = date('Ymd') . DIRECTORY_SEPARATOR . md5(microtime(true) . $this->getPathname());
+                        $this->hashName = date('Ymd').DIRECTORY_SEPARATOR.md5(microtime(true).$this->getPathname());
                         break;
                 }
             }
         }
 
-        return $this->hashName . '.' . $this->extension();
+        return $this->hashName.'.'.$this->extension();
     }
 
     /**
      * 实例化一个新文件
-     * @param string $directory
-     * @param null|string $name
+     *
+     * @param  string  $directory
+     * @param  null|string  $name
      * @return File
      */
     protected function getTargetFile(string $directory, string $name = null): self
@@ -158,20 +165,22 @@ class File extends SplFileInfo
             throw new FileException(sprintf('Unable to write in the "%s" directory', $directory));
         }
 
-        $target = rtrim($directory, '/\\') . \DIRECTORY_SEPARATOR . (null === $name ? $this->getBasename() : $this->getName($name));
+        $target = rtrim($directory, '/\\').\DIRECTORY_SEPARATOR.(null === $name ? $this->getBasename() : $this->getName($name));
 
         return new self($target, false);
     }
 
     /**
      * 获取文件名
-     * @param string $name
+     *
+     * @param  string  $name
      * @return string
      */
     protected function getName(string $name): string
     {
         $originalName = str_replace('\\', '/', $name);
         $pos = strrpos($originalName, '/');
+
         return false === $pos ? $originalName : substr($originalName, $pos + 1);
     }
 }

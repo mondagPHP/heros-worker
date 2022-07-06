@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Session;
 
 class RedisClusterSessionHandler extends RedisSessionHandler
@@ -14,7 +17,7 @@ class RedisClusterSessionHandler extends RedisSessionHandler
     public function __construct($config)
     {
         parent::__construct($config);
-        $this->_maxLifetime = (int)ini_get('session.gc_maxlifetime');
+        $this->_maxLifetime = (int) ini_get('session.gc_maxlifetime');
         $timeout = $config['timeout'] ?? 2;
         $read_timeout = $config['read_timeout'] ?? $timeout;
         $persistent = $config['persistent'] ?? false;

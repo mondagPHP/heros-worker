@@ -1,9 +1,12 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Casbin;
 
 use Casbin\Exceptions\InvalidFilterTypeException;
@@ -40,7 +43,7 @@ class DatabaseAdapter implements Adapter, FilteredAdapter, BatchAdapter, Updatab
     /**
      * Sets filtered parameter.
      *
-     * @param bool $filtered
+     * @param  bool  $filtered
      */
     public function setFiltered(bool $filtered): void
     {
@@ -50,7 +53,7 @@ class DatabaseAdapter implements Adapter, FilteredAdapter, BatchAdapter, Updatab
     /**
      * Filter the rule.
      *
-     * @param array $rule
+     * @param  array  $rule
      * @return array
      */
     public function filterRule(array $rule): array
@@ -101,7 +104,7 @@ class DatabaseAdapter implements Adapter, FilteredAdapter, BatchAdapter, Updatab
     {
         $col['ptype'] = $ptype;
         foreach ($rule as $key => $value) {
-            $col['v' . (string)$key] = $value;
+            $col['v'.(string) $key] = $value;
         }
         CasbinRule::query()->updateOrCreate($col);
     }
@@ -114,10 +117,10 @@ class DatabaseAdapter implements Adapter, FilteredAdapter, BatchAdapter, Updatab
     public function removePolicy(string $sec, string $ptype, array $rule): void
     {
         $where = [
-            ['ptype', '=', $ptype]
+            ['ptype', '=', $ptype],
         ];
         foreach ($rule as $key => $value) {
-            $where[] = ['v' . (string)$key, '=', $value];
+            $where[] = ['v'.(string) $key, '=', $value];
         }
 
         CasbinRule::query()->where($where)->delete();
@@ -128,7 +131,7 @@ class DatabaseAdapter implements Adapter, FilteredAdapter, BatchAdapter, Updatab
         $where = [['ptype', '=', $ptype]];
         foreach (range(0, 5) as $value) {
             if ($fieldIndex <= $value && $value < $fieldIndex + count($fieldValues) && '' != $fieldValues[$value - $fieldIndex]) {
-                $where[] = ['v' . (string)$value, '=', $fieldValues[$value - $fieldIndex]];
+                $where[] = ['v'.(string) $value, '=', $fieldValues[$value - $fieldIndex]];
             }
         }
         CasbinRule::query()->where($where)->delete();
@@ -152,12 +155,12 @@ class DatabaseAdapter implements Adapter, FilteredAdapter, BatchAdapter, Updatab
     {
         $where = [['ptype', '=', $ptype]];
         foreach ($oldRule as $key => $value) {
-            $where[] = ['w' . (string)$key, '=', $value];
+            $where[] = ['w'.(string) $key, '=', $value];
         }
 
         $update = [];
         foreach ($newPolicy as $key => $value) {
-            $update['v' . (string)$key] = $value;
+            $update['v'.(string) $key] = $value;
         }
 
         CasbinRule::query()->where($where)->update($update);
@@ -175,18 +178,19 @@ class DatabaseAdapter implements Adapter, FilteredAdapter, BatchAdapter, Updatab
         $where = [['ptype', '=', $ptype]];
         foreach (range(0, 5) as $value) {
             if ($fieldIndex <= $value && $value < $fieldIndex + count($fieldValues) && '' != $fieldValues[$value - $fieldIndex]) {
-                $where[] = ['v' . (string)$value, '=', $fieldValues[$value - $fieldIndex]];
+                $where[] = ['v'.(string) $value, '=', $fieldValues[$value - $fieldIndex]];
             }
         }
-        $oldP = CasbinRule::query()->where($where)->get()->makeHidden(['created_at','updated_at', 'id', 'ptype'])->toArray();
+        $oldP = CasbinRule::query()->where($where)->get()->makeHidden(['created_at', 'updated_at', 'id', 'ptype'])->toArray();
         foreach ($newPolicies as $policy) {
             $update = [];
             foreach ($policy as $key => $value) {
-                $update['v' . (string)$key] = $value;
+                $update['v'.(string) $key] = $value;
             }
 
             CasbinRule::query()->where($where)->update($update);
         }
+
         return $oldP;
     }
 

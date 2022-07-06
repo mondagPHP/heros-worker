@@ -1,10 +1,13 @@
 <?php
+
 /** @noinspection PhpMultipleClassDeclarationsInspection */
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Console\Commands;
 
 use Symfony\Component\Console\Command\Command;
@@ -28,8 +31,8 @@ class MakeControllerCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param  InputInterface  $input
+     * @param  OutputInterface  $output
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -42,6 +45,7 @@ class MakeControllerCommand extends Command
         $file = "app/Modules/{$module}/Action/{$name}Action.php";
         $namespace = "App\\Modules\\{$module}\\Action";
         $this->createController($name, $namespace, $file);
+
         return self::SUCCESS;
     }
 

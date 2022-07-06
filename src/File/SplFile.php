@@ -1,8 +1,10 @@
 <?php
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\File;
 
 use Framework\Exception\FileException;
@@ -29,6 +31,7 @@ class SplFile extends \SplFileInfo
         }
         restore_error_handler();
         @chmod($destination, 0666 & ~umask());
+
         return new self($destination);
     }
 }

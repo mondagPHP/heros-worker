@@ -1,13 +1,17 @@
 <?php
+
 declare(strict_types=1);
 /**
  * This file is part of Heros-Worker.
+ *
  * @contact  chenzf@pvc123.com
  */
+
 namespace Framework\Validate;
 
 /**
  * Class ValidateRule
+ *
  * @method ValidateRule confirm(mixed $rule, string $msg = '') static 验证是否和某个字段的值一致
  * @method ValidateRule different(mixed $rule, string $msg = '') static 验证是否和某个字段的值是否不同
  * @method ValidateRule egt(mixed $rule, string $msg = '') static 验证是否大于等于某个值
@@ -81,6 +85,7 @@ class ValidateRule
             $method = substr($method, 2);
         }
         array_unshift($args, lcfirst($method));
+
         return call_user_func_array([$this, 'addItem'], $args);
     }
 
@@ -91,12 +96,13 @@ class ValidateRule
             $method = substr($method, 2);
         }
         array_unshift($args, lcfirst($method));
+
         return call_user_func_array([$rule, 'addItem'], $args);
     }
 
     /**
      * 获取验证规则
-     * @access public
+     *
      * @return array
      */
     public function getRule(): array
@@ -106,7 +112,7 @@ class ValidateRule
 
     /**
      * 获取验证字段名称
-     * @access public
+     *
      * @return string
      */
     public function getTitle(): string
@@ -116,7 +122,7 @@ class ValidateRule
 
     /**
      * 获取验证提示
-     * @access public
+     *
      * @return array
      */
     public function getMsg(): array
@@ -126,21 +132,22 @@ class ValidateRule
 
     /**
      * 设置验证字段名称
-     * @access public
+     *
      * @return $this
      */
     public function title(string $title)
     {
         $this->title = $title;
+
         return $this;
     }
 
     /**
      * 添加验证因子
-     * @access protected
-     * @param string $name 验证名称
-     * @param mixed $rule 验证规则
-     * @param string $msg 提示信息
+     *
+     * @param  string  $name 验证名称
+     * @param  mixed  $rule 验证规则
+     * @param  string  $msg 提示信息
      * @return $this
      */
     protected function addItem(string $name, $rule = null, string $msg = '')

@@ -10,7 +10,6 @@ use Framework\Application;
 use Framework\Contract\BootstrapInterface;
 use Framework\Core\Container;
 use Framework\Database\HeroModel;
-use Framework\Event\Event;
 use Framework\Http\HttpRequest;
 use Framework\Http\HttpResponse;
 use Framework\View\HerosTemplate;

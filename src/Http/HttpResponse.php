@@ -26,7 +26,8 @@ class HttpResponse extends Response
         int $status = 200,
         array $headers = [],
         string $body = ''
-    ): static {
+    ): static
+    {
         return new static($status, $headers, $body);
     }
 }

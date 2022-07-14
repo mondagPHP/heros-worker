@@ -24,21 +24,21 @@ trait Metable
     /**
      * Has meta.
      *
-     * @param string $key
+     * @param  string  $key
      * @return bool
      */
     public function hasMeta(string $key)
     {
         $meta = $this->meta()->where('key', $key)->get();
 
-        return (bool)count($meta);
+        return (bool) count($meta);
     }
 
     /**
      * Get meta.
      *
-     * @param string $key
-     * @param mixed $default
+     * @param  string  $key
+     * @param  mixed  $default
      * @return object
      */
     public function getMeta(string $key, $default = null)
@@ -53,7 +53,7 @@ trait Metable
     /**
      * Get meta value.
      *
-     * @param string $key
+     * @param  string  $key
      * @return object
      */
     public function getMetaValue(string $key)
@@ -64,26 +64,27 @@ trait Metable
     /**
      * Add meta.
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string  $key
+     * @param  mixed  $value
      * @return mixed
      */
     public function addMeta(string $key, mixed $value): mixed
     {
-        if (!$this->meta()->where('key', $key)->count()) {
+        if (! $this->meta()->where('key', $key)->count()) {
             return $this->meta()->create([
                 'key' => $key,
                 'value' => $value,
             ]);
         }
+
         return false;
     }
 
     /**
      * Update meta.
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string  $key
+     * @param  mixed  $value
      * @return object|bool
      */
     public function updateMeta(string $key, $value)
@@ -100,8 +101,8 @@ trait Metable
     /**
      * Add or update meta if it already exists.
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string  $key
+     * @param  mixed  $value
      * @return object|bool
      */
     public function addOrUpdateMeta(string $key, $value)
@@ -112,8 +113,8 @@ trait Metable
     /**
      * Delete meta.
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string  $key
+     * @param  mixed  $value
      * @return bool
      */
     public function deleteMeta(string $key, $value = null)

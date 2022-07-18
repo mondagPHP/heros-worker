@@ -1,4 +1,6 @@
 # CHANGELOG
+## [v2.1.27] 2022.07.18
+- support herosworker in window
 
 ## [v2.1.26] 2022.07.06
 - 增加Locker

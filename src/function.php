@@ -1,11 +1,13 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Heros-Worker.
  *
  * @contact  chenzf@pvc123.com
  */
+
 use Framework\Application;
 use Framework\Contract\BootstrapInterface;
 use Framework\Core\Container;
@@ -33,14 +35,14 @@ if (! function_exists('env_config')) {
 if (! function_exists('config_path')) {
     function config_path(): string
     {
-        return base_path().'/config';
+        return base_path().DIRECTORY_SEPARATOR.'config';
     }
 }
 
 if (! function_exists('app_path')) {
     function app_path(): string
     {
-        return base_path().'/app';
+        return base_path().DIRECTORY_SEPARATOR.'app';
     }
 }
 
@@ -50,14 +52,14 @@ if (! function_exists('app_path')) {
 if (! function_exists('runtime_path')) {
     function runtime_path(): string
     {
-        return base_path().'/runtime';
+        return base_path().DIRECTORY_SEPARATOR.'runtime';
     }
 }
 
 if (! function_exists('public_path')) {
     function public_path(): string
     {
-        return base_path().'/public';
+        return base_path().DIRECTORY_SEPARATOR.'public';
     }
 }
 

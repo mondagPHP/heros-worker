@@ -49,7 +49,7 @@ class Locker
         if (! isset(static::$factory)) {
             $storage = config('lock.storage');
             if ($storage === 'file') {
-                $lockPath = runtime_path().'/lock';
+                $lockPath = runtime_path().DIRECTORY_SEPARATOR.'lock';
                 $storageInstance = new FlockStore($lockPath);
             } elseif ($storage === 'redis') {
                 $redis = Redis::connection('default')->client();

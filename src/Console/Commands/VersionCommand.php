@@ -27,7 +27,7 @@ class VersionCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $installedFile = base_path().'/vendor/composer/installed.php';
+        $installedFile = base_path().DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'composer'.DIRECTORY_SEPARATOR.'installed.php';
         if (is_file($installedFile)) {
             $versionInfo = include $installedFile;
         }

@@ -62,7 +62,7 @@ class MakeEntityCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->entityDir = base_path().'/app/Entity';
+        $this->entityDir = base_path().DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'Entity';
         $this->table = $input->getOption('table');
         $this->connect = $input->getOption('connect');
         $this->path = $input->getOption('path');

@@ -20,7 +20,7 @@ class CrontabSingleLock
 
     public function __construct(string $key)
     {
-        $lockDir = runtime_path().'/lock/';
+        $lockDir = runtime_path().DIRECTORY_SEPARATOR.'lock'.DIRECTORY_SEPARATOR;
         $bool = FileUtil::makeFileDirs($lockDir);
         if ($bool === false) {
             throw new \RuntimeException("create path ({$lockDir}) error!!!");

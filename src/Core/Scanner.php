@@ -26,8 +26,8 @@ class Scanner
     {
         self::$annotationHandlers = self::initAnnotationHandlers();
         $scans = [
-            dirname(__DIR__).'/Component' => 'Framework\\Component',
-            base_path().'/app' => 'App\\',
+            dirname(__DIR__).DIRECTORY_SEPARATOR.'Component' => 'Framework\\Component',
+            app_path() => 'App\\',
         ];
         foreach ($scans as $scanDir => $scanRootNamespace) {
             self::scanBeans($scanDir, $scanRootNamespace); //扫描
@@ -69,11 +69,11 @@ class Scanner
         foreach ($files as $file) {
             require_once $file;
         }
-        foreach (get_declared_classes()  as $class) {
+        foreach (get_declared_classes() as $class) {
             if (str_contains($class, $scanRootNamespace)) {
                 $refClass = new \ReflectionClass($class);
                 $classAnnotations = $refClass->getAttributes();
-                foreach ($classAnnotations  as $classAnnotation) {
+                foreach ($classAnnotations as $classAnnotation) {
                     if (! isset(self::$annotationHandlers[($classAnnotation->getName())])) {
                         continue;
                     }
@@ -93,7 +93,7 @@ class Scanner
         $handlers = [];
         $annotationHandlerFiles = glob(dirname(__DIR__).'/Annotation/Handler/*.php');
         if ($annotationHandlerFiles) {
-            foreach ($annotationHandlerFiles  as $annotationHandlerFile) {
+            foreach ($annotationHandlerFiles as $annotationHandlerFile) {
                 $handlers = array_merge($handlers, (array) require_once $annotationHandlerFile);
             }
         }

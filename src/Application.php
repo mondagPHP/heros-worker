@@ -156,7 +156,7 @@ class Application
             $routeInfo = $this->dispatcher->dispatch($httpRequest->method(), $requestPath);
             switch ($routeInfo[0]) {
                 case Dispatcher::NOT_FOUND:
-                    $path = $this->findFile($httpRequest->path());
+                    $path = $this->findFile(trim($httpRequest->path()));
                     if (! $path) {
                         throw new FileNotFoundException("path not found:{$httpRequest->path()}");
                     }
@@ -328,7 +328,7 @@ class Application
      */
     protected function findFile(string $path): bool|string
     {
-        $file = \realpath(public_path().'/'.trim($path, '/'));
+        $file = \realpath(public_path().DIRECTORY_SEPARATOR.$path);
         if (! $file) {
             return false;
         }

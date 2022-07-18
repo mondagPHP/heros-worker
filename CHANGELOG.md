@@ -1,6 +1,8 @@
 # CHANGELOG
 ## [v2.1.27] 2022.07.18
 - support herosworker in window
+- add expectsJson() and expectJson() method in HttpRequest
+- add ErrorCode by https://www.workerman.net/doc/webman/components/generate_error_code.html
 
 ## [v2.1.26] 2022.07.06
 - 增加Locker

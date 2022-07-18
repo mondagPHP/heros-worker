@@ -186,6 +186,22 @@ class HttpRequest extends Request
     }
 
     /**
+     * @return bool
+     */
+    public function acceptJson(): bool
+    {
+        return str_contains($this->header('accept', ''), 'json');
+    }
+
+    /**
+     * @return bool
+     */
+    public function expectsJson(): bool
+    {
+        return ($this->isAjax() && !$this->isPjax()) || $this->acceptJson();
+    }
+
+    /**
      * @param  string  $ip
      * @return bool
      */

@@ -55,11 +55,5 @@
         "pint": [
             "./vendor/bin/pint --config=pint.json"
         ]
-    },
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://mirrors.aliyun.com/composer"
-        }
     }
 }

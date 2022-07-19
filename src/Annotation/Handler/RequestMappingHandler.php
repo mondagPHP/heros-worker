@@ -1,16 +1,17 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Heros-Worker.
  *
  * @contact  chenzf@pvc123.com
  */
+
 use Framework\Annotation\Middlewares;
 use Framework\Annotation\RequestMapping;
 use Framework\Annotation\Valid;
 use Framework\Annotation\VO;
-use Framework\Casbin\AuthManager;
 use Framework\Component\MiddleWareCollector;
 use Framework\Component\RouterCollector;
 use Framework\Core\Container;
@@ -35,15 +36,13 @@ return [
         foreach ($requestMethods as &$itemRequestMethod) {
             $itemRequestMethod = strtoupper($itemRequestMethod);
         }
-
         $slug = $requestMapping->slug;
+        $desc = $requestMapping->name;
         /** @var RouterCollector $routerCollector */
         $routerCollector = container(RouterCollector::class);
-        $routerDispatch = static function (HttpRequest $request) use ($method, $instance, $slug) {
-
-            //验证用户slug权限
-            AuthManager::checkAuth($slug);
-
+        $routerDispatch = static function (HttpRequest $request) use ($method, $instance, $slug, $desc) {
+            $request->slug = $slug;
+            $request->desc = $desc;
             $params = $request->getParams();
             $request->pushInjectObject($request);
             $extParams = array_values($request->getInjectObject());
@@ -53,7 +52,7 @@ return [
             }
             //验证器Vo
             $validAttributes = $method->getAttributes(Valid::class);
-            foreach ($validAttributes  as $validAttribute) {
+            foreach ($validAttributes as $validAttribute) {
                 /** @var Valid $methodValidInstance */
                 $methodValidInstance = $validAttribute->newInstance();
                 $methodVInstance = new $methodValidInstance->class;
@@ -64,7 +63,7 @@ return [
             }
             $inputParams = [];
             $reflectionParameters = $method->getParameters();
-            foreach ($reflectionParameters  as $reflectionParameter) {
+            foreach ($reflectionParameters as $reflectionParameter) {
                 if (isset($params[$reflectionParameter->getName()])) {
                     $inputParams[] = $params[$reflectionParameter->getName()];
                 } else {
@@ -86,7 +85,7 @@ return [
                             $inputParams[] = $vo;
                         } else {
                             $extFun = function () use ($reflectionClass, $extParams) {
-                                foreach ($extParams  as $extParam) {
+                                foreach ($extParams as $extParam) {
                                     if (null !== $reflectionClass && $reflectionClass->isInstance($extParam)) {
                                         return $extParam;
                                     }
@@ -118,7 +117,7 @@ return [
         //注解在控制器上
         $clazzAttributes = (new ReflectionClass(get_class($instance)))->getAttributes(Middlewares::class);
         foreach ($clazzAttributes as $clazzAttribute) {
-            foreach ($clazzAttribute->getArguments()  as $annotationMiddlewares) {
+            foreach ($clazzAttribute->getArguments() as $annotationMiddlewares) {
                 $middlewares = array_merge($middlewares, $annotationMiddlewares);
             }
         }

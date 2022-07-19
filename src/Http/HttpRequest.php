@@ -22,6 +22,18 @@ class HttpRequest extends Request
     private array $injectObject = [];
 
     /**
+     * 请求控制器的权限标识
+     *
+     * @var string
+     */
+    public string $slug = '';
+
+    /**
+     * @var string
+     */
+    public string $desc = '';
+
+    /**
      * @return array
      */
     public function getParams(): array
@@ -198,7 +210,7 @@ class HttpRequest extends Request
      */
     public function expectsJson(): bool
     {
-        return ($this->isAjax() && !$this->isPjax()) || $this->acceptJson();
+        return ($this->isAjax() && ! $this->isPjax()) || $this->acceptJson();
     }
 
     /**

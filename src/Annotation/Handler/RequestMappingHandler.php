@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @contact  chenzf@pvc123.com
  */
 
-use Framework\Annotation\Middlewares;
 use Framework\Annotation\RequestMapping;
 use Framework\Annotation\Valid;
 use Framework\Annotation\VO;
@@ -113,13 +112,6 @@ return [
         $middlewares = $middlewareCollector->get($path);
         if (property_exists($instance, 'middlewares') && $instance->middlewares) {
             $middlewares = array_merge($middlewares, $instance->middlewares);
-        }
-        //注解在控制器上
-        $clazzAttributes = (new ReflectionClass(get_class($instance)))->getAttributes(Middlewares::class);
-        foreach ($clazzAttributes as $clazzAttribute) {
-            foreach ($clazzAttribute->getArguments() as $annotationMiddlewares) {
-                $middlewares = array_merge($middlewares, $annotationMiddlewares);
-            }
         }
         $routerDispatch = container(PipeLine::class)->create()->setClasses($middlewares)->run($routerDispatch);
         foreach ($requestMethods as $requestMethod) {

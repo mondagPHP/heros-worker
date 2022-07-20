@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [v2.1.18] 2022.07.20
+
+- 删除控制器的Middleware注解
+- laravel db log 改成bootstrap 启动
+
 ## [v2.1.27] 2022.07.19
 
 - remove casbin

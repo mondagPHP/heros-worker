@@ -10,10 +10,8 @@ declare(strict_types=1);
 namespace Framework\Bootstrap;
 
 use Framework\Contract\BootstrapInterface;
-use Framework\Core\Log;
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager as Capsule;
-use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Events\Dispatcher;
 use Workerman\Worker;
 
@@ -37,25 +35,5 @@ class LaravelDB implements BootstrapInterface
         }
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
-        if (config('app.debug', true)) {
-            $capsule->setEventDispatcher(new Dispatcher(new Container()));
-            /** @var Dispatcher $dispatcher */
-            $dispatcher = $capsule->getEventDispatcher();
-            if (! $dispatcher->hasListeners(QueryExecuted::class)) {
-                $dispatcher->listen(QueryExecuted::class, function ($query) {
-                    $location = collect(debug_backtrace())->filter(function ($trace) {
-                        return isset($trace['file']) && ! str_contains($trace['file'], 'vendor/');
-                    })->first();
-                    $bindings = implode(', ', $query->bindings);
-                    Log::debug('db.listen', [
-                        'Sql' => $query->sql,
-                        'Bindings' => $bindings,
-                        'Time' => $query->time,
-                        'File' => $location['file'],
-                        'Line' => $location['line'],
-                    ]);
-                });
-            }
-        }
     }
 }

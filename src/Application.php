@@ -265,6 +265,7 @@ class Application
         Worker::$stdoutFile = $serverConfig['stdout_file'];
         Worker::$logFile = $serverConfig['log_file'];
         TcpConnection::$defaultMaxPackageSize = $serverConfig['max_package_size'] ?? 10 * 1024 * 1024;
+        TcpConnection::$defaultMaxSendBufferSize = $serverConfig['default_max_send_buffer_size'] ?? 10 * 1024 * 1024;
         if (property_exists(Worker::class, 'statusFile')) {
             Worker::$statusFile = $serverConfig['status_file'] ?? '';
         }

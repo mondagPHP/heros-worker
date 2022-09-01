@@ -29,11 +29,6 @@ trait InstanceTrait
         return static::$_instances[$key] = $client;
     }
 
-    /**
-     * @desc   回收单例对象
-     *
-     * @author limx
-     */
     public function flushInstance(): void
     {
         unset(static::$_instances[$this->instanceKey]);

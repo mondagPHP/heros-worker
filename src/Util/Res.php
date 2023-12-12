@@ -122,8 +122,8 @@ class Res implements JsonAble
     {
         $pageParameterConfig = config('request.pageParameter', 'page');
         $pageSizeParameterConfig = config('request.pageSizeParameter', 'pageSize');
-        $page = (int) Application::$request->get($pageParameterConfig, 1);
-        $pageSize = (int) Application::$request->get($pageSizeParameterConfig, 10);
+        $page = (int) Application::$request->getParameter($pageParameterConfig, 1);
+        $pageSize = (int) Application::$request->getParameter($pageSizeParameterConfig, 10);
         $result = new self();
         $result->isSuccess(true)->code(ResultCode::SUCCESS['code'])->message(ResultCode::SUCCESS['message'])->data($data)->extra($extra)->setPager(new Pager($page, $pageSize, $total));
 

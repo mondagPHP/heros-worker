@@ -194,4 +194,13 @@ class Result
         $this->extra = $extra;
         return $this;
     }
+
+    /**
+     * 获取状态
+     * @return bool
+     */
+    public function getStatus()
+    {
+        return $this->success;
+    }
 }
